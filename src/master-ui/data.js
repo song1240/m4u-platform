@@ -21,6 +21,9 @@ export const IMG = {
   medi1: "https://images.unsplash.com/photo-1545389336-cf090694435e?auto=format&fit=crop&w=500&q=70",
   medi2: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=500&q=70",
   medi3: "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=500&q=70",
+  skinset: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=70",
+  maskpack: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=400&q=70",
+  serum: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=400&q=70",
 };
 
 /** 생활권(Zone) — 빈홈 그랜드 파크에서 시작 (CLAUDE.md §1) */
@@ -263,4 +266,45 @@ export const SALON_QUICK = [
   { id: "s4", emoji: "💅", name: { ko: "네일", vi: "Nail" } },
   { id: "s2", emoji: "🧴", name: { ko: "스킨케어", vi: "Chăm sóc da" } },
   { id: "s3", emoji: "💆", name: { ko: "마사지", vi: "Massage" } },
+];
+
+/**
+ * M4U FIVE 공동구매 (POLICY §6) — 5/10/15인 방, 할인 40/45/50%, 보상 HRP 20/40/60, 모집 72/96/120시간.
+ * 보상은 **구매 건수 비례**로만 지급한다 (인원 모집 비례 금지 — 방문판매법 리스크 회피).
+ * 미달 시 자동 취소 + 전액 환불 — 이 문구는 참여 화면에 항상 노출한다.
+ */
+export const FIVE_TIERS = {
+  5: { dc: 40, hrp: 20, hours: 72 },
+  10: { dc: 45, hrp: 40, hours: 96 },
+  15: { dc: 50, hrp: 60, hours: 120 },
+};
+/** FIVE 참여 시 CP — 검증 가능한 활동 (POLICY §4, 데모 자리표시자) */
+export const FIVE_CP = 10;
+
+export const FIVE_ROOMS = [
+  { id: "f1", tier: 5, img: IMG.skinset, origin: 820000, joined: 3, leftH: 26, product: { ko: "어성초 수딩 스킨케어 세트", vi: "Bộ chăm sóc da dịu nhẹ diếp cá" } },
+  { id: "f2", tier: 10, img: IMG.maskpack, origin: 220000, joined: 7, leftH: 61, product: { ko: "시카 리페어 마스크팩 10매", vi: "Mặt nạ phục hồi Cica 10 miếng" } },
+  { id: "f3", tier: 15, img: IMG.serum, origin: 900000, joined: 9, leftH: 98, product: { ko: "그린 티트리 세럼 더블 세트", vi: "Bộ đôi serum trà tràm" } },
+];
+
+export const COUPONS = [
+  { id: "c1", used: false, title: { ko: "Salon 10% 할인", vi: "Giảm 10% Salon" }, desc: { ko: "8월 31일까지 · 전 서비스", vi: "Đến 31/8 · tất cả dịch vụ" } },
+  { id: "c2", used: false, title: { ko: "주문 20,000 VND 할인", vi: "Giảm 20.000 VND" }, desc: { ko: "1회 · 최소 결제 200,000 VND", vi: "1 lần · đơn tối thiểu 200.000 VND" } },
+  { id: "c3", used: false, title: { ko: "E-카트 무료 1회", vi: "Miễn phí 1 lượt xe điện" }, desc: { ko: "단지 내 구간", vi: "Trong khu nội bộ" } },
+];
+
+/** 커뮤니티 투표 — CP 가중. CP는 구매 불가·양도 불가 (POLICY §4) */
+export const PROPOSALS = [
+  { id: "g1", yes: 1240, no: 380, quorum: 2000, leftH: 48, status: "open", title: { ko: "단지 셔틀 노선 2개 추가", vi: "Thêm 2 tuyến xe buýt nội khu" }, desc: { ko: "출퇴근 시간 국제학교 · 오피스 직행 노선 신설", vi: "Mở tuyến trực tiếp tới trường quốc tế và khu văn phòng giờ cao điểm" } },
+  { id: "g2", yes: 860, no: 210, quorum: 2000, leftH: 72, status: "open", title: { ko: "신규 입점 카테고리: 키즈 클래스", vi: "Danh mục mới: lớp học cho trẻ" }, desc: { ko: "단지 내 유휴 공간을 활용한 파트너 모집", vi: "Tuyển đối tác dùng không gian trống trong khu" } },
+  { id: "g3", yes: 2310, no: 420, quorum: 2000, leftH: 0, status: "passed", title: { ko: "E-카트 운행시간 연장 (23시 → 24시)", vi: "Kéo dài giờ chạy xe điện (23h → 24h)" }, desc: { ko: "야간 이동 수요 반영", vi: "Đáp ứng nhu cầu di chuyển ban đêm" } },
+];
+
+/** CP 적립 규칙 — 검증 가능한 활동에만 (POLICY §4, 전부 데모 자리표시자) */
+export const CP_RULES = [
+  { id: "review", val: "+5 CP", ko: "Verified 리뷰 작성", vi: "Viết đánh giá đã xác minh" },
+  { id: "five", val: "+10 CP", ko: "FIVE 공동구매 참여", vi: "Tham gia mua chung FIVE" },
+  { id: "booking", val: "+3 CP", ko: "예약 이행 (노쇼 없음)", vi: "Hoàn thành đặt lịch (không hủy)" },
+  { id: "stay", val: "+5 CP", ko: "스테이 예약 완료", vi: "Hoàn tất đặt lưu trú" },
+  { id: "partner", val: "+50 CP", ko: "파트너 등록 승인", vi: "Đăng ký đối tác được duyệt" },
 ];

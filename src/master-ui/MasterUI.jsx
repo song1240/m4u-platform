@@ -15,9 +15,12 @@ import Book from "./screens/Book.jsx";
 import Habit from "./screens/Habit.jsx";
 import Salon from "./screens/Salon.jsx";
 import SkinProfile from "./screens/SkinProfile.jsx";
+import Wallet from "./screens/Wallet.jsx";
+import Vote from "./screens/Vote.jsx";
+import PointLog from "./screens/PointLog.jsx";
 import My from "./screens/My.jsx";
 import { L, zoneName } from "./i18n.js";
-import { ZONES, SELF_HABITS } from "./data.js";
+import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS } from "./data.js";
 import "./style.css";
 
 const TABS = [
@@ -36,6 +39,8 @@ const WALK_HRP = 10;
 const WALK_CP = 2;
 /** 셀프 체크 일일 HRP 상한 (POLICY §5) — 합산이 이 값을 넘으면 추가 적립 없음 */
 const SELF_DAILY_CAP = 15;
+/** CP 초기 보유 — 데모 자리표시자 (POLICY §4: 구매·양도·수동 발행 불가) */
+const CP_START = 128;
 const WATER_GOAL = 8;
 const STREAK = 7; // 데모: 연속 달성일
 
@@ -68,7 +73,8 @@ export default function App() {
   const [overlay, setOverlay] = useState(null); // MY에서 여는 재설정 화면: "lang" | "zone"
   const [zoneDraft, setZoneDraft] = useState(saved?.zoneIdx ?? 0); // 재설정 중 임시 선택(뒤로가기 = 취소)
   const [tab, setTabState] = useState("home");
-  const [sub, setSub] = useState(null); // Living 서브 화면: {name, ...params}
+  const [sub, setSub] = useState(null); // 서브 화면: {name, ...params}
+  const [subDepth, setSubDepth] = useState(0); // 쌓인 서브 화면 수 (탭 전환 시 한 번에 닫기 위함)
   const [steps] = useState(3200);
   const [points, setPoints] = useState(HRP_START); // 예약·습관 적립이 쌓이는 지갑 잔액
   const [likes, setLikes] = useState([]);
@@ -79,6 +85,13 @@ export default function App() {
   const [water, setWater] = useState(5);
   const [selfChecks, setSelfChecks] = useState({});
   const [selfEarned, setSelfEarned] = useState(0); // 오늘 셀프 체크로 적립한 HRP 합계
+  // 지갑 — CP는 검증된 활동으로만 늘어난다 (POLICY §4)
+  const [cp, setCp] = useState(CP_START);
+  const [txs, setTxs] = useState([]);
+  const [cpLog, setCpLog] = useState([]);
+  const [joinedRooms, setJoinedRooms] = useState([]);
+  const [coupons, setCoupons] = useState(COUPONS);
+  const [myVotes, setMyVotes] = useState({});
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -92,36 +105,40 @@ export default function App() {
 
   // 브라우저 뒤로가기 = 온보딩 이전 단계 / 재설정 화면 닫기
   useEffect(() => {
-    window.history.replaceState({ m4u: { stage: saved?.onboarded ? "app" : "lang", overlay: null, sub: null } }, "");
+    window.history.replaceState({ m4u: { stage: saved?.onboarded ? "app" : "lang", overlay: null, sub: null, depth: 0 } }, "");
     const onPop = (e) => {
       const s = e.state?.m4u;
       if (!s) return;
       setStage(s.stage);
       setOverlay(s.overlay ?? null);
       setSub(s.sub ?? null);
+      setSubDepth(s.depth ?? 0);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [saved]);
 
   const go = (nextStage, nextOverlay = null) => {
-    window.history.pushState({ m4u: { stage: nextStage, overlay: nextOverlay, sub: null } }, "");
+    window.history.pushState({ m4u: { stage: nextStage, overlay: nextOverlay, sub: null, depth: 0 } }, "");
     setStage(nextStage);
     setOverlay(nextOverlay);
     setSub(null);
+    setSubDepth(0);
   };
   const closeOverlay = () => window.history.back(); // 뒤로가기와 같은 경로로 닫는다
 
   // 서브 화면(카테고리·매장·예약)은 히스토리에 쌓아 브라우저 뒤로가기로 닫힌다
   const goSub = (name, params = {}) => {
     const next = { name, ...params };
-    window.history.pushState({ m4u: { stage: "app", overlay: null, sub: next } }, "");
+    const depth = subDepth + 1;
+    window.history.pushState({ m4u: { stage: "app", overlay: null, sub: next, depth } }, "");
     setSub(next);
+    setSubDepth(depth);
   };
   const closeSub = () => window.history.back();
   // 탭 전환은 열린 서브 화면을 닫는다 (v10 동작 유지)
   const setTab = (id) => {
-    if (sub) window.history.back();
+    if (subDepth > 0) window.history.go(-subDepth); // 여러 단계 쌓여 있어도 앱 루트까지 한 번에
     setTabState(id);
   };
   const toast = (msg) => {
@@ -140,7 +157,8 @@ export default function App() {
     setStepsExtra((x) => x + gained);
     if (next >= STEP_GOAL && !walkClaimed) {
       setWalkClaimed(true);
-      setPoints((p) => p + WALK_HRP);
+      addHrp(WALK_HRP, L(lang, "습관 · 걷기 목표 달성", "Thói quen · đạt mục tiêu đi bộ"));
+      addCp(WALK_CP, L(lang, "걷기 목표 달성 (헬스 데이터 검증)", "Đạt mục tiêu đi bộ (xác minh dữ liệu)"));
       toast(L(lang, `걷기 목표 달성! +${WALK_HRP} HRP · +${WALK_CP} CP`, `Đạt mục tiêu đi bộ! +${WALK_HRP} HRP · +${WALK_CP} CP`));
     } else {
       toast(L(lang, `걸음 동기화 · +${gained}보`, `Đồng bộ · +${gained} bước`));
@@ -152,7 +170,7 @@ export default function App() {
     const pay = Math.min(hrp, room);
     if (pay > 0) {
       setSelfEarned((e) => e + pay);
-      setPoints((p) => p + pay);
+      addHrp(pay, L(lang, `습관 · ${labelKo}`, `Thói quen · ${labelVi}`));
       toast(L(lang, `${labelKo} 완료! +${pay} HRP`, `Hoàn thành ${labelVi}! +${pay} HRP`));
     } else {
       toast(L(lang, `${labelKo} 완료 · 오늘 셀프 적립 상한(${SELF_DAILY_CAP} HRP) 도달`, `Hoàn thành ${labelVi} · đã đạt giới hạn ${SELF_DAILY_CAP} HRP hôm nay`));
@@ -174,9 +192,37 @@ export default function App() {
   };
   const doneCount =
     (walkClaimed ? 1 : 0) + (water >= WATER_GOAL ? 1 : 0) + Object.values(selfChecks).filter(Boolean).length;
+  const now = () => L(lang, "오늘", "Hôm nay");
+  const addHrp = (amount, label) => {
+    setPoints((p) => p + amount);
+    setTxs((x) => [{ id: "t" + x.length + amount + label.length, label, amount, when: now() }, ...x]);
+  };
+  const addCp = (amount, label) => {
+    setCp((p) => p + amount);
+    setCpLog((x) => [{ id: "c" + x.length + amount + label.length, label, amount, when: now() }, ...x]);
+  };
   const confirmBooking = (b) => {
-    setPoints((p) => p + b.point); // 적립은 검증 가능한 활동에만 (POLICY §3·§4)
+    // 적립은 검증 가능한 활동에만 (POLICY §3·§4)
+    addHrp(b.point, L(lang, `예약 · ${b.name}`, `Đặt lịch · ${b.name}`));
+    addCp(b.cp, L(lang, "예약 이행 (노쇼 없음)", "Hoàn thành đặt lịch (không hủy)"));
     toast(L(lang, `예약 완료 · +${b.point} HRP · +${b.cp} CP`, `Đặt lịch xong · +${b.point} HRP · +${b.cp} CP`));
+  };
+  // FIVE 참여 — 보상은 구매 건수 비례이며 인원 모집 비례가 아니다 (POLICY §6)
+  const joinRoom = (room) => {
+    const t = FIVE_TIERS[room.tier];
+    setJoinedRooms((j) => [...j, room.id]);
+    addHrp(t.hrp, L(lang, "FIVE 공동구매 참여", "Tham gia mua chung FIVE"));
+    addCp(FIVE_CP, L(lang, "FIVE 공동구매 참여", "Tham gia mua chung FIVE"));
+    toast(L(lang, `참여 완료 · +${t.hrp} HRP · +${FIVE_CP} CP`, `Tham gia xong · +${t.hrp} HRP · +${FIVE_CP} CP`));
+  };
+  const useCoupon = (id) => {
+    setCoupons((cs) => cs.map((c) => (c.id === id ? { ...c, used: true } : c)));
+    toast(L(lang, "쿠폰 사용 처리 완료", "Đã sử dụng mã ưu đãi"));
+  };
+  // 투표는 CP 가중치로 집계되며 CP를 차감하지 않는다 (POLICY §4)
+  const castVote = (id, side) => {
+    setMyVotes((v) => (v[id] ? v : { ...v, [id]: side }));
+    toast(L(lang, `${side === "yes" ? "찬성" : "반대"} ${cp} CP 투표 완료`, `Đã bỏ phiếu ${side === "yes" ? "đồng ý" : "không đồng ý"} với ${cp} CP`));
   };
 
   if (stage !== "app")
@@ -207,6 +253,9 @@ export default function App() {
     venue: <Venue lang={lang} venueId={sub?.venueId} onBack={closeSub} goSub={goSub} liked={likes.includes(sub?.venueId)} toggleLike={toggleLike} />,
     book: <Book lang={lang} venueId={sub?.venueId} serviceId={sub?.serviceId} onBack={closeSub} onDone={closeSub} confirmBooking={confirmBooking} />,
     skin: <SkinProfile lang={lang} onBack={closeSub} goSub={goSub} />,
+    wallet: <Wallet lang={lang} points={points} cp={cp} joined={joinedRooms} joinRoom={joinRoom} coupons={coupons} useCoupon={useCoupon} openVotes={PROPOSALS.filter((p) => p.status === "open").length} onBack={closeSub} goSub={goSub} />,
+    vote: <Vote lang={lang} cp={cp} myVotes={myVotes} castVote={castVote} onBack={closeSub} />,
+    log: <PointLog lang={lang} kind={sub?.kind} points={points} cp={cp} txs={txs} cpLog={cpLog} onBack={closeSub} />,
   };
   const screens = {
     home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} />,
@@ -221,7 +270,7 @@ export default function App() {
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
-    my: <My lang={lang} zone={zone} points={points} onMenu={openReset} />,
+    my: <My lang={lang} zone={zone} points={points} cp={cp} onMenu={openReset} onWallet={() => goSub("wallet")} />,
   };
   return (
     <div className="shell">

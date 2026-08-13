@@ -16,7 +16,7 @@ const MENUS = [
   { id: "lang", ko: "언어 · AI 통역", vi: "Ngôn ngữ · phiên dịch AI", ready: true },
 ];
 
-export default function My({ lang, zone, points, onMenu }) {
+export default function My({ lang, zone, points, cp, onMenu, onWallet }) {
   return (
     <>
       <Head k="M4U MY" title={L(lang, "나의 M4U", "M4U của tôi")} sub={L(lang, "생활 · 습관 · 혜택을 한 곳에서", "Sinh hoạt · thói quen · ưu đãi trong một nơi")} />
@@ -27,10 +27,10 @@ export default function My({ lang, zone, points, onMenu }) {
           <p>{zone}</p>
         </div>
       </Card>
-      <Card c="wallet">
+      <Card c="wallet" onClick={onWallet}>
         <small>M4U POINT · HRP</small>
         <h1>{num(points, lang)} HRP</h1>
-        <p>{L(lang, `이번 달 적립 +${num(4280, lang)} HRP`, `Tích lũy tháng này +${num(4280, lang)} HRP`)}</p>
+        <p>{L(lang, `기여 포인트 ${num(cp, lang)} CP · 지갑 열기`, `Điểm đóng góp ${num(cp, lang)} CP · mở ví`)}</p>
       </Card>
       <h3 className="section">MY</h3>
       {MENUS.map((m) => (

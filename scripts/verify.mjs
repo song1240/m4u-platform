@@ -76,11 +76,16 @@ const BANNED = [
   { re: /피부\s*진단/, why: '의료성 표현 — "피부 분석/뷰티 프로필" 사용 (POLICY §5)' },
   { re: /비노\s*그랜드/, why: '단지명 오기 — "빈홈 그랜드 파크" (POLICY §9)' },
   { re: /Habit\s*Reward\s*Point/i, why: "HRP 정식 명칭은 HARU REWARD POINT (POLICY §9)" },
+  { re: /코인|토큰/, why: "사용자 노출 문구에 코인/토큰 표현 금지 (CLAUDE.md §3-2 · POLICY §3)" },
 ];
+// 본사 Admin은 내부 운영 도구 — Web3 전환 계획 서술이 허용된다 (CLAUDE.md §3-2 예외)
+const BANNED_EXEMPT = [/^src\/admin\//];
 for (const f of files) {
+  const exempt = BANNED_EXEMPT.some((re) => re.test(f.replace(/\\/g, "/")));
   const lines = readFileSync(f, "utf8").split("\n");
   lines.forEach((line, i) => {
     for (const { re, why } of BANNED) {
+      if (exempt && /코인|토큰/.test(re.source)) continue;
       if (re.test(line)) {
         failed = true;
         log("POLICY", `FAIL  ${f}:${i + 1}  ${why}`);
