@@ -18,6 +18,9 @@ export const IMG = {
   dine: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=500&q=70",
   cart: "https://images.unsplash.com/photo-1548099212-9e653bfa85ca?auto=format&fit=crop&w=800&q=70",
   cls: "https://images.unsplash.com/photo-1544928147-79a2dbc1f389?auto=format&fit=crop&w=800&q=70",
+  medi1: "https://images.unsplash.com/photo-1545389336-cf090694435e?auto=format&fit=crop&w=500&q=70",
+  medi2: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=500&q=70",
+  medi3: "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=500&q=70",
 };
 
 /** 생활권(Zone) — 빈홈 그랜드 파크에서 시작 (CLAUDE.md §1) */
@@ -187,3 +190,28 @@ export const VENUES = [
     reviews_: [],
   },
 ];
+
+/**
+ * 습관 — 검증형(헬스 데이터)과 셀프 체크를 분리한다 (POLICY §5).
+ * 검증형만 CP를 받고, 셀프 체크는 소액 HRP·하루 1회·해제 불가·일일 상한 대상이다.
+ */
+export const SELF_HABITS = [
+  { id: "water", emoji: "💧", goal: 8, hrp: 5, name: { ko: "물마시기", vi: "Uống nước" }, desc: { ko: "하루 8잔", vi: "8 ly mỗi ngày" } },
+  { id: "run", emoji: "🏃", hrp: 5, name: { ko: "달리기", vi: "Chạy bộ" }, desc: { ko: "30분 러닝 · 이번 주 2/3회", vi: "Chạy 30 phút · tuần này 2/3 lần" } },
+  { id: "mask", emoji: "🎭", hrp: 5, name: { ko: "마스크팩하기", vi: "Đắp mặt nạ" }, desc: { ko: "저녁 스킨케어 루틴", vi: "Chăm sóc da buổi tối" } },
+  { id: "meditate", emoji: "🧘", hrp: 5, name: { ko: "명상하기", vi: "Thiền định" }, desc: { ko: "10분 마음 챙김", vi: "10 phút thiền chánh niệm" } },
+];
+
+/** 주변 명상 장소 — 습관을 지역 소비·Verified Review로 연결한다 (POLICY §5) */
+export const MEDI_PLACES = [
+  { id: "m1", img: IMG.medi1, rate: 4.9, walkMin: 8, hrp: 20, name: { ko: "Mindful Garden", vi: "Mindful Garden" }, desc: { ko: "오늘 19:30 클래스", vi: "Lớp học 19:30 hôm nay" } },
+  { id: "m2", img: IMG.medi2, rate: 4.8, walkMin: 10, hrp: 20, name: { ko: "Lotus Yoga Studio", vi: "Lotus Yoga Studio" }, desc: { ko: "선셋 요가 · 주 5회", vi: "Yoga hoàng hôn · 5 buổi/tuần" } },
+  { id: "m3", img: IMG.medi3, rate: 4.7, walkMin: 15, hrp: 20, name: { ko: "Silence Retreat", vi: "Silence Retreat" }, desc: { ko: "1:1 명상 코칭", vi: "Huấn luyện thiền 1:1" } },
+];
+
+/** 주간 리포트 — 데모 자리표시자 (오늘은 실제 완료 수로 대체) */
+export const WEEK_DEMO = [4, 5, 3, 5, 4, 2];
+export const WEEKDAYS = {
+  ko: ["월", "화", "수", "목", "금", "토", "오늘"],
+  vi: ["T2", "T3", "T4", "T5", "T6", "T7", "Hôm nay"],
+};

@@ -1,44 +1,136 @@
 /**
- * Habit — 오늘 습관. 검증형(걷기)만 CP, 셀프 체크는 소액 HRP (POLICY §5).
+ * Habit — 오늘 습관 (DESIGN_SYSTEM §4.4)
+ *
+ * POLICY §5:
+ *  - 검증형(헬스 데이터 연동: 걷기)만 CP 지급
+ *  - 셀프 체크는 소액 HRP · 하루 1회 · 해제 불가 · 일일 상한 15 HRP
+ *  - 습관은 지역 시설과 연결한다 (명상 → 주변 장소 예약 → 지역 소비 → Verified Review)
+ * 모든 수치는 데모 자리표시자 (CLAUDE.md §6).
  */
 import React from "react";
-import { Footprints, Waves, Droplets, Sparkles } from "lucide-react";
-import { Card, Btn, Head, Tile } from "../components.jsx";
-import { L, num } from "../i18n.js";
+import { Footprints, Check, Flame, ShieldCheck, ChevronRight } from "lucide-react";
+import { Card, Note, Tag } from "../components.jsx";
+import { L, pick, walk, num } from "../i18n.js";
+import { SELF_HABITS, MEDI_PLACES, WEEK_DEMO, WEEKDAYS } from "../data.js";
 import "../style.css";
 
-export default function Habit({ lang, steps, goal }) {
+export default function Habit({
+  lang, steps, goal, streak,
+  walkClaimed, syncSteps,
+  water, waterGoal, selfChecks, toggleSelf,
+  selfEarned, selfCap, doneCount,
+  onBookClass,
+}) {
   const pct = Math.min(100, Math.round((steps / goal) * 100));
+  const capped = selfEarned >= selfCap;
+  const week = [...WEEK_DEMO, doneCount];
+  const days = WEEKDAYS[lang] || WEEKDAYS.ko;
+  const total = week.reduce((a, b) => a + b, 0);
+
   return (
     <>
-      <Head k="M4U HABIT" title={L(lang, "작은 습관이 내일을 바꿔요", "Thói quen nhỏ đổi thay ngày mai")} sub={L(lang, "오늘의 나를 위한 건강 루틴", "Thói quen khỏe mạnh cho hôm nay")} />
-      <Card c="hero">
-        <div>
-          <em>{L(lang, "오늘 걷기", "Đi bộ hôm nay")}</em>
-          <h2>{num(steps, lang)} / {num(goal, lang)}</h2>
-          <div className="bar"><i style={{ width: `${pct}%` }} /></div>
-          <p>{L(lang, "2.4 km · 32분", "2,4 km · 32 phút")}</p>
-        </div>
-        <strong>{pct}%</strong>
-      </Card>
-      <div className="grid">
-        <Tile icon={<Footprints />} title={L(lang, "걷기", "Đi bộ")} sub="+70 HRP" />
-        <Tile icon={<Waves />} title={L(lang, "수영", "Bơi")} sub={L(lang, "주 3회", "3 lần/tuần")} />
-        <Tile icon={<Droplets />} title={L(lang, "물마시기", "Uống nước")} sub="5/7" />
-        <Tile icon={<Sparkles />} title={L(lang, "명상", "Thiền")} sub={L(lang, "10분", "10 phút")} />
+      <div className="appbar">
+        <div className="logotype">M4U<span>HABIT</span></div>
+        <div className="streak"><Flame size={12} /> {L(lang, `연속 ${streak}일`, `${streak} ngày liên tiếp`)}</div>
       </div>
-      <h3 className="section">{L(lang, "습관 챌린지", "Thử thách thói quen")}</h3>
+
+      <div className="greet">
+        <div>
+          <h1>{L(lang, "작은 습관이 내일을 바꿔요", "Thói quen nhỏ đổi thay ngày mai")}</h1>
+          <p>{L(lang, `오늘 ${doneCount}/5 완료 · HARU REWARD POINT`, `Hôm nay ${doneCount}/5 · HARU REWARD POINT`)}</p>
+        </div>
+      </div>
+
+      {/* 검증형 — 헬스 데이터 연동이라 CP를 받는다 (POLICY §5) */}
+      <div className="hrow">
+        <i className="ic"><Footprints size={19} /></i>
+        <div className="bd">
+          <div className="tl">
+            <b>{L(lang, "걷기", "Đi bộ")}</b>
+            <Tag kind="ok"><ShieldCheck size={10} /> {L(lang, "헬스 데이터 검증", "Xác minh dữ liệu")}</Tag>
+          </div>
+          <div className="v">{num(steps, lang)} <small>/ {num(goal, lang)}</small></div>
+          <div className="bar"><i style={{ width: `${pct}%` }} /></div>
+          <p>{L(lang, "목표 달성 시 +10 HRP · +2 CP (검증형)", "Đạt mục tiêu: +10 HRP · +2 CP (đã xác minh)")}</p>
+        </div>
+        <button className="btn-sm" onClick={syncSteps} disabled={walkClaimed}>
+          {walkClaimed ? L(lang, "달성", "Đạt") : L(lang, "동기화", "Đồng bộ")}
+        </button>
+      </div>
+
+      {/* 셀프 체크 — CP 없음, 하루 1회·해제 불가, 합산 상한 적용 */}
+      {SELF_HABITS.map((h) => {
+        const done = h.id === "water" ? water >= h.goal : !!selfChecks[h.id];
+        return (
+          <div className={"hrow" + (done ? " done" : "")} key={h.id}>
+            <i className="ic">{h.emoji}</i>
+            <div className="bd">
+              <b>{pick(h.name, lang)}</b>
+              {h.id === "water" ? (
+                <>
+                  <div className="v">{water} <small>/ {L(lang, `${h.goal}잔`, `${h.goal} ly`)}</small></div>
+                  <div className="gauge">
+                    {Array.from({ length: h.goal }).map((_, i) => <i key={i} className={i < water ? "on" : ""} />)}
+                  </div>
+                </>
+              ) : (
+                <p>{pick(h.desc, lang)}</p>
+              )}
+              <p>{done ? L(lang, "오늘 완료 · 해제할 수 없어요", "Hoàn thành hôm nay · không thể bỏ") : `+${h.hrp} HRP`}</p>
+            </div>
+            {h.id === "water" ? (
+              <button className="btn-sm" onClick={() => toggleSelf("water")} disabled={done}>
+                {done ? L(lang, "완료", "Xong") : L(lang, "+1잔", "+1 ly")}
+              </button>
+            ) : (
+              <button className={"chk" + (done ? " on" : "")} onClick={() => toggleSelf(h.id)} disabled={done}>
+                <Check size={16} />
+              </button>
+            )}
+          </div>
+        );
+      })}
+
+      <Note>
+        {L(lang, `셀프 체크는 하루 1회 · 해제 불가이며, 하루 최대 ${selfCap} HRP까지 적립됩니다 (오늘 ${selfEarned}/${selfCap}).`, `Tự đánh dấu chỉ 1 lần/ngày · không thể bỏ, tối đa ${selfCap} HRP mỗi ngày (hôm nay ${selfEarned}/${selfCap}).`)}
+        {capped && L(lang, " 상한에 도달해 추가 적립은 없습니다.", " Đã đạt giới hạn, không tích lũy thêm.")}
+        {L(lang, " CP는 검증 가능한 활동에만 지급됩니다.", " CP chỉ dành cho hoạt động có thể xác minh.")}
+      </Note>
+
+      <h3 className="section">{L(lang, "이번 주 리포트", "Báo cáo tuần này")}</h3>
       <Card>
-        <h2>{L(lang, "🏃 30일 달리기", "🏃 Chạy bộ 30 ngày")}</h2>
-        <p>{L(lang, "12/30 완료 · 꾸준히 이어가고 있어요.", "Hoàn thành 12/30 · Bạn đang duy trì rất tốt.")}</p>
-        <div className="bar"><i style={{ width: "40%" }} /></div>
-        <em>+300 HRP</em>
+        <div className="wchart">
+          {week.map((n, i) => (
+            <div key={i}>
+              <span className="col">
+                <i className={i === 6 ? "today" : n >= 4 ? "hit" : ""} style={{ height: `${Math.max(6, (n / 5) * 100)}%` }} />
+              </span>
+              <span className={i === 6 ? "today" : ""}>{days[i]}</span>
+            </div>
+          ))}
+        </div>
+        <p>{L(lang, `이번 주 ${total}회 완료 · 주 4회 이상 달성 시 주간 보너스 +20 HRP`, `Tuần này ${total} lượt · đạt từ 4 lần/tuần: thưởng +20 HRP`)}</p>
       </Card>
-      <Card c="space">
-        <h2>🧘 Mindful Garden</h2>
-        <p>{L(lang, "도보 8분 · 오늘 19:30 명상 클래스", "Đi bộ 8 phút · Lớp thiền 19:30 hôm nay")}</p>
-        <Btn>{L(lang, "명상 예약하기", "Đặt lớp thiền")}</Btn>
-      </Card>
+
+      <div className="sechead">
+        <h3 className="section">{L(lang, "주변 명상 장소", "Địa điểm thiền gần bạn")}</h3>
+      </div>
+      {MEDI_PLACES.map((m) => (
+        <div className="srow" key={m.id}>
+          <span className="ph"><img src={m.img} alt="" /></span>
+          <div className="bd">
+            <b>{pick(m.name, lang)}</b>
+            <p>★ {num(m.rate, lang)} · {walk(m.walkMin, lang)} · {pick(m.desc, lang)}</p>
+            <span className="pr">{L(lang, `클래스 완료 시 +${m.hrp} HRP`, `Hoàn thành lớp: +${m.hrp} HRP`)}</span>
+          </div>
+          <button className="btn-sm" onClick={() => onBookClass(pick(m.name, lang))}>
+            {L(lang, "예약", "Đặt")}
+          </button>
+        </div>
+      ))}
+      <Note>
+        {L(lang, "온라인 명상에서 끝나지 않습니다 — 예약하면 지역 소비와 Verified Review로 이어집니다.", "Không dừng ở thiền online — đặt lớp sẽ dẫn tới tiêu dùng địa phương và Verified Review.")}
+      </Note>
     </>
   );
 }

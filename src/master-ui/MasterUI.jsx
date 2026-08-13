@@ -16,7 +16,7 @@ import Habit from "./screens/Habit.jsx";
 import Salon from "./screens/Salon.jsx";
 import My from "./screens/My.jsx";
 import { L, zoneName } from "./i18n.js";
-import { ZONES } from "./data.js";
+import { ZONES, SELF_HABITS } from "./data.js";
 import "./style.css";
 
 const TABS = [
@@ -30,6 +30,13 @@ const TABS = [
 /** 걷기 목표 · HRP 초기 잔액 — 데모 자리표시자 (기준 확정 전 임의 변경 금지 — CLAUDE.md §6) */
 const STEP_GOAL = 6000;
 const HRP_START = 125800;
+/** 걷기(검증형) 달성 보상 — 검증형만 CP를 받는다 (POLICY §5) */
+const WALK_HRP = 10;
+const WALK_CP = 2;
+/** 셀프 체크 일일 HRP 상한 (POLICY §5) — 합산이 이 값을 넘으면 추가 적립 없음 */
+const SELF_DAILY_CAP = 15;
+const WATER_GOAL = 8;
+const STREAK = 7; // 데모: 연속 달성일
 
 /* ── 온보딩 선택값 유지 (언어·생활권) — ?fresh=1 로 초기화하고 온보딩부터 다시 볼 수 있다 ── */
 const STORE_KEY = "m4u.master.v1";
@@ -62,9 +69,15 @@ export default function App() {
   const [tab, setTabState] = useState("home");
   const [sub, setSub] = useState(null); // Living 서브 화면: {name, ...params}
   const [steps] = useState(3200);
-  const [points, setPoints] = useState(HRP_START); // 예약 적립이 쌓이는 지갑 잔액
+  const [points, setPoints] = useState(HRP_START); // 예약·습관 적립이 쌓이는 지갑 잔액
   const [likes, setLikes] = useState([]);
   const [toastMsg, setToastMsg] = useState(null);
+  // 습관 상태 — 걷기는 검증형, 나머지는 셀프 체크(해제 불가)
+  const [stepsExtra, setStepsExtra] = useState(0);
+  const [walkClaimed, setWalkClaimed] = useState(false);
+  const [water, setWater] = useState(5);
+  const [selfChecks, setSelfChecks] = useState({});
+  const [selfEarned, setSelfEarned] = useState(0); // 오늘 셀프 체크로 적립한 HRP 합계
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -115,6 +128,51 @@ export default function App() {
     window.setTimeout(() => setToastMsg(null), 2200);
   };
   const toggleLike = (id) => setLikes((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  // ── 습관 (POLICY §5) ──
+  // 걷기 = 헬스 데이터 검증형 → HRP + CP, 상한 없음
+  // 그 외 = 셀프 체크 → HRP만, 하루 1회·해제 불가, 합산 15 HRP 상한
+  const totalSteps = steps + stepsExtra;
+  const syncSteps = () => {
+    const gained = 1200 + ((totalSteps % 7) + 1) * 120; // 데모: 동기화량 (난수 대신 결정적)
+    const next = totalSteps + gained;
+    setStepsExtra((x) => x + gained);
+    if (next >= STEP_GOAL && !walkClaimed) {
+      setWalkClaimed(true);
+      setPoints((p) => p + WALK_HRP);
+      toast(L(lang, `걷기 목표 달성! +${WALK_HRP} HRP · +${WALK_CP} CP`, `Đạt mục tiêu đi bộ! +${WALK_HRP} HRP · +${WALK_CP} CP`));
+    } else {
+      toast(L(lang, `걸음 동기화 · +${gained}보`, `Đồng bộ · +${gained} bước`));
+    }
+  };
+  /** 셀프 체크 적립 — 상한 초과분은 지급하지 않고 사유를 알린다 */
+  const earnSelf = (hrp, labelKo, labelVi) => {
+    const room = Math.max(0, SELF_DAILY_CAP - selfEarned);
+    const pay = Math.min(hrp, room);
+    if (pay > 0) {
+      setSelfEarned((e) => e + pay);
+      setPoints((p) => p + pay);
+      toast(L(lang, `${labelKo} 완료! +${pay} HRP`, `Hoàn thành ${labelVi}! +${pay} HRP`));
+    } else {
+      toast(L(lang, `${labelKo} 완료 · 오늘 셀프 적립 상한(${SELF_DAILY_CAP} HRP) 도달`, `Hoàn thành ${labelVi} · đã đạt giới hạn ${SELF_DAILY_CAP} HRP hôm nay`));
+    }
+  };
+  const toggleSelf = (id) => {
+    const h = SELF_HABITS.find((x) => x.id === id);
+    if (!h) return;
+    if (id === "water") {
+      if (water >= WATER_GOAL) return; // 완료 후 되돌릴 수 없다
+      const next = water + 1;
+      setWater(next);
+      if (next === WATER_GOAL) earnSelf(h.hrp, h.name.ko, h.name.vi);
+      return;
+    }
+    if (selfChecks[id]) return; // 하루 1회 · 해제 불가 (어뷰징 방지)
+    setSelfChecks((c) => ({ ...c, [id]: true }));
+    earnSelf(h.hrp, h.name.ko, h.name.vi);
+  };
+  const doneCount =
+    (walkClaimed ? 1 : 0) + (water >= WATER_GOAL ? 1 : 0) + Object.values(selfChecks).filter(Boolean).length;
   const confirmBooking = (b) => {
     setPoints((p) => p + b.point); // 적립은 검증 가능한 활동에만 (POLICY §3·§4)
     toast(L(lang, `예약 완료 · +${b.point} HRP · +${b.cp} CP`, `Đặt lịch xong · +${b.point} HRP · +${b.cp} CP`));
@@ -149,9 +207,17 @@ export default function App() {
     book: <Book lang={lang} venueId={sub?.venueId} serviceId={sub?.serviceId} onBack={closeSub} onDone={closeSub} confirmBooking={confirmBooking} />,
   };
   const screens = {
-    home: <Home lang={lang} zone={zone} steps={steps} goal={STEP_GOAL} points={points} go={setTab} />,
+    home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} />,
     living: <Living lang={lang} zone={zone} go={setTab} goSub={goSub} />,
-    habit: <Habit lang={lang} steps={steps} goal={STEP_GOAL} />,
+    habit: (
+      <Habit
+        lang={lang} steps={totalSteps} goal={STEP_GOAL} streak={STREAK}
+        walkClaimed={walkClaimed} syncSteps={syncSteps}
+        water={water} waterGoal={WATER_GOAL} selfChecks={selfChecks} toggleSelf={toggleSelf}
+        selfEarned={selfEarned} selfCap={SELF_DAILY_CAP} doneCount={doneCount}
+        onBookClass={(name) => toast(L(lang, `${name} 클래스 예약 완료 (데모)`, `Đã đặt lớp tại ${name} (demo)`))}
+      />
+    ),
     salon: <Salon lang={lang} />,
     my: <My lang={lang} zone={zone} points={points} onMenu={openReset} />,
   };
