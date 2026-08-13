@@ -44,7 +44,7 @@ export default function App() {
 
   const zone = zoneName(ZONES[zoneIdx], lang);
   const screens = {
-    home: <Home lang={lang} zone={zone} steps={steps} goal={STEP_GOAL} />,
+    home: <Home lang={lang} zone={zone} steps={steps} goal={STEP_GOAL} go={setTab} />,
     living: <Living lang={lang} zone={zone} />,
     habit: <Habit lang={lang} steps={steps} goal={STEP_GOAL} />,
     salon: <Salon lang={lang} />,

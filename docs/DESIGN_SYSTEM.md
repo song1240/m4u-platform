@@ -40,6 +40,7 @@
 | `<Head k title sub>` | 화면 상단 — forest 배경 + 골드 라벨 + 세리프 타이틀 |
 | `<Zone>` | MY ZONE 표시 pill |
 | `<Card c="...">` | 기본 카드 (radius 20, paper 배경, 은은한 그림자) |
+| `<Card onClick>` | 클릭 가능한 카드 — `button.card`로 렌더(시각 동일, 키보드 포커스 가능) |
 | `<Tile icon title sub>` | 4열 그리드 진입 타일 |
 | `<Btn>` | 주 CTA (forest, radius 12) — 화면당 주 CTA 1개 |
 | `.hero` | 좌 내용 + 우 세리프 큰 수치, 연그린 그라데이션 |
