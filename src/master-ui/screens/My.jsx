@@ -7,12 +7,13 @@ import { Card, Btn, Head } from "../components.jsx";
 import { L, num } from "../i18n.js";
 import "../style.css";
 
+// ready: 실제 동작하는 항목만 클릭을 받는다 (나머지는 H06 ⑥⑦에서 연결)
 const MENUS = [
   { id: "orders", ko: "예약 · 주문", vi: "Đặt chỗ · đơn hàng" },
   { id: "reviews", ko: "내 리뷰", vi: "Đánh giá của tôi" },
   { id: "coupons", ko: "쿠폰 · 혜택", vi: "Ưu đãi · phiếu giảm giá" },
-  { id: "zone", ko: "MY ZONE 설정", vi: "Cài đặt MY ZONE" },
-  { id: "lang", ko: "언어 · AI 통역", vi: "Ngôn ngữ · phiên dịch AI" },
+  { id: "zone", ko: "MY ZONE 설정", vi: "Cài đặt MY ZONE", ready: true },
+  { id: "lang", ko: "언어 · AI 통역", vi: "Ngôn ngữ · phiên dịch AI", ready: true },
 ];
 
 export default function My({ lang, zone, onMenu }) {
@@ -33,7 +34,7 @@ export default function My({ lang, zone, onMenu }) {
       </Card>
       <h3 className="section">MY</h3>
       {MENUS.map((m) => (
-        <button key={m.id} className="menu" onClick={() => onMenu && onMenu(m.id)}>
+        <button key={m.id} className="menu" onClick={m.ready && onMenu ? () => onMenu(m.id) : undefined}>
           {L(lang, m.ko, m.vi)}
           <ChevronRight size={16} />
         </button>

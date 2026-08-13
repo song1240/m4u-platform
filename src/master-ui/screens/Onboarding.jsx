@@ -2,6 +2,9 @@
  * 온보딩 3화면 — ① 언어 선택 → ② 소개 → ③ MY ZONE 선택 (H06 이식 ①)
  * 디자인: 마스터 UI 다크 캔버스 패턴 (docs/DESIGN_SYSTEM.md §4.1) — 신규 인라인 스타일 없음
  * 기능·정책: v10 src/App.jsx 의 LangSelect / Onboarding / ZoneSelectScreen
+ *
+ * LangScreen·ZoneScreen은 MY 탭의 "언어"·"MY ZONE 설정" 재설정 화면으로도 재사용한다
+ * (step={null} → 진행 점 숨김, reset → CTA 문구 변경).
  */
 import React from "react";
 import { MapPin, Check, ChevronRight, ChevronLeft, Building2, CalendarCheck, Star } from "lucide-react";
@@ -17,7 +20,7 @@ const VALUES = [
   { icon: <Star size={17} />, ko: ["믿을 수 있는 리뷰", "실제 이용자만 작성"], vi: ["Đánh giá tin cậy", "Chỉ người đã dùng mới viết"] },
 ];
 
-/* ── 공통 셸 (하단 네비 없음 · 3단계 진행 표시) ── */
+/* ── 공통 셸 (하단 네비 없음 · step이 있으면 3단계 진행 표시) ── */
 const Frame = ({ step, onBack, children }) => (
   <div className="shell solo">
     <div className="onboard">
@@ -29,11 +32,13 @@ const Frame = ({ step, onBack, children }) => (
         ) : (
           <span />
         )}
-        <div className="dots">
-          {[0, 1, 2].map((i) => (
-            <i key={i} className={i === step ? "on" : ""} />
-          ))}
-        </div>
+        {step !== null && (
+          <div className="dots">
+            {[0, 1, 2].map((i) => (
+              <i key={i} className={i === step ? "on" : ""} />
+            ))}
+          </div>
+        )}
       </div>
       {children}
     </div>
@@ -48,21 +53,21 @@ const Brandmark = () => (
 );
 
 /* ── ① 언어 선택 — 선택 전이므로 두 언어를 함께 노출 ── */
-function LangScreen({ onPick }) {
+export function LangScreen({ onPick, onBack, current, step = 0 }) {
   return (
-    <Frame step={0}>
+    <Frame step={step} onBack={onBack}>
       <div className="mid">
         <Brandmark />
         <p className="center">언어를 선택해 주세요 · Vui lòng chọn ngôn ngữ</p>
         <div className="opts">
           {LANGS.map((l) => (
-            <button key={l.id} className="opt" onClick={() => onPick(l.id)}>
+            <button key={l.id} className={"opt" + (current === l.id ? " on" : "")} onClick={() => onPick(l.id)}>
               <span className="flag">{l.flag}</span>
               <div>
                 <b>{l.name}</b>
                 <small>{l.desc}</small>
               </div>
-              <ChevronRight size={16} />
+              {current === l.id ? <Check size={16} className="ck" /> : <ChevronRight size={16} />}
             </button>
           ))}
         </div>
@@ -101,9 +106,9 @@ function IntroScreen({ lang, onNext, onBack }) {
 }
 
 /* ── ③ MY ZONE 선택 — 생활권이 이후 모든 화면의 기준이 된다 ── */
-function ZoneScreen({ lang, zoneIdx, setZoneIdx, onDone, onBack }) {
+export function ZoneScreen({ lang, zoneIdx, setZoneIdx, onDone, onBack, reset = false, step = 2 }) {
   return (
-    <Frame step={2} onBack={onBack}>
+    <Frame step={step} onBack={onBack}>
       <div className="mid">
         <em>MY ZONE</em>
         <h1>{L(lang, <>지금 생활하는<br />지역을 선택해 주세요</>, <>Chọn khu vực bạn<br />đang sinh sống</>)}</h1>
@@ -122,7 +127,11 @@ function ZoneScreen({ lang, zoneIdx, setZoneIdx, onDone, onBack }) {
         </div>
       </div>
       <div className="obfoot">
-        <Btn c="gold" onClick={onDone}>{L(lang, "이 지역에서 시작하기", "Bắt đầu tại khu vực này")}</Btn>
+        <Btn c="gold" onClick={onDone}>
+          {reset
+            ? L(lang, "이 지역으로 변경", "Đổi sang khu vực này")
+            : L(lang, "이 지역에서 시작하기", "Bắt đầu tại khu vực này")}
+        </Btn>
         <p className="center">{L(lang, "MY 탭에서 언제든 변경할 수 있어요", "Có thể đổi bất cứ lúc nào trong tab MY")}</p>
       </div>
     </Frame>
