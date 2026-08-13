@@ -14,6 +14,7 @@ import Venue from "./screens/Venue.jsx";
 import Book from "./screens/Book.jsx";
 import Habit from "./screens/Habit.jsx";
 import Salon from "./screens/Salon.jsx";
+import SkinProfile from "./screens/SkinProfile.jsx";
 import My from "./screens/My.jsx";
 import { L, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS } from "./data.js";
@@ -205,6 +206,7 @@ export default function App() {
     cat: <Category lang={lang} catId={sub?.catId} onBack={closeSub} goSub={goSub} toast={toast} />,
     venue: <Venue lang={lang} venueId={sub?.venueId} onBack={closeSub} goSub={goSub} liked={likes.includes(sub?.venueId)} toggleLike={toggleLike} />,
     book: <Book lang={lang} venueId={sub?.venueId} serviceId={sub?.serviceId} onBack={closeSub} onDone={closeSub} confirmBooking={confirmBooking} />,
+    skin: <SkinProfile lang={lang} onBack={closeSub} goSub={goSub} />,
   };
   const screens = {
     home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} />,
@@ -218,7 +220,7 @@ export default function App() {
         onBookClass={(name) => toast(L(lang, `${name} 클래스 예약 완료 (데모)`, `Đã đặt lớp tại ${name} (demo)`))}
       />
     ),
-    salon: <Salon lang={lang} />,
+    salon: <Salon lang={lang} goSub={goSub} />,
     my: <My lang={lang} zone={zone} points={points} onMenu={openReset} />,
   };
   return (

@@ -215,3 +215,52 @@ export const WEEKDAYS = {
   ko: ["월", "화", "수", "목", "금", "토", "오늘"],
   vi: ["T2", "T3", "T4", "T5", "T6", "T7", "Hôm nay"],
 };
+
+/**
+ * 뷰티 프로필 설문 — 의료 진단이 아니라 서비스 추천용이다 (POLICY §5).
+ * 의료 진단을 연상시키는 표현은 화면·데이터 어디에도 쓰지 않는다 (verify 금지어 스캔 대상).
+ */
+export const SKIN_QS = [
+  {
+    id: "q1",
+    q: { ko: "세안 후 피부 상태는 어떤가요?", vi: "Sau khi rửa mặt, da bạn thế nào?" },
+    opts: [
+      { id: "dry", ko: "당김이 심해요", vi: "Rất căng khô" },
+      { id: "tzone", ko: "T존만 번들거려요", vi: "Chỉ vùng chữ T bóng dầu" },
+      { id: "oily", ko: "전체적으로 번들거려요", vi: "Bóng dầu toàn mặt" },
+    ],
+  },
+  {
+    id: "q2",
+    q: { ko: "트러블은 얼마나 자주 생기나요?", vi: "Bạn có hay nổi mụn không?" },
+    opts: [
+      { id: "rare", ko: "거의 없어요", vi: "Hầu như không" },
+      { id: "some", ko: "가끔 생겨요", vi: "Thỉnh thoảng" },
+      { id: "often", ko: "자주 생겨요", vi: "Thường xuyên" },
+    ],
+  },
+  {
+    id: "q3",
+    q: { ko: "지금 가장 관심 있는 케어는?", vi: "Bạn quan tâm chăm sóc gì nhất?" },
+    opts: [
+      { id: "hydra", ko: "수분 · 진정", vi: "Cấp ẩm · dịu da" },
+      { id: "tone", ko: "미백 · 톤업", vi: "Sáng da" },
+      { id: "firm", ko: "탄력 · 안티에이징", vi: "Săn chắc · chống lão hóa" },
+    ],
+  },
+];
+
+/** 프로필 결과 라벨 — 수치는 응답으로 계산하되 전부 데모 자리표시자 (CLAUDE.md §6) */
+export const SKIN_TYPES = {
+  dry: { ko: "건성 경향 · 수분 보강 필요", vi: "Da khô · cần bổ sung độ ẩm" },
+  tzone: { ko: "복합성 경향 · 수분 보강 필요", vi: "Da hỗn hợp · cần bổ sung độ ẩm" },
+  oily: { ko: "지성 경향 · 유분 밸런스 필요", vi: "Da dầu · cần cân bằng dầu" },
+};
+
+/** Salon 4서비스 퀵 진입 — v1(M4U Salon & Spa)의 서비스에 대응 */
+export const SALON_QUICK = [
+  { id: "s1", emoji: "💇", name: { ko: "헤어", vi: "Tóc" } },
+  { id: "s4", emoji: "💅", name: { ko: "네일", vi: "Nail" } },
+  { id: "s2", emoji: "🧴", name: { ko: "스킨케어", vi: "Chăm sóc da" } },
+  { id: "s3", emoji: "💆", name: { ko: "마사지", vi: "Massage" } },
+];

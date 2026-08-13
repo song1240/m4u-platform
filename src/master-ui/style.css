@@ -39,3 +39,11 @@ main:has(.ctabar){padding-bottom:96px}
 .chk{width:40px;height:40px;flex:none;border:1px solid var(--line);border-radius:50%;background:var(--p);display:grid;place-items:center;color:transparent}.chk.on{background:var(--g2);border-color:var(--g2);color:white}
 .gauge{display:flex;gap:5px;margin-top:9px}.gauge i{flex:1;height:8px;border-radius:99px;background:#e6e0d6}.gauge i.on{background:var(--g2)}
 .wchart{display:flex;gap:8px;align-items:flex-end;height:76px}.wchart>div{flex:1;text-align:center}.wchart .col{height:54px;display:flex;align-items:flex-end}.wchart .col i{display:block;width:100%;border-radius:6px;background:#cfc8b8}.wchart .col i.hit{background:var(--g2)}.wchart .col i.today{background:var(--gold)}.wchart span{display:block;margin-top:6px;font-size:11px;color:var(--mut)}.wchart span.today{color:var(--gold);font-weight:800}
+/* ── Salon 패턴 — 뷰티 프로필 (DESIGN_SYSTEM §4.5) ── */
+.card.accent{border:1.5px solid var(--gold)}
+.chips.col{flex-direction:column;align-items:stretch;overflow:visible;margin:0 0 10px;padding:0}.chips.col .chip{width:100%;text-align:left;padding:0 14px;display:flex;align-items:center}
+.metrics{display:flex;gap:12px;margin-top:12px}.metrics>div{flex:1}.metrics .lb{display:flex;justify-content:space-between;font-size:11px}.metrics .lb b{font-weight:800}
+.rvcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}.rvcard .who{display:flex;gap:5px;align-items:center;font-size:12.5px;font-weight:700}.rvcard .rt{font-size:12px;font-weight:700}.rvcard p{margin:7px 0 0;font-size:12px;line-height:1.6;color:var(--ink)}
+.qtx{display:block;font-size:13.5px;line-height:1.45;margin-bottom:10px}.hint{text-align:center;font-size:11px;color:var(--mut);padding:18px 20px;line-height:1.6}
+.prof{display:flex;gap:11px;align-items:center}.prof>i{width:40px;height:40px;flex:none;border-radius:13px;background:#c6a15b26;color:var(--gold);display:grid;place-items:center}.prof .bd{flex:1;min-width:0}.prof b{display:block;font-size:13.5px}.prof p{margin:3px 0 0;font-size:11px;color:var(--mut);line-height:1.45}.prof .chev{flex:none;color:var(--mut)}
+.bene .tl{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
