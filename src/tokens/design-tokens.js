@@ -30,7 +30,7 @@ export const radius = { card: 20, tile: 17, btn: 12, pill: 99, shell: 32, hero: 
 
 export const typography = {
   body: 'Inter, sans-serif',
-  display: '"DM Serif Display", serif', // 헤드라인·큰 수치 전용 (weight 400 고정)
+  display: '"DM Serif Display", "Noto Serif KR", serif', // 헤드라인·큰 수치 전용 (weight 400 고정, 한글은 Noto Serif KR 폴백)
   h1: { size: 30, family: "display" },
   sectionTitle: { size: 19, family: "display" },
   cardTitle: { size: 17, weight: 700 },
