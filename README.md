@@ -12,7 +12,7 @@
 | 경로 | 설명 |
 |---|---|
 | `src/master-ui/` | **공식 디자인 기준** — MASTER UI 5화면 (기본 화면 `/`) |
-| `src/App.jsx` | v10 기능 프로토타입 — 기능 참조용, `/#legacy` 로 접속 (이전 디자인) |
+| `src/App.jsx` | **DEPRECATED** — v10 기능 프로토타입(이전 디자인). H06 이식 완료로 참조 전용, `/#legacy`. 신규 작업 금지 |
 | `src/admin/Admin.jsx` | 본사 운영자 Admin Web — `/#admin` 으로 접속 |
 | `src/tokens/design-tokens.js` | 디자인 토큰 (컬러·타이포·간격) |
 | `docs/DESIGN_SYSTEM.md` | 디자인 시스템 문서 |

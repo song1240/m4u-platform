@@ -308,3 +308,57 @@ export const CP_RULES = [
   { id: "stay", val: "+5 CP", ko: "스테이 예약 완료", vi: "Hoàn tất đặt lưu trú" },
   { id: "partner", val: "+50 CP", ko: "파트너 등록 승인", vi: "Đăng ký đối tác được duyệt" },
 ];
+
+/** 파트너 역할 — 앱 분리 없이 하나의 계정에서 전환한다 (POLICY §8) */
+export const PARTNER_ROLES = [
+  { id: "local", emoji: "🏪", name: { ko: "로컬 비즈니스", vi: "Kinh doanh địa phương" } },
+  { id: "salon", emoji: "💇", name: { ko: "SALON", vi: "SALON" } },
+  { id: "mobility", emoji: "🛺", name: { ko: "MOBILITY", vi: "MOBILITY" } },
+  { id: "host", emoji: "🏨", name: { ko: "HOST", vi: "HOST" } },
+];
+
+/** 등록 필수 확인 3종 — Admin 승인 전 사업자가 직접 확인한다 (POLICY §8) */
+export const CHECK_ITEMS = [
+  { id: "biz", label: { ko: "사업자 등록 확인", vi: "Xác nhận đăng ký kinh doanh" }, desc: { ko: "사업자등록증 또는 개인사업 신고 서류", vi: "Giấy đăng ký kinh doanh hoặc hộ kinh doanh cá thể" } },
+  { id: "loc", label: { ko: "위치 확인", vi: "Xác nhận vị trí" }, desc: { ko: "실제 영업 위치 · 지도 검증", vi: "Vị trí kinh doanh thực tế · xác minh bản đồ" } },
+  { id: "doc", label: { ko: "업종별 필수 서류", vi: "Hồ sơ bắt buộc theo ngành" }, desc: { ko: "위생 · 자격 · 인허가 (해당 업종)", vi: "Vệ sinh · chứng chỉ · giấy phép (nếu có)" } },
+];
+
+/** 파트너 등록 승인 시 CP (POLICY §8, 데모 자리표시자) */
+export const PARTNER_CP = 50;
+
+/**
+ * AI 구조화 규칙 — 자유 서술을 업종·가격·예약형태로 정리한다 (데모).
+ * 실서비스는 n8n + LLM으로 대체 예정.
+ */
+export const DRAFT_RULES = [
+  { id: "beauty", re: /미용|헤어|네일|살롱|스파|salon|tóc|nail/i, cat: "beauty", price: { ko: "시술별 정찰제", vi: "Giá cố định theo dịch vụ" }, booking: { ko: "시간제 예약", vi: "Đặt lịch theo giờ" } },
+  { id: "eat", re: /식당|음식|쌀국수|분식|밥|요리|반미|국수|그릴|nhà hàng|phở|quán ăn/i, cat: "eat", price: { ko: "메뉴판 기준", vi: "Theo thực đơn" }, booking: { ko: "테이블 예약 + 픽업", vi: "Đặt bàn + mang đi" } },
+  { id: "cafe", re: /카페|커피|디저트|베이커리|cà phê|cafe|bánh/i, cat: "cafe", price: { ko: "메뉴판 기준", vi: "Theo thực đơn" }, booking: { ko: "픽업 예약", vi: "Đặt mang đi" } },
+  { id: "move", re: /카트|이동|배달|운송|픽업|차량|렌트|xe|giao hàng/i, cat: "move", price: { ko: "거리 비례 요금", vi: "Tính theo khoảng cách" }, booking: { ko: "호출형 (실시간 배차)", vi: "Gọi xe (điều phối thời gian thực)" } },
+  { id: "shop", re: /마켓|마트|쇼핑|잡화|스토어|chợ|siêu thị|cửa hàng/i, cat: "shop", price: { ko: "상품별 개별 가격", vi: "Giá theo từng sản phẩm" }, booking: { ko: "주문 + 배달", vi: "Đặt hàng + giao hàng" } },
+];
+export const DRAFT_FALLBACK = { cat: "life", price: { ko: "상품별 개별 가격", vi: "Giá theo từng sản phẩm" }, booking: { ko: "방문형 (예약 불필요)", vi: "Tại chỗ (không cần đặt trước)" } };
+
+/**
+ * Contributor Center (POLICY §10) — 모든 파트너는 Contributor다.
+ * 기여점수는 Consumer First Ranking·검색 품질에 **절대 반영하지 않는다**(랭킹 방화벽).
+ * 보상은 검증된 행동(가입 → 첫 실제 이용 → Verified Review)에만, 가입 후 90일 내까지. 전부 데모 수치.
+ */
+export const CONTRIB = { scans: 482, newUsers: 126, firstUse: 83, reviews: 61, score: 872, benefit: 186000, days: 90 };
+export const CONTRIB_QR = {
+  local: [{ id: "counter", label: "COUNTER" }, { id: "table", label: "TABLE" }],
+  salon: [{ id: "mirror", label: "MIRROR" }, { id: "counter", label: "COUNTER" }],
+  mobility: [{ id: "vehicle", label: "VEHICLE" }],
+  host: [{ id: "room", label: "ROOM A-1208" }, { id: "lobby", label: "LOBBY" }],
+};
+
+/** HOST 정산 — 투숙객 개별 결제 내역은 노출하지 않고 카테고리 집계만 보여준다 (POLICY §7-3) */
+export const HOST_TOP5 = [
+  { id: "h1", emoji: "🍽", gmv: 12400000, name: { ko: "레스토랑", vi: "Nhà hàng" } },
+  { id: "h2", emoji: "💇", gmv: 9800000, name: { ko: "살롱", vi: "Salon" } },
+  { id: "h3", emoji: "🛺", gmv: 7200000, name: { ko: "전기카트", vi: "Xe điện" } },
+  { id: "h4", emoji: "💆", gmv: 6900000, name: { ko: "마사지", vi: "Massage" } },
+  { id: "h5", emoji: "✈️", gmv: 6500000, name: { ko: "공항 이동", vi: "Đưa đón sân bay" } },
+];
+export const HOST_SUMMARY = { gmv: 42800000, reward: 856000, rate: 2, rooms: 12, guests: 34 };

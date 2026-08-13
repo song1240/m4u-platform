@@ -18,9 +18,12 @@ import SkinProfile from "./screens/SkinProfile.jsx";
 import Wallet from "./screens/Wallet.jsx";
 import Vote from "./screens/Vote.jsx";
 import PointLog from "./screens/PointLog.jsx";
+import Bookings from "./screens/Bookings.jsx";
+import Partner from "./screens/Partner.jsx";
+import MyBusiness from "./screens/MyBusiness.jsx";
 import My from "./screens/My.jsx";
 import { L, zoneName } from "./i18n.js";
-import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS } from "./data.js";
+import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP } from "./data.js";
 import "./style.css";
 
 const TABS = [
@@ -92,6 +95,10 @@ export default function App() {
   const [joinedRooms, setJoinedRooms] = useState([]);
   const [coupons, setCoupons] = useState(COUPONS);
   const [myVotes, setMyVotes] = useState({});
+  const [bookings, setBookings] = useState([]);
+  // 파트너 모드 — 앱 분리 없이 같은 계정에서 전환한다 (POLICY §8)
+  const [bizRole, setBizRole] = useState("local");
+  const [partnerActive, setPartnerActive] = useState(false);
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -202,6 +209,7 @@ export default function App() {
     setCpLog((x) => [{ id: "c" + x.length + amount + label.length, label, amount, when: now() }, ...x]);
   };
   const confirmBooking = (b) => {
+    setBookings((x) => [{ id: "b" + x.length + b.point, ...b }, ...x]);
     // 적립은 검증 가능한 활동에만 (POLICY §3·§4)
     addHrp(b.point, L(lang, `예약 · ${b.name}`, `Đặt lịch · ${b.name}`));
     addCp(b.cp, L(lang, "예약 이행 (노쇼 없음)", "Hoàn thành đặt lịch (không hủy)"));
@@ -214,6 +222,14 @@ export default function App() {
     addHrp(t.hrp, L(lang, "FIVE 공동구매 참여", "Tham gia mua chung FIVE"));
     addCp(FIVE_CP, L(lang, "FIVE 공동구매 참여", "Tham gia mua chung FIVE"));
     toast(L(lang, `참여 완료 · +${t.hrp} HRP · +${FIVE_CP} CP`, `Tham gia xong · +${t.hrp} HRP · +${FIVE_CP} CP`));
+  };
+  // 승인 시뮬레이션 — 실서비스는 Admin 승인 후 MY BUSINESS가 생성된다 (POLICY §8)
+  const approvePartner = (role) => {
+    setBizRole(role);
+    setPartnerActive(true);
+    addCp(PARTNER_CP, L(lang, "파트너 등록 승인", "Đăng ký đối tác được duyệt"));
+    toast(L(lang, `파트너 승인 · +${PARTNER_CP} CP · MY BUSINESS 생성`, `Duyệt đối tác · +${PARTNER_CP} CP · đã tạo MY BUSINESS`));
+    goSub("biz");
   };
   const useCoupon = (id) => {
     setCoupons((cs) => cs.map((c) => (c.id === id ? { ...c, used: true } : c)));
@@ -256,6 +272,9 @@ export default function App() {
     wallet: <Wallet lang={lang} points={points} cp={cp} joined={joinedRooms} joinRoom={joinRoom} coupons={coupons} useCoupon={useCoupon} openVotes={PROPOSALS.filter((p) => p.status === "open").length} onBack={closeSub} goSub={goSub} />,
     vote: <Vote lang={lang} cp={cp} myVotes={myVotes} castVote={castVote} onBack={closeSub} />,
     log: <PointLog lang={lang} kind={sub?.kind} points={points} cp={cp} txs={txs} cpLog={cpLog} onBack={closeSub} />,
+    bookings: <Bookings lang={lang} bookings={bookings} onBack={closeSub} />,
+    partner: <Partner lang={lang} onBack={closeSub} onApproved={approvePartner} />,
+    biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} />,
   };
   const screens = {
     home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} />,
@@ -270,7 +289,14 @@ export default function App() {
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
-    my: <My lang={lang} zone={zone} points={points} cp={cp} onMenu={openReset} onWallet={() => goSub("wallet")} />,
+    my: (
+      <My
+        lang={lang} zone={zone} points={points} cp={cp} bookings={bookings} coupons={coupons}
+        openVotes={PROPOSALS.filter((p) => p.status === "open").length}
+        go={goSub} onMenu={openReset} onWallet={() => goSub("wallet")}
+        partnerActive={partnerActive} onPartner={() => goSub(partnerActive ? "biz" : "partner")}
+      />
+    ),
   };
   return (
     <div className="shell">
