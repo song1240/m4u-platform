@@ -5,10 +5,13 @@
  * 독자적 재디자인 금지 (docs/DESIGN_SYSTEM.md).
  */
 import React, { useState, useEffect } from "react";
-import { Home as HomeIcon, Building2, Activity, Sparkles, User } from "lucide-react";
+import { Home as HomeIcon, Building2, Activity, Sparkles, User, Check } from "lucide-react";
 import Onboarding, { LangScreen, ZoneScreen } from "./screens/Onboarding.jsx";
 import Home from "./screens/Home.jsx";
 import Living from "./screens/Living.jsx";
+import Category from "./screens/Category.jsx";
+import Venue from "./screens/Venue.jsx";
+import Book from "./screens/Book.jsx";
 import Habit from "./screens/Habit.jsx";
 import Salon from "./screens/Salon.jsx";
 import My from "./screens/My.jsx";
@@ -24,8 +27,9 @@ const TABS = [
   { id: "my", icon: User, ko: "MY", vi: "MY" },
 ];
 
-/** 걷기 목표 — 데모 자리표시자 (v10은 10,000. 기준 확정 전 임의 변경 금지 — CLAUDE.md §6) */
+/** 걷기 목표 · HRP 초기 잔액 — 데모 자리표시자 (기준 확정 전 임의 변경 금지 — CLAUDE.md §6) */
 const STEP_GOAL = 6000;
+const HRP_START = 125800;
 
 /* ── 온보딩 선택값 유지 (언어·생활권) — ?fresh=1 로 초기화하고 온보딩부터 다시 볼 수 있다 ── */
 const STORE_KEY = "m4u.master.v1";
@@ -55,8 +59,12 @@ export default function App() {
   const [zoneIdx, setZoneIdx] = useState(saved?.zoneIdx ?? 0);
   const [overlay, setOverlay] = useState(null); // MY에서 여는 재설정 화면: "lang" | "zone"
   const [zoneDraft, setZoneDraft] = useState(saved?.zoneIdx ?? 0); // 재설정 중 임시 선택(뒤로가기 = 취소)
-  const [tab, setTab] = useState("home");
+  const [tab, setTabState] = useState("home");
+  const [sub, setSub] = useState(null); // Living 서브 화면: {name, ...params}
   const [steps] = useState(3200);
+  const [points, setPoints] = useState(HRP_START); // 예약 적립이 쌓이는 지갑 잔액
+  const [likes, setLikes] = useState([]);
+  const [toastMsg, setToastMsg] = useState(null);
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -70,23 +78,47 @@ export default function App() {
 
   // 브라우저 뒤로가기 = 온보딩 이전 단계 / 재설정 화면 닫기
   useEffect(() => {
-    window.history.replaceState({ m4u: { stage: saved?.onboarded ? "app" : "lang", overlay: null } }, "");
+    window.history.replaceState({ m4u: { stage: saved?.onboarded ? "app" : "lang", overlay: null, sub: null } }, "");
     const onPop = (e) => {
       const s = e.state?.m4u;
       if (!s) return;
       setStage(s.stage);
       setOverlay(s.overlay ?? null);
+      setSub(s.sub ?? null);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [saved]);
 
   const go = (nextStage, nextOverlay = null) => {
-    window.history.pushState({ m4u: { stage: nextStage, overlay: nextOverlay } }, "");
+    window.history.pushState({ m4u: { stage: nextStage, overlay: nextOverlay, sub: null } }, "");
     setStage(nextStage);
     setOverlay(nextOverlay);
+    setSub(null);
   };
   const closeOverlay = () => window.history.back(); // 뒤로가기와 같은 경로로 닫는다
+
+  // 서브 화면(카테고리·매장·예약)은 히스토리에 쌓아 브라우저 뒤로가기로 닫힌다
+  const goSub = (name, params = {}) => {
+    const next = { name, ...params };
+    window.history.pushState({ m4u: { stage: "app", overlay: null, sub: next } }, "");
+    setSub(next);
+  };
+  const closeSub = () => window.history.back();
+  // 탭 전환은 열린 서브 화면을 닫는다 (v10 동작 유지)
+  const setTab = (id) => {
+    if (sub) window.history.back();
+    setTabState(id);
+  };
+  const toast = (msg) => {
+    setToastMsg(msg);
+    window.setTimeout(() => setToastMsg(null), 2200);
+  };
+  const toggleLike = (id) => setLikes((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const confirmBooking = (b) => {
+    setPoints((p) => p + b.point); // 적립은 검증 가능한 활동에만 (POLICY §3·§4)
+    toast(L(lang, `예약 완료 · +${b.point} HRP · +${b.cp} CP`, `Đặt lịch xong · +${b.point} HRP · +${b.cp} CP`));
+  };
 
   if (stage !== "app")
     return <Onboarding stage={stage} setStage={go} lang={lang} setLang={setLang} zoneIdx={zoneIdx} setZoneIdx={setZoneIdx} onDone={() => go("app")} />;
@@ -111,16 +143,22 @@ export default function App() {
     if (id === "zone") setZoneDraft(zoneIdx);
     go("app", id);
   };
+  const subScreens = {
+    cat: <Category lang={lang} catId={sub?.catId} onBack={closeSub} goSub={goSub} toast={toast} />,
+    venue: <Venue lang={lang} venueId={sub?.venueId} onBack={closeSub} goSub={goSub} liked={likes.includes(sub?.venueId)} toggleLike={toggleLike} />,
+    book: <Book lang={lang} venueId={sub?.venueId} serviceId={sub?.serviceId} onBack={closeSub} onDone={closeSub} confirmBooking={confirmBooking} />,
+  };
   const screens = {
-    home: <Home lang={lang} zone={zone} steps={steps} goal={STEP_GOAL} go={setTab} />,
-    living: <Living lang={lang} zone={zone} />,
+    home: <Home lang={lang} zone={zone} steps={steps} goal={STEP_GOAL} points={points} go={setTab} />,
+    living: <Living lang={lang} zone={zone} go={setTab} goSub={goSub} />,
     habit: <Habit lang={lang} steps={steps} goal={STEP_GOAL} />,
     salon: <Salon lang={lang} />,
-    my: <My lang={lang} zone={zone} onMenu={openReset} />,
+    my: <My lang={lang} zone={zone} points={points} onMenu={openReset} />,
   };
   return (
     <div className="shell">
-      <main>{screens[tab]}</main>
+      <main>{sub ? subScreens[sub.name] : screens[tab]}</main>
+      {toastMsg && <div className="toast"><Check size={15} /> {toastMsg}</div>}
       <nav>
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>

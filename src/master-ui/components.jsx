@@ -3,7 +3,7 @@
  * 독자적 재디자인·인라인 스타일 금지. 새 패턴은 DESIGN_SYSTEM.md → style.css → 이 파일 순서로 추가.
  */
 import React from "react";
-import { MapPin, ChevronRight } from "lucide-react";
+import { MapPin, ChevronRight, ChevronLeft, ShieldCheck, X } from "lucide-react";
 import "./style.css";
 
 /** onClick을 주면 클릭 가능한 카드(button)로 렌더 — 시각은 동일 (DESIGN_SYSTEM §4) */
@@ -42,4 +42,61 @@ export const Tile = ({ icon, title, sub, onClick }) => (
     <b>{title}</b>
     <span>{sub}</span>
   </button>
+);
+
+/* ── Living 패턴 공용 (DESIGN_SYSTEM §4.3) ── */
+
+/** 서브 화면 상단 바 — 뒤로 + 제목 */
+export const SubHead = ({ title, onBack }) => (
+  <div className="subhead">
+    <button className="bk" onClick={onBack}><ChevronLeft size={20} /></button>
+    <b>{title}</b>
+  </div>
+);
+
+/** 뱃지 — kind: rank | new | ok | st */
+export const Tag = ({ kind = "ok", children }) => <span className={"tag " + kind}>{children}</span>;
+
+/** 정책 고지 카드 — 광고비 미반영·Verified 조건 등 상시 노출 */
+export const Note = ({ children }) => (
+  <div className="note">
+    <ShieldCheck size={17} />
+    <p>{children}</p>
+  </div>
+);
+
+/** 빈 상태 — "준비 중" 안내 (특정 파트너 홍보 금지, POLICY §1) */
+export const Empty = ({ icon, children }) => (
+  <div className="empty">
+    {icon && <i>{icon}</i>}
+    {children}
+  </div>
+);
+
+/** 하단 고정 CTA 바 */
+export const CtaBar = ({ children }) => <div className="ctabar">{children}</div>;
+
+/** 확인 바텀시트 */
+export const Sheet = ({ title, onClose, children }) => (
+  <div className="sheetbd" onClick={onClose}>
+    <div className="sheet" onClick={(e) => e.stopPropagation()}>
+      <div className="sheet-hd">
+        <b>{title}</b>
+        <button onClick={onClose}><X size={18} /></button>
+      </div>
+      {children}
+    </div>
+  </div>
+);
+
+/** 명세행 — 결제·적립 내역 */
+export const Spec = ({ rows }) => (
+  <div className="spec">
+    {rows.map((r) => (
+      <div key={r.k} className={"r" + (r.total ? " total" : "")}>
+        <span>{r.k}</span>
+        {r.earn ? <b className="earn">{r.v}</b> : <b>{r.v}</b>}
+      </div>
+    ))}
+  </div>
 );

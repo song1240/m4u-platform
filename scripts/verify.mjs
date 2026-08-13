@@ -49,7 +49,7 @@ const files = [];
 // Admin은 한국어 전용(내부 도구)이므로 제외
 // master-ui 전 화면 L() 적용 완료 — 예외 없음 (예외를 다시 늘리지 말 것)
 const I18N_EXEMPT = [/^src\/admin\//, /design-tokens/, /main\.jsx$/];
-const WRAPPERS = /\bL\(|catLabel\(|venueName\(|prodName\(|zoneName\(|pickLabel\(/;
+const WRAPPERS = /\bL\(|catLabel\(|venueName\(|prodName\(|zoneName\(|pickLabel\(|\bpick\(|\bwalk\(/;
 const VIET = /[ăâđêơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵĐ]/;
 const DATA_LINE = /^\s*(id:|[a-zA-Z]+Vi:|name:|desc:|title:|label:|product:|policy:|address:|who:|text:|size:|consist:|brand:|cat:|walk:|open:|resp:|greet|search:|popular:|ai[A-Z]|ko:|vi:|q:|opts:|home:|living:|stay:|booking:|order:|habit:|salon:|wallet:|my:)|^\s*\[?"|^\s*\{ (ko|id|q):/;
 const KNOWN_OK = /일월화수목금토|WEEKDAYS_KO|const CATS|CAT_VI|SELF_HABITS|MEDI_PLACES|SALON_BOOKINGS|HOST_TOP5|SKIN_QS/;

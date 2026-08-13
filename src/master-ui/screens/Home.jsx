@@ -28,7 +28,7 @@ const PLACES = [
   { img: IMG.stay, name: "Grand Park Residence", rate: 4.7, walk: 9, reward: 5 },
 ];
 
-export default function Home({ lang, zone, steps, goal, go }) {
+export default function Home({ lang, zone, steps, goal, points, go }) {
   const left = Math.max(0, goal - steps);
   const pct = Math.min(100, Math.round((steps / goal) * 100));
   return (
@@ -46,7 +46,7 @@ export default function Home({ lang, zone, steps, goal, go }) {
         <div className="hrpchip">
           <i>M</i>
           <div>
-            <b>{num(125800, lang)}</b>
+            <b>{num(points, lang)}</b>
             <span>HRP</span>
           </div>
         </div>
