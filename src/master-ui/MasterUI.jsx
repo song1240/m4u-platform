@@ -1,18 +1,66 @@
 /**
- * M4U MASTER UI — 공식 디자인 기준 (5개 마스터 화면)
+ * M4U MASTER UI — 공식 디자인 기준 (셸 + 앱 상태)
  * Forest #073B2B · Ivory #F7F3EA · Champagne Gold #C6A15B · DM Serif Display 헤드라인
- * 규칙: 이후 모든 화면은 이 파일의 컴포넌트(Card/Btn/Head/Zone/Tile)와
- *       style.css 클래스를 재사용한다. 독자적 재디자인 금지 (docs/DESIGN_SYSTEM.md).
+ * 화면은 screens/ 아래로 분리한다. 컴포넌트·CSS 클래스는 components.jsx / style.css 재사용,
+ * 독자적 재디자인 금지 (docs/DESIGN_SYSTEM.md).
  */
-import React,{useState} from"react";import{Home,Building2,Activity,Sparkles,User,Footprints,Car,Utensils,Scissors,Droplets,Waves,Gift,Star,ChevronRight}from"lucide-react";import{Card,Btn,Head,Zone,Tile}from"./components.jsx";import Onboarding from"./screens/Onboarding.jsx";import{zoneName}from"./i18n.js";import{ZONES}from"./data.js";import"./style.css";
-function HomeS({zone}){return <><Head k="M4U" title="Good evening" sub="오늘도 나를 위한 좋은 하루"/><Zone name={zone}/><Card c="hero"><div><em>MY DAY</em><h2>오늘 3,200걸음 걸었어요</h2><p>목표까지 2,800걸음 · +70 HRP</p><div className="bar"><i style={{width:"53%"}}/></div></div><strong>53%</strong></Card><div className="grid"><Tile icon={<Building2/>} title="Living" sub="우리동네"/><Tile icon={<Footprints/>} title="Habit" sub="오늘습관"/><Tile icon={<Scissors/>} title="Salon" sub="뷰티·케어"/><Tile icon={<Car/>} title="Move" sub="카트·이동"/></div><Card c="ai"><Sparkles/><div><small>M4U AI CONCIERGE</small><h2>무엇을 도와드릴까요?</h2><p>“한식당 예약하고 카트도 불러줘.”</p></div></Card><h3 className="section">오늘의 혜택</h3><div className="twocol"><Card><Gift/><h2>+420 HRP</h2><p>오늘 받을 수 있어요</p></Card><Card><Star/><h2>Salon 10%</h2><p>MY ZONE 혜택</p></Card></div></>}
-function Living({zone}){return <><Head k="M4U LIVING" title="우리동네를 더 가깝게" sub="먹고 · 이동하고 · 머무는 모든 것"/><Zone name={zone}/><div className="grid"><Tile icon={<Utensils/>} title="EAT" sub="맛집·카페"/><Tile icon={<Car/>} title="MOVE" sub="전기카트"/><Tile icon={<Building2/>} title="STAY" sub="숙박"/><Tile icon={<Sparkles/>} title="LOCAL" sub="체험"/></div><Card><em>3분 거리</em><h2>🛺 Electric Cart</h2><p>Ocean Residence → Korean BBQ</p><b>20,000 VND</b><Btn>지금 호출</Btn></Card><h3 className="section">M4U Selected</h3>{["HanCook Korean BBQ","The Coffee House","M4U Salon & Spa"].map((x,i)=><Card c="row" key={x}><span className="pic">{["🍜","☕","✨"][i]}</span><div><b>{x}</b><p>★ 4.9 · Verified · {300+i*150}m</p><em>{10-i}% Reward</em></div></Card>)}</>}
-function Habit(){return <><Head k="M4U HABIT" title="작은 습관이 내일을 바꿔요" sub="오늘의 나를 위한 건강 루틴"/><Card c="hero"><div><em>오늘 걷기</em><h2>3,200 / 6,000</h2><div className="bar"><i style={{width:"53%"}}/></div><p>2.4 km · 32분</p></div><strong>53%</strong></Card><div className="grid"><Tile icon={<Footprints/>} title="걷기" sub="+70 HRP"/><Tile icon={<Waves/>} title="수영" sub="주 3회"/><Tile icon={<Droplets/>} title="물마시기" sub="5/7"/><Tile icon={<Sparkles/>} title="명상" sub="10분"/></div><h3 className="section">습관 챌린지</h3><Card><h2>🏃 30일 달리기</h2><p>12/30 완료 · 꾸준히 이어가고 있어요.</p><div className="bar"><i style={{width:"40%"}}/></div><em>+300 HRP</em></Card><Card c="space"><h2>🧘 Mindful Garden</h2><p>도보 8분 · 오늘 19:30 명상 클래스</p><Btn>명상 예약하기</Btn></Card></>}
-function Salon(){return <><Head k="M4U SALON" title="Beauty, made personal." sub="가까운 뷰티·케어를 나에게 맞게"/><div className="salonhero"><div><em>M4U SELECTED</em><h1>M4U Salon & Spa</h1><p>Hair · Nail · Skin · Spa · ★4.9</p></div></div><div className="grid"><Tile icon={<Scissors/>} title="Hair" sub="헤어"/><Tile icon={<Sparkles/>} title="Skin" sub="스킨"/><Tile icon={<Star/>} title="Nail" sub="네일"/><Tile icon={<Gift/>} title="Spa" sub="케어"/></div><h3 className="section">For You</h3><Card><em>AI PICK</em><h2>Glow Skin & Spa</h2><p>지난 뷰티 프로필을 바탕으로 추천했어요.</p><b>950,000 VND</b><Btn>예약하기</Btn></Card></>}
-function My(){return <><Head k="M4U MY" title="나의 M4U" sub="생활 · 습관 · 혜택을 한 곳에서"/><Card c="profile"><div className="avatar">M</div><div><h2>GOLD MEMBER</h2><p>Vinhomes Grand Park</p></div></Card><Card c="wallet"><small>M4U POINT · HRP</small><h1>125,800 HRP</h1><p>이번 달 적립 +4,280 HRP</p></Card><h3 className="section">MY</h3>{["예약 · 주문","내 리뷰","쿠폰 · 혜택","MY ZONE 설정","언어 · AI 통역"].map(x=><button key={x} className="menu">{x}<ChevronRight size={16}/></button>)}<h3 className="section">M4U PARTNER</h3><Card><em>BUSINESS</em><h2>내 생활권에서 사업하기</h2><p>카트·식당·Salon·Shop. AI에게 말하면 등록 초안을 만들어드려요.</p><Btn>내 사업 시작하기</Btn></Card></>}
-function App(){
-  // 온보딩 3화면(언어 → 소개 → MY ZONE) 통과 후 5탭 진입 — 선택한 언어·생활권이 앱 상태의 출발점
-  const[stage,setStage]=useState("lang"),[lang,setLang]=useState("ko"),[zoneIdx,setZoneIdx]=useState(0),[t,setT]=useState("home");
-  if(stage!=="app")return <Onboarding stage={stage} setStage={setStage} lang={lang} setLang={setLang} zoneIdx={zoneIdx} setZoneIdx={setZoneIdx} onDone={()=>setStage("app")}/>;
-  const zone=zoneName(ZONES[zoneIdx],lang),screens={home:<HomeS zone={zone}/>,living:<Living zone={zone}/>,habit:<Habit/>,salon:<Salon/>,my:<My/>};let nav=[["home",Home,"홈"],["living",Building2,"Living"],["habit",Activity,"Habit"],["salon",Sparkles,"Salon"],["my",User,"MY"]];return <div className="shell"><main>{screens[t]}</main><nav>{nav.map(([k,I,l])=><button key={k} className={t===k?"on":""} onClick={()=>setT(k)}><I size={20}/><span>{l}</span></button>)}</nav></div>}
-export default App;
+import React, { useState, useEffect } from "react";
+import { Home as HomeIcon, Building2, Activity, Sparkles, User } from "lucide-react";
+import Onboarding from "./screens/Onboarding.jsx";
+import Home from "./screens/Home.jsx";
+import Living from "./screens/Living.jsx";
+import Habit from "./screens/Habit.jsx";
+import Salon from "./screens/Salon.jsx";
+import My from "./screens/My.jsx";
+import { L, zoneName } from "./i18n.js";
+import { ZONES } from "./data.js";
+import "./style.css";
+
+const TABS = [
+  { id: "home", icon: HomeIcon, ko: "홈", vi: "Trang chủ" },
+  { id: "living", icon: Building2, ko: "Living", vi: "Living" },
+  { id: "habit", icon: Activity, ko: "Habit", vi: "Habit" },
+  { id: "salon", icon: Sparkles, ko: "Salon", vi: "Salon" },
+  { id: "my", icon: User, ko: "MY", vi: "MY" },
+];
+
+/** 걷기 목표 — 데모 자리표시자 (v10은 10,000. 기준 확정 전 임의 변경 금지 — CLAUDE.md §6) */
+const STEP_GOAL = 6000;
+
+export default function App() {
+  const [stage, setStage] = useState("lang"); // lang → intro → zone → app
+  const [lang, setLang] = useState("ko");
+  const [zoneIdx, setZoneIdx] = useState(0);
+  const [tab, setTab] = useState("home");
+  const [steps] = useState(3200);
+
+  // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  if (stage !== "app")
+    return <Onboarding stage={stage} setStage={setStage} lang={lang} setLang={setLang} zoneIdx={zoneIdx} setZoneIdx={setZoneIdx} onDone={() => setStage("app")} />;
+
+  const zone = zoneName(ZONES[zoneIdx], lang);
+  const screens = {
+    home: <Home lang={lang} zone={zone} steps={steps} goal={STEP_GOAL} />,
+    living: <Living lang={lang} zone={zone} />,
+    habit: <Habit lang={lang} steps={steps} goal={STEP_GOAL} />,
+    salon: <Salon lang={lang} />,
+    my: <My lang={lang} zone={zone} />,
+  };
+  return (
+    <div className="shell">
+      <main>{screens[tab]}</main>
+      <nav>
+        {TABS.map((t) => (
+          <button key={t.id} className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>
+            <t.icon size={20} />
+            <span>{L(lang, t.ko, t.vi)}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}

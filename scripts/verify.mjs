@@ -47,9 +47,8 @@ const files = [];
 
 /* ── 2. 미번역 스캔 (경고) ─────────────────── */
 // Admin은 한국어 전용(내부 도구)이므로 제외
-// master-ui는 H06 이식과 함께 L() 적용 — 이식 완료 화면은 예외에서 제거한다.
-// 남은 예외: MasterUI.jsx의 5개 마스터 화면(홈/Living/Habit/Salon/MY) — H06 ②~⑦에서 이식 예정
-const I18N_EXEMPT = [/^src\/admin\//, /design-tokens/, /main\.jsx$/, /^src\/master-ui\/MasterUI\.jsx$/];
+// master-ui 전 화면 L() 적용 완료 — 예외 없음 (예외를 다시 늘리지 말 것)
+const I18N_EXEMPT = [/^src\/admin\//, /design-tokens/, /main\.jsx$/];
 const WRAPPERS = /\bL\(|catLabel\(|venueName\(|prodName\(|zoneName\(|pickLabel\(/;
 const VIET = /[ăâđêơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵĐ]/;
 const DATA_LINE = /^\s*(id:|[a-zA-Z]+Vi:|name:|desc:|title:|label:|product:|policy:|address:|who:|text:|size:|consist:|brand:|cat:|walk:|open:|resp:|greet|search:|popular:|ai[A-Z]|ko:|vi:|q:|opts:|home:|living:|stay:|booking:|order:|habit:|salon:|wallet:|my:)|^\s*\[?"|^\s*\{ (ko|id|q):/;
