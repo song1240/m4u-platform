@@ -7,3 +7,5 @@
 | 2026-08-12 | INIT | 저장소 초기 구성 — v10 앱 + Admin Web + 하네스/정책/디자인 시스템 문서 + verify 스크립트 | PASS |
 | 2026-08-12 | INIT-2 | 마스터 UI 통합 — src/master-ui(공식 디자인 기준) 추가, 라우팅 개편(/ 마스터 · #legacy v10 · #admin), 디자인 토큰·DESIGN_SYSTEM.md 개정, H06 이식 하네스 추가 | PASS |
 | 2026-08-12 | H07 | Contributor Center 추가 — MY BUSINESS 공통 섹션(Score·퍼널·QR 타입·AI Insight·원칙 문구), Admin 정산 ①Transaction/②Ecosystem 분리, POLICY §10 신설 | PASS |
+| 2026-08-13 | H06-① | 온보딩 3화면 이식(언어 → 소개 → MY ZONE) — 다크 캔버스 패턴 신설(DESIGN_SYSTEM §4.1 + style.css), 모듈 분리(i18n/data/components/screens, H01 흡수), 선택한 언어·생활권을 5탭에 연결, verify i18n 예외 축소(master-ui → MasterUI.jsx만) | PASS |
+| 2026-08-13 | FIX | lucide-react 0.383에 없는 `House` 아이콘 → `Building2` (마스터 UI가 Vite 빌드 실패 상태였음), `button{font-family:inherit}` 추가(버튼이 Inter 미적용이던 문제) | PASS |

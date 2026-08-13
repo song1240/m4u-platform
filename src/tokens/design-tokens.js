@@ -17,6 +17,15 @@ export const color = {
   muted: "#77817C",    // --mut 보조
 };
 
+// 다크 캔버스(.onboard / .ai / .wallet) 위 보조 색 — forest 배경 위 흰색 알파만 사용
+export const overlay = {
+  line: "#FFFFFF2E",    // 보더 · 비활성 진행 점
+  fill: "#FFFFFF12",    // 선택지 배경
+  fillOn: "#FFFFFF1F",  // 선택된 선택지 배경
+  text: "#FFFFFFA6",    // 본문
+  textDim: "#FFFFFF8C", // 캡션 · 보조 버튼
+};
+
 export const radius = { card: 20, tile: 17, btn: 12, pill: 99, shell: 32, hero: 22 };
 
 export const typography = {
