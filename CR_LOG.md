@@ -9,3 +9,8 @@
 | 2026-08-12 | H07 | Contributor Center 추가 — MY BUSINESS 공통 섹션(Score·퍼널·QR 타입·AI Insight·원칙 문구), Admin 정산 ①Transaction/②Ecosystem 분리, POLICY §10 신설 | PASS |
 | 2026-08-13 | H06-① | 온보딩 3화면 이식(언어 → 소개 → MY ZONE) — 다크 캔버스 패턴 신설(DESIGN_SYSTEM §4.1 + style.css), 모듈 분리(i18n/data/components/screens, H01 흡수), 선택한 언어·생활권을 5탭에 연결, verify i18n 예외 축소(master-ui → MasterUI.jsx만) | PASS |
 | 2026-08-13 | FIX | lucide-react 0.383에 없는 `House` 아이콘 → `Building2` (마스터 UI가 Vite 빌드 실패 상태였음), `button{font-family:inherit}` 추가(버튼이 Inter 미적용이던 문제) | PASS |
+| 2026-08-13 | UX점검 | 실행 기반 전 화면 점검 — 5탭 65개 중 40개 무반응·베트남어 미적용 등 P0/P1/P2 12건 기록, 3커밋 계획 승인 | PASS |
+| 2026-08-13 | H06 | 5화면 모듈 분리(screens/) + 전면 이중언어 — vi 선택 시 한글 0자, html lang 동기화, verify i18n 예외 완전 제거 | PASS |
+| 2026-08-13 | H06-② | 홈 기능 이식 — 타일·카드 실제 탭 이동 연결(무반응 8→1), Card onClick(button.card) 패턴 추가 | PASS |
+| 2026-08-13 | UX | 온보딩 완결 — MY에서 언어·MY ZONE 재설정, localStorage 복원, 뒤로가기 연동, CTA 44px·dvh·데스크톱 스크롤 제거 | PASS |
+
