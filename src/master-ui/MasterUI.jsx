@@ -23,8 +23,11 @@ import Partner from "./screens/Partner.jsx";
 import MyBusiness from "./screens/MyBusiness.jsx";
 import Residence from "./screens/Residence.jsx";
 import ReviewWrite from "./screens/ReviewWrite.jsx";
+import Shop from "./screens/Shop.jsx";
+import Product from "./screens/Product.jsx";
+import Cart from "./screens/Cart.jsx";
 import My from "./screens/My.jsx";
-import { L, zoneName } from "./i18n.js";
+import { L, pick, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP, REVIEW_CP } from "./data.js";
 import "./style.css";
 
@@ -103,6 +106,8 @@ export default function App() {
   const [partnerActive, setPartnerActive] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
   const [reviews, setReviews] = useState([]); // 내가 쓴 Verified Review
+  const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -235,6 +240,21 @@ export default function App() {
     toast(L(lang, `파트너 승인 · +${PARTNER_CP} CP · MY BUSINESS 생성`, `Duyệt đối tác · +${PARTNER_CP} CP · đã tạo MY BUSINESS`));
     goSub("biz");
   };
+  // SHOP — 결제 금액에 비례해 HRP 적립 (POLICY §3)
+  const addToCart = (p) => {
+    setCart((c) => (c.some((x) => x.id === p.id) ? c.map((x) => (x.id === p.id ? { ...x, qty: x.qty + 1 } : x)) : [...c, { ...p, qty: 1 }]));
+    toast(L(lang, "장바구니에 담았어요", "Đã thêm vào giỏ hàng"));
+  };
+  const setQty = (id, d) => setCart((c) => c.map((x) => (x.id === id ? { ...x, qty: Math.max(1, x.qty + d) } : x)));
+  const placeOrder = (items, total, point) => {
+    setOrders((o) => [{ id: "o" + o.length, first: pick(items[0].name, lang), count: items.length, total, point, when: now() }, ...o]);
+    setCart([]);
+    addHrp(point, L(lang, "주문 적립", "Tích điểm đơn hàng"));
+    toast(L(lang, `주문 완료 · +${point} HRP`, `Đặt hàng xong · +${point} HRP`));
+    closeSub();
+  };
+  const buyNow = (p) => placeOrder([{ ...p, qty: 1 }], p.price, p.point);
+
   // Verified Review — 보상은 별점이 아니라 성실한 작성에 지급 (POLICY §2)
   const addReview = (r) => {
     setReviews((x) => [{ id: "rv" + x.length, when: now(), ...r }, ...x]);
@@ -285,6 +305,9 @@ export default function App() {
     log: <PointLog lang={lang} kind={sub?.kind} points={points} cp={cp} txs={txs} cpLog={cpLog} onBack={closeSub} />,
     bookings: <Bookings lang={lang} bookings={bookings} reviews={reviews} onWrite={(id) => goSub("review", { bookingId: id })} onBack={closeSub} />,
     review: <ReviewWrite lang={lang} booking={bookings.find((b) => b.id === sub?.bookingId)} onBack={closeSub} onSubmit={addReview} />,
+    shop: <Shop lang={lang} orders={orders} cartCount={cart.reduce((s, x) => s + x.qty, 0)} onBack={closeSub} goSub={goSub} />,
+    product: <Product lang={lang} productId={sub?.productId} onBack={closeSub} addToCart={addToCart} buyNow={buyNow} />,
+    cart: <Cart lang={lang} cart={cart} setQty={setQty} placeOrder={placeOrder} onBack={closeSub} />,
     partner: <Partner lang={lang} onBack={closeSub} onApproved={approvePartner} />,
     biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} toast={toast} />,
     residence: <Residence lang={lang} checkedIn={checkedIn} setCheckedIn={setCheckedIn} toast={toast} onBack={closeSub} />,

@@ -24,6 +24,7 @@ export const IMG = {
   skinset: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=70",
   maskpack: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=400&q=70",
   serum: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=400&q=70",
+  hairoil: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=400&q=70",
 };
 
 /** 생활권(Zone) — 빈홈 그랜드 파크에서 시작 (CLAUDE.md §1) */
@@ -403,3 +404,39 @@ export const AI_CHIP_TOGGLE = {
 
 /** 카트 운영 초기값 — 데모 자리표시자 (CLAUDE.md §6) */
 export const CART_INIT = { calls: 12, bookings: 4, revenue: 320000, rating: 4.9, rank: 2, price: 20000 };
+
+/**
+ * M4U 셀렉트 상품 (SHOP) — 결제 시 HRP 적립 (POLICY §3).
+ * "공식"은 M4U가 직접 소싱했다는 표시이며 광고 노출과 무관하다 (POLICY §1).
+ * 가격·적립률은 전부 데모 자리표시자 (CLAUDE.md §6).
+ */
+export const PRODUCTS = [
+  {
+    id: "p1", img: IMG.skinset, price: 620000, origin: 820000, point: 62, official: true,
+    brand: "M4U Living",
+    name: { ko: "M4U 어성초 수딩 스킨케어 세트", vi: "Bộ chăm sóc da dịu nhẹ diếp cá M4U" },
+    consist: { ko: "토너 150ml · 세럼 30ml · 크림 50ml · 클렌저 120ml", vi: "Toner 150ml · serum 30ml · kem 50ml · sữa rửa mặt 120ml" },
+    desc: { ko: "어성초 추출물과 병풀 성분이 민감한 피부를 진정시키고 수분 밸런스를 맞춰주는 저자극 세트입니다.", vi: "Chiết xuất diếp cá và rau má giúp làm dịu da nhạy cảm và cân bằng độ ẩm." },
+  },
+  {
+    id: "p2", img: IMG.serum, price: 380000, origin: 450000, point: 38, official: true,
+    brand: "M4U Living",
+    name: { ko: "그린 티트리 진정 세럼 30ml", vi: "Serum dịu da trà tràm 30ml" },
+    consist: { ko: "세럼 30ml 단품", vi: "Serum 30ml" },
+    desc: { ko: "티트리 잎 추출물이 트러블 부위를 빠르게 진정시키는 데일리 세럼입니다.", vi: "Chiết xuất lá tràm trà giúp làm dịu nhanh vùng da mụn, dùng hằng ngày." },
+  },
+  {
+    id: "p3", img: IMG.maskpack, price: 190000, origin: 220000, point: 19, official: true,
+    brand: "M4U Living",
+    name: { ko: "시카 리페어 마스크팩 10매", vi: "Mặt nạ phục hồi Cica 10 miếng" },
+    consist: { ko: "시트 마스크 10매", vi: "Mặt nạ giấy 10 miếng" },
+    desc: { ko: "센텔라 성분이 자극받은 피부 장벽을 회복시키는 진정 마스크입니다.", vi: "Thành phần rau má giúp phục hồi hàng rào bảo vệ da đang bị kích ứng." },
+  },
+  {
+    id: "p4", img: IMG.hairoil, price: 240000, origin: null, point: 24, official: true,
+    brand: "M4U Salon",
+    name: { ko: "프리미엄 헤어 케어 오일", vi: "Dầu dưỡng tóc cao cấp" },
+    consist: { ko: "헤어 오일 100ml", vi: "Dầu dưỡng tóc 100ml" },
+    desc: { ko: "살롱에서 쓰는 그 오일 그대로, 열 손상 모발을 케어합니다.", vi: "Đúng loại dầu salon đang dùng, chăm sóc tóc hư tổn do nhiệt." },
+  },
+];
