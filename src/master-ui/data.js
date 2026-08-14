@@ -25,6 +25,8 @@ export const IMG = {
   maskpack: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?auto=format&fit=crop&w=400&q=70",
   serum: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=400&q=70",
   hairoil: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=400&q=70",
+  room2: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=70",
+  room3: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=70",
 };
 
 /** 생활권(Zone) — 빈홈 그랜드 파크에서 시작 (CLAUDE.md §1) */
@@ -438,5 +440,53 @@ export const PRODUCTS = [
     name: { ko: "프리미엄 헤어 케어 오일", vi: "Dầu dưỡng tóc cao cấp" },
     consist: { ko: "헤어 오일 100ml", vi: "Dầu dưỡng tóc 100ml" },
     desc: { ko: "살롱에서 쓰는 그 오일 그대로, 열 손상 모발을 케어합니다.", vi: "Đúng loại dầu salon đang dùng, chăm sóc tóc hư tổn do nhiệt." },
+  },
+];
+
+/**
+ * STAY 객실 (POLICY §7) — 스테이 예약 완료 시 +5 CP (POLICY §4).
+ * 투숙 기간의 지역 소비는 객실 Guest QR로 Host에게 1단계 추천 보상이 귀속된다.
+ * 요금·적립률은 데모 자리표시자 (CLAUDE.md §6).
+ */
+export const STAY_CP = 5;
+/** HRP 적립 = 결제액 / 이 값 (데모) */
+export const STAY_HRP_DIV = 10000;
+
+export const STAYS = [
+  {
+    id: "r1", img: IMG.stay, price: 1450000, rating: 4.9, reviews: 64,
+    name: { ko: "Ocean Residence Studio", vi: "Ocean Residence Studio" },
+    size: { ko: "42㎡ · 최대 2인", vi: "42m² · tối đa 2 người" },
+    desc: { ko: "체크인 즉시 생활이 가능한 풀옵션 스튜디오. M4U 컨시어지가 상주합니다.", vi: "Studio đầy đủ tiện nghi, sinh hoạt ngay khi nhận phòng. Có lễ tân M4U." },
+    amen: [
+      { emoji: "🌊", ko: "오션뷰", vi: "View biển" },
+      { emoji: "🏊", ko: "인피니티 풀", vi: "Hồ bơi vô cực" },
+      { emoji: "🧺", ko: "주 2회 청소", vi: "Dọn phòng 2 lần/tuần" },
+      { emoji: "🛜", ko: "기가 와이파이", vi: "Wifi tốc độ cao" },
+    ],
+  },
+  {
+    id: "r2", img: IMG.room2, price: 2300000, rating: 4.8, reviews: 41,
+    name: { ko: "Sky Garden 2BR", vi: "Sky Garden 2BR" },
+    size: { ko: "78㎡ · 최대 4인", vi: "78m² · tối đa 4 người" },
+    desc: { ko: "가족 단위 중장기 체류에 맞춘 2베드룸. 국제학교 셔틀 정류장 도보 3분.", vi: "2 phòng ngủ cho gia đình ở dài hạn. Cách trạm xe trường quốc tế 3 phút đi bộ." },
+    amen: [
+      { emoji: "🌿", ko: "가든 테라스", vi: "Sân vườn" },
+      { emoji: "👨‍👩‍👧", ko: "패밀리형", vi: "Phù hợp gia đình" },
+      { emoji: "🍳", ko: "풀키친", vi: "Bếp đầy đủ" },
+      { emoji: "🅿️", ko: "전용 주차", vi: "Chỗ đậu xe riêng" },
+    ],
+  },
+  {
+    id: "r3", img: IMG.room3, price: 1800000, rating: 4.8, reviews: 52,
+    name: { ko: "Park View 1BR", vi: "Park View 1BR" },
+    size: { ko: "56㎡ · 최대 3인", vi: "56m² · tối đa 3 người" },
+    desc: { ko: "재택근무자를 위한 워크 프렌들리 1베드룸. 라운지 미팅룸 무료 이용.", vi: "1 phòng ngủ phù hợp làm việc từ xa. Miễn phí dùng phòng họp chung." },
+    amen: [
+      { emoji: "🌳", ko: "파크뷰", vi: "View công viên" },
+      { emoji: "💼", ko: "워크데스크", vi: "Bàn làm việc" },
+      { emoji: "🧖", ko: "사우나", vi: "Phòng xông hơi" },
+      { emoji: "🛜", ko: "기가 와이파이", vi: "Wifi tốc độ cao" },
+    ],
   },
 ];

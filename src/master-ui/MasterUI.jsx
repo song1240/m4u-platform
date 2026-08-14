@@ -26,6 +26,8 @@ import ReviewWrite from "./screens/ReviewWrite.jsx";
 import Shop from "./screens/Shop.jsx";
 import Product from "./screens/Product.jsx";
 import Cart from "./screens/Cart.jsx";
+import Stay from "./screens/Stay.jsx";
+import StayBook from "./screens/StayBook.jsx";
 import My from "./screens/My.jsx";
 import { L, pick, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP, REVIEW_CP } from "./data.js";
@@ -108,6 +110,7 @@ export default function App() {
   const [reviews, setReviews] = useState([]); // 내가 쓴 Verified Review
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [stays, setStays] = useState([]);
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -254,6 +257,13 @@ export default function App() {
     closeSub();
   };
   const buyNow = (p) => placeOrder([{ ...p, qty: 1 }], p.price, p.point);
+  // STAY — 스테이 예약 완료 시 +5 CP (POLICY §4)
+  const confirmStay = (st) => {
+    setStays((x) => [{ id: "st" + x.length, ...st }, ...x]);
+    addHrp(st.point, L(lang, `스테이 · ${st.name}`, `Lưu trú · ${st.name}`));
+    addCp(st.cp, L(lang, "스테이 예약 완료", "Hoàn tất đặt lưu trú"));
+    toast(L(lang, `예약 완료 · +${st.point} HRP · +${st.cp} CP`, `Đặt phòng xong · +${st.point} HRP · +${st.cp} CP`));
+  };
 
   // Verified Review — 보상은 별점이 아니라 성실한 작성에 지급 (POLICY §2)
   const addReview = (r) => {
@@ -308,6 +318,8 @@ export default function App() {
     shop: <Shop lang={lang} orders={orders} cartCount={cart.reduce((s, x) => s + x.qty, 0)} onBack={closeSub} goSub={goSub} />,
     product: <Product lang={lang} productId={sub?.productId} onBack={closeSub} addToCart={addToCart} buyNow={buyNow} />,
     cart: <Cart lang={lang} cart={cart} setQty={setQty} placeOrder={placeOrder} onBack={closeSub} />,
+    stay: <Stay lang={lang} stays={stays} onBack={closeSub} goSub={goSub} />,
+    staybook: <StayBook lang={lang} stayId={sub?.stayId} onBack={closeSub} onDone={closeSub} confirmStay={confirmStay} />,
     partner: <Partner lang={lang} onBack={closeSub} onApproved={approvePartner} />,
     biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} toast={toast} />,
     residence: <Residence lang={lang} checkedIn={checkedIn} setCheckedIn={setCheckedIn} toast={toast} onBack={closeSub} />,

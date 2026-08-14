@@ -51,7 +51,7 @@ export default function Living({ lang, zone, go, goSub }) {
 
       <div className="grid g3">
         {LIVING_TILES.map((t) => (
-          <button className="tile" key={t.id} onClick={() => goSub(t.id === "shop" ? "shop" : "cat", { catId: t.id })}>
+          <button className="tile" key={t.id} onClick={() => goSub(t.id === "shop" || t.id === "stay" ? t.id : "cat", { catId: t.id })}>
             <i>{t.emoji}</i>
             <b>{t.name}</b>
             <span>{pick(t.sub, lang)}</span>
