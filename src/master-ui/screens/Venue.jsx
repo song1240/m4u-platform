@@ -9,11 +9,14 @@ import { L, pick, walk, num } from "../i18n.js";
 import { VENUES, VENUE_TABS } from "../data.js";
 import "../style.css";
 
-export default function Venue({ lang, venueId, onBack, goSub, liked, toggleLike }) {
+export default function Venue({ lang, venueId, myReviews = [], onBack, goSub, liked, toggleLike }) {
   const v = VENUES.find((x) => x.id === venueId);
+  // 내가 쓴 Verified Review를 이 매장 목록 맨 위에 얹는다
+  const mine = myReviews.filter((r) => r.venueId === venueId).map((r) => ({ id: r.id, rate: r.rate, who: { ko: "회원님", vi: "Bạn" }, text: { ko: r.text, vi: r.text } }));
   const [seg, setSeg] = useState("service");
   if (!v) return null;
   const hasSvc = v.services.length > 0;
+  const allReviews = [...mine, ...v.reviews_];
 
   return (
     <>
@@ -53,7 +56,7 @@ export default function Venue({ lang, venueId, onBack, goSub, liked, toggleLike 
         {VENUE_TABS.map((t) => (
           <button key={t.id} className={seg === t.id ? "on" : ""} onClick={() => setSeg(t.id)}>
             {pick(t.label, lang)}
-            {t.id === "review" && ` ${v.reviews}`}
+            {t.id === "review" && ` ${v.reviews + mine.length}`}
           </button>
         ))}
       </div>
@@ -89,12 +92,12 @@ export default function Venue({ lang, venueId, onBack, goSub, liked, toggleLike 
               " — chỉ người đã đặt và thanh toán qua M4U mới viết được; thưởng cho bài viết chỉn chu, không phải cho điểm cao."
             )}
           </Note>
-          {v.reviews_.length === 0 ? (
+          {allReviews.length === 0 ? (
             <Empty icon={<Star size={26} />}>
               {L(lang, "아직 등록된 리뷰가 없습니다.", "Chưa có đánh giá nào.")}
             </Empty>
           ) : (
-            v.reviews_.map((r) => (
+            allReviews.map((r) => (
               <div className="card" key={r.id}>
                 <div className="rvtop">
                   <b>{pick(r.who, lang)}</b>

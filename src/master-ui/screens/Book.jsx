@@ -27,7 +27,7 @@ export default function Book({ lang, venueId, serviceId, onBack, onDone, confirm
   const taken = (i) => (dayIdx + i) % 4 === 1; // 데모: 일부 슬롯 마감
 
   const confirm = () => {
-    confirmBooking({ venue: pick(v.name, lang), name: pick(s.name, lang), date, slot, price: s.price, point: s.point, cp: CP_PER_BOOKING });
+    confirmBooking({ venueId: v.id, venue: pick(v.name, lang), name: pick(s.name, lang), date, slot, price: s.price, point: s.point, cp: CP_PER_BOOKING });
     setSheet(false);
     setDone(true);
   };

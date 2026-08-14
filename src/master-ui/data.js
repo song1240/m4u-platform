@@ -381,6 +381,16 @@ export const MY_STAY = {
   img: IMG.stay,
 };
 
+/**
+ * Verified Review (POLICY §2)
+ *  - 실제 M4U 예약·결제 이용자만 작성 가능 → 예약 내역에서만 진입하도록 구조로 강제한다
+ *  - 보상은 **좋은 별점이 아니라 성실한 작성**에 지급 (+5 CP)
+ *  - 이상 탐지(반복·대량 작성)는 Admin 플래그 대상임을 고지한다
+ */
+export const REVIEW_CP = 5;
+/** 성실한 작성 기준 — 이 길이를 넘어야 제출할 수 있다 (데모 자리표시자) */
+export const REVIEW_MIN = 20;
+
 /** AI Manager 추천 발화 — online 상태에 따라 마지막 칩이 바뀐다 */
 export const AI_CHIPS = [
   { id: "sales", ko: "오늘 매출 알려줘", vi: "Doanh thu hôm nay" },

@@ -22,9 +22,10 @@ import Bookings from "./screens/Bookings.jsx";
 import Partner from "./screens/Partner.jsx";
 import MyBusiness from "./screens/MyBusiness.jsx";
 import Residence from "./screens/Residence.jsx";
+import ReviewWrite from "./screens/ReviewWrite.jsx";
 import My from "./screens/My.jsx";
 import { L, zoneName } from "./i18n.js";
-import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP } from "./data.js";
+import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP, REVIEW_CP } from "./data.js";
 import "./style.css";
 
 const TABS = [
@@ -101,6 +102,7 @@ export default function App() {
   const [bizRole, setBizRole] = useState("local");
   const [partnerActive, setPartnerActive] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
+  const [reviews, setReviews] = useState([]); // 내가 쓴 Verified Review
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -233,6 +235,13 @@ export default function App() {
     toast(L(lang, `파트너 승인 · +${PARTNER_CP} CP · MY BUSINESS 생성`, `Duyệt đối tác · +${PARTNER_CP} CP · đã tạo MY BUSINESS`));
     goSub("biz");
   };
+  // Verified Review — 보상은 별점이 아니라 성실한 작성에 지급 (POLICY §2)
+  const addReview = (r) => {
+    setReviews((x) => [{ id: "rv" + x.length, when: now(), ...r }, ...x]);
+    addCp(REVIEW_CP, L(lang, "Verified 리뷰 작성", "Viết đánh giá đã xác minh"));
+    toast(L(lang, `리뷰 등록 완료 · +${REVIEW_CP} CP`, `Đã đăng đánh giá · +${REVIEW_CP} CP`));
+    closeSub();
+  };
   const useCoupon = (id) => {
     setCoupons((cs) => cs.map((c) => (c.id === id ? { ...c, used: true } : c)));
     toast(L(lang, "쿠폰 사용 처리 완료", "Đã sử dụng mã ưu đãi"));
@@ -268,13 +277,14 @@ export default function App() {
   };
   const subScreens = {
     cat: <Category lang={lang} catId={sub?.catId} onBack={closeSub} goSub={goSub} toast={toast} />,
-    venue: <Venue lang={lang} venueId={sub?.venueId} onBack={closeSub} goSub={goSub} liked={likes.includes(sub?.venueId)} toggleLike={toggleLike} />,
+    venue: <Venue lang={lang} venueId={sub?.venueId} myReviews={reviews} onBack={closeSub} goSub={goSub} liked={likes.includes(sub?.venueId)} toggleLike={toggleLike} />,
     book: <Book lang={lang} venueId={sub?.venueId} serviceId={sub?.serviceId} onBack={closeSub} onDone={closeSub} confirmBooking={confirmBooking} />,
     skin: <SkinProfile lang={lang} onBack={closeSub} goSub={goSub} />,
     wallet: <Wallet lang={lang} points={points} cp={cp} joined={joinedRooms} joinRoom={joinRoom} coupons={coupons} useCoupon={useCoupon} openVotes={PROPOSALS.filter((p) => p.status === "open").length} onBack={closeSub} goSub={goSub} />,
     vote: <Vote lang={lang} cp={cp} myVotes={myVotes} castVote={castVote} onBack={closeSub} />,
     log: <PointLog lang={lang} kind={sub?.kind} points={points} cp={cp} txs={txs} cpLog={cpLog} onBack={closeSub} />,
-    bookings: <Bookings lang={lang} bookings={bookings} onBack={closeSub} />,
+    bookings: <Bookings lang={lang} bookings={bookings} reviews={reviews} onWrite={(id) => goSub("review", { bookingId: id })} onBack={closeSub} />,
+    review: <ReviewWrite lang={lang} booking={bookings.find((b) => b.id === sub?.bookingId)} onBack={closeSub} onSubmit={addReview} />,
     partner: <Partner lang={lang} onBack={closeSub} onApproved={approvePartner} />,
     biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} toast={toast} />,
     residence: <Residence lang={lang} checkedIn={checkedIn} setCheckedIn={setCheckedIn} toast={toast} onBack={closeSub} />,

@@ -3,12 +3,13 @@
  * 적립은 방문 확인 후 확정된다 (POLICY §3·§4).
  */
 import React from "react";
-import { CalendarDays } from "lucide-react";
-import { SubHead, Card, Empty, Note } from "../components.jsx";
+import { CalendarDays, ShieldCheck } from "lucide-react";
+import { SubHead, Card, Empty, Note, Tag } from "../components.jsx";
 import { L, num } from "../i18n.js";
 import "../style.css";
 
-export default function Bookings({ lang, bookings, onBack }) {
+export default function Bookings({ lang, bookings, reviews, onWrite, onBack }) {
+  const written = (id) => reviews.some((r) => r.bookingId === id);
   return (
     <>
       <SubHead title={L(lang, "예약 내역", "Lịch sử đặt chỗ")} onBack={onBack} />
@@ -22,9 +23,13 @@ export default function Bookings({ lang, bookings, onBack }) {
             <Card c="logrow" key={b.id}>
               <div className="bd">
                 <b>{b.name}</b>
-                <p>{b.venue} · {b.date} · {b.slot}</p>
+                <p>{b.venue} · {b.date} · {b.slot} · +{num(b.point, lang)} HRP</p>
               </div>
-              <span className="amt up">+{num(b.point, lang)} HRP</span>
+              {written(b.id) ? (
+                <Tag kind="ok"><ShieldCheck size={10} /> {L(lang, "리뷰 완료", "Đã đánh giá")}</Tag>
+              ) : (
+                <button className="btn-sm" onClick={() => onWrite(b.id)}>{L(lang, "리뷰 쓰기", "Viết đánh giá")}</button>
+              )}
             </Card>
           ))}
           <Note>
