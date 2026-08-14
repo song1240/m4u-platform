@@ -362,3 +362,34 @@ export const HOST_TOP5 = [
   { id: "h5", emoji: "✈️", gmv: 6500000, name: { ko: "공항 이동", vi: "Đưa đón sân bay" } },
 ];
 export const HOST_SUMMARY = { gmv: 42800000, reward: 856000, rate: 2, rooms: 12, guests: 34 };
+
+/** 컨시어지 요청 4종 — 레지던스 화면 (투숙객) */
+export const CONCIERGE_ITEMS = [
+  { id: "clean", emoji: "🧺", ko: "청소 요청", vi: "Dọn phòng" },
+  { id: "towel", emoji: "🛁", ko: "수건 · 어메니티", vi: "Khăn · tiện nghi" },
+  { id: "cart", emoji: "🛺", ko: "카트 호출", vi: "Gọi xe điện" },
+  { id: "fix", emoji: "🔧", ko: "시설 수리", vi: "Sửa chữa" },
+];
+
+/** 내 숙소 — 데모 자리표시자 */
+export const MY_STAY = {
+  room: "1208",
+  name: { ko: "Ocean Residence · 1208호", vi: "Ocean Residence · phòng 1208" },
+  // 날짜 표기는 언어별로 다르다 — ko/vi 쌍으로 보관
+  title: { ko: "8월 12일 15:00", vi: "12/8 · 15:00" },
+  desc: { ko: "8월 19일 11:00", vi: "19/8 · 11:00" },
+  img: IMG.stay,
+};
+
+/** AI Manager 추천 발화 — online 상태에 따라 마지막 칩이 바뀐다 */
+export const AI_CHIPS = [
+  { id: "sales", ko: "오늘 매출 알려줘", vi: "Doanh thu hôm nay" },
+  { id: "price", ko: "가격 25,000동으로 바꿔줘", vi: "Đổi giá 25.000đ" },
+];
+export const AI_CHIP_TOGGLE = {
+  stop: { ko: "운영 중단해줘", vi: "Tạm dừng" },
+  start: { ko: "운영 시작해줘", vi: "Mở lại" },
+};
+
+/** 카트 운영 초기값 — 데모 자리표시자 (CLAUDE.md §6) */
+export const CART_INIT = { calls: 12, bookings: 4, revenue: 320000, rating: 4.9, rank: 2, price: 20000 };

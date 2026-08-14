@@ -3,14 +3,21 @@
  * 앱 분리 없이 하나의 계정 · 하나의 지갑으로 파트너 모드에 진입한다 (POLICY §8).
  */
 import React from "react";
-import { MapPin, Wallet as WalletIcon, CalendarDays, Ticket, Vote, Globe, Settings, ChevronRight } from "lucide-react";
+import { MapPin, Wallet as WalletIcon, CalendarDays, Ticket, Vote, Globe, Settings, BedDouble, ChevronRight } from "lucide-react";
 import { Card, Note } from "../components.jsx";
 import { L, num } from "../i18n.js";
 import "../style.css";
 
-export default function My({ lang, zone, points, cp, bookings, coupons, openVotes, go, onMenu, onWallet, onPartner, partnerActive }) {
+export default function My({ lang, zone, points, cp, bookings, coupons, openVotes, checkedIn, go, onMenu, onWallet, onPartner, partnerActive }) {
   const usableCoupons = coupons.filter((c) => !c.used).length;
   const menus = [
+    {
+      id: "residence", icon: <BedDouble size={18} />, act: () => go("residence"),
+      label: L(lang, "내 레지던스", "Căn hộ của tôi"),
+      desc: checkedIn
+        ? L(lang, "체크인 완료 · Ocean Residence 1208호", "Đã nhận phòng · Ocean Residence 1208")
+        : L(lang, "QR 체크인 · Ocean Residence", "Check-in QR · Ocean Residence"),
+    },
     {
       id: "bookings", icon: <CalendarDays size={18} />, act: () => go("bookings"),
       label: L(lang, "예약 내역", "Lịch sử đặt chỗ"),

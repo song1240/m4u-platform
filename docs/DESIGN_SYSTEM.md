@@ -187,6 +187,10 @@ Contributor 섹션에는 **랭킹 방화벽**(기여점수는 순위·검색에 
 | `.stat2` | 2열 지표 카드 (Contribution Score · 기여 혜택) |
 | `.qr` | Contributor QR 박스 — 스캔 대비를 위해 흰 배경을 쓰는 **기능적 예외**(§1 순백 금지의 예외) |
 | `.bizsw` | 역할 전환 스위치 (로컬/살롱/모빌리티/HOST) |
+| `.togg` + `.sw` | ONLINE/OFFLINE 운영 토글 |
+| `.call` | 실시간 호출 카드 — 수락/거절 (수락 시 매출·건수 반영) |
+| `.chat` > `.bub`(`.me`) + `.chatin` | AI Manager 대화 — 가격 변경·운영 중단을 자연어로 |
+| `.stayhero` / `.inout` | 레지던스 히어로 · 체크인/체크아웃 2열 |
 
 ## 5. 레이아웃
 

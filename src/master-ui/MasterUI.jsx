@@ -21,6 +21,7 @@ import PointLog from "./screens/PointLog.jsx";
 import Bookings from "./screens/Bookings.jsx";
 import Partner from "./screens/Partner.jsx";
 import MyBusiness from "./screens/MyBusiness.jsx";
+import Residence from "./screens/Residence.jsx";
 import My from "./screens/My.jsx";
 import { L, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP } from "./data.js";
@@ -99,6 +100,7 @@ export default function App() {
   // 파트너 모드 — 앱 분리 없이 같은 계정에서 전환한다 (POLICY §8)
   const [bizRole, setBizRole] = useState("local");
   const [partnerActive, setPartnerActive] = useState(false);
+  const [checkedIn, setCheckedIn] = useState(false);
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -274,7 +276,8 @@ export default function App() {
     log: <PointLog lang={lang} kind={sub?.kind} points={points} cp={cp} txs={txs} cpLog={cpLog} onBack={closeSub} />,
     bookings: <Bookings lang={lang} bookings={bookings} onBack={closeSub} />,
     partner: <Partner lang={lang} onBack={closeSub} onApproved={approvePartner} />,
-    biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} />,
+    biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} toast={toast} />,
+    residence: <Residence lang={lang} checkedIn={checkedIn} setCheckedIn={setCheckedIn} toast={toast} onBack={closeSub} />,
   };
   const screens = {
     home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} goSub={goSub} />,
@@ -292,7 +295,7 @@ export default function App() {
     my: (
       <My
         lang={lang} zone={zone} points={points} cp={cp} bookings={bookings} coupons={coupons}
-        openVotes={PROPOSALS.filter((p) => p.status === "open").length}
+        openVotes={PROPOSALS.filter((p) => p.status === "open").length} checkedIn={checkedIn}
         go={goSub} onMenu={openReset} onWallet={() => goSub("wallet")}
         partnerActive={partnerActive} onPartner={() => goSub(partnerActive ? "biz" : "partner")}
       />
