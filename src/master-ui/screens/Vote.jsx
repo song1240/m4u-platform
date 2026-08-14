@@ -5,7 +5,7 @@
  */
 import React from "react";
 import { Check, Timer } from "lucide-react";
-import { SubHead, Card, Note, Tag } from "../components.jsx";
+import { SubHead, Card, Note, Tag, Countdown } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { PROPOSALS } from "../data.js";
 import "../style.css";
@@ -32,7 +32,7 @@ export default function Vote({ lang, cp, myVotes, castVote, onBack }) {
               {closed ? (
                 <Tag kind="new">{L(lang, "가결 · 반영 완료", "Đã thông qua")}</Tag>
               ) : (
-                <Tag kind="st"><Timer size={10} /> {L(lang, `${Math.floor(p.leftH / 24)}일 남음`, `còn ${Math.floor(p.leftH / 24)} ngày`)}</Tag>
+                <Tag kind="st"><Timer size={10} /> <Countdown hours={p.leftH} lang={lang} /></Tag>
               )}
             </div>
             <p>{pick(p.desc, lang)}</p>
@@ -58,7 +58,7 @@ export default function Vote({ lang, cp, myVotes, castVote, onBack }) {
         );
       })}
       <Note>
-        {L(lang, "투표는 CP 보유량에 비례한 가중치로 집계되며, 투표로 CP가 차감되지 않습니다.", "Phiếu được tính theo trọng số CP đang có; bỏ phiếu không làm giảm CP.")}
+        {L(lang, "투표는 CP 보유량에 비례한 가중치로 집계되며, 투표로 CP가 차감되지 않습니다. CP는 구매할 수 없고 기여로만 적립되며, 이 투표 구조는 추후 온체인 거버넌스로 동일하게 이관하는 것을 전제로 설계되었습니다.", "Phiếu tính theo trọng số CP đang có và không làm giảm CP. CP không thể mua, chỉ tích lũy qua đóng góp; cơ chế bỏ phiếu này được thiết kế để chuyển sang quản trị on-chain với cùng cấu trúc.")}
       </Note>
     </>
   );

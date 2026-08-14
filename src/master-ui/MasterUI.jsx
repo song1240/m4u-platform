@@ -277,7 +277,7 @@ export default function App() {
     biz: <MyBusiness lang={lang} role={bizRole} setRole={setBizRole} onBack={closeSub} />,
   };
   const screens = {
-    home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} />,
+    home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} goSub={goSub} />,
     living: <Living lang={lang} zone={zone} go={setTab} goSub={goSub} />,
     habit: (
       <Habit

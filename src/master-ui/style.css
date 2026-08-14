@@ -66,3 +66,5 @@ main:has(.ctabar){padding-bottom:96px}
 .inp{border:0;background:none;font-family:inherit;font-size:12.5px;font-weight:700;text-align:right;color:var(--ink);min-width:90px;flex:1}.inp::placeholder{color:var(--mut);font-weight:400}
 .qrfoot{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:10px;font-size:11px;color:var(--mut)}.qrfoot svg{color:var(--g2);flex:none}
 .logrow .ic{width:38px;height:38px;flex:none;border-radius:13px;background:#eee8db;display:grid;place-items:center;font-size:17px;font-style:normal}
+.count{font-variant-numeric:tabular-nums;font-weight:700}.count.urgent{color:#b4552f}
+.hintxt{font-size:11px;color:var(--mut)}

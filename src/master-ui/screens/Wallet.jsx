@@ -8,16 +8,10 @@
  */
 import React, { useState } from "react";
 import { Vote, Ticket, Users, Timer, ChevronRight } from "lucide-react";
-import { SubHead, Card, Note, Sheet, Spec, Btn } from "../components.jsx";
+import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { FIVE_TIERS, FIVE_CP, FIVE_ROOMS, COUPONS } from "../data.js";
 import "../style.css";
-
-/** 남은 시간 표기 — 데모(고정 시간) */
-const left = (h, lang) =>
-  h >= 24
-    ? L(lang, `${Math.floor(h / 24)}일 ${h % 24}시간`, `${Math.floor(h / 24)} ngày ${h % 24} giờ`)
-    : L(lang, `${h}시간`, `${h} giờ`);
 
 export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, useCoupon, openVotes, onBack, goSub }) {
   const [target, setTarget] = useState(null);
@@ -81,7 +75,7 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
             </div>
             <div className="meta">
               <span><Users size={12} /> {L(lang, `${cnt}/${r.tier}명`, `${cnt}/${r.tier} người`)}</span>
-              <span><Timer size={12} /> {left(r.leftH, lang)}</span>
+              <span><Timer size={12} /> <Countdown hours={r.leftH} lang={lang} /></span>
               <span className="rw">+{t.hrp} HRP · +{FIVE_CP} CP</span>
             </div>
             <div className="bar"><i style={{ width: `${pct}%` }} /></div>

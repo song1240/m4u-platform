@@ -31,6 +31,12 @@ export default function MyBusiness({ lang, role = "local", setRole, onBack }) {
   return (
     <>
       <SubHead title="MY BUSINESS" onBack={onBack} />
+      {isHost && (
+        <div className="sechead">
+          <Tag kind="ok"><ShieldCheck size={10} /> M4U Recommended Stay</Tag>
+          <span className="hintxt">{L(lang, "이용률 · 만족도 기반 · 구매 불가", "Theo tỷ lệ sử dụng · hài lòng · không thể mua")}</span>
+        </div>
+      )}
 
       <div className="bizsw">
         {PARTNER_ROLES.map((r) => (

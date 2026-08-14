@@ -100,3 +100,24 @@ export const Spec = ({ rows }) => (
     ))}
   </div>
 );
+
+/**
+ * 카운트다운 — 남은 시간을 1분 간격으로 갱신한다 (FIVE 모집 마감 · 투표 마감).
+ * 기준 시각은 마운트 시점 + endsInH 로 잡는다 (데모 데이터가 상대 시간이라).
+ */
+export const Countdown = ({ hours, lang }) => {
+  const [end] = React.useState(() => Date.now() + hours * 3600e3);
+  const [now, setNow] = React.useState(() => Date.now());
+  React.useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 60000);
+    return () => window.clearInterval(t);
+  }, []);
+  const left = Math.max(0, end - now);
+  const d = Math.floor(left / 86400e3);
+  const h = Math.floor((left % 86400e3) / 3600e3);
+  const m = Math.floor((left % 3600e3) / 60000);
+  const txt = d > 0
+    ? (lang === "ko" ? `${d}일 ${h}시간 ${m}분` : `${d} ngày ${h} giờ ${m} phút`)
+    : (lang === "ko" ? `${h}시간 ${m}분` : `${h} giờ ${m} phút`);
+  return <span className={"count" + (left < 24 * 3600e3 ? " urgent" : "")}>{txt}</span>;
+};

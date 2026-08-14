@@ -28,7 +28,7 @@ const PLACES = [
   { img: IMG.stay, name: "Grand Park Residence", rate: 4.7, walk: 9, reward: 5 },
 ];
 
-export default function Home({ lang, zone, steps, goal, points, go }) {
+export default function Home({ lang, zone, steps, goal, points, go, goSub }) {
   const left = Math.max(0, goal - steps);
   const pct = Math.min(100, Math.round((steps / goal) * 100));
   return (
@@ -43,13 +43,13 @@ export default function Home({ lang, zone, steps, goal, points, go }) {
           <h1>{L(lang, "좋은 저녁이에요", "Chào buổi tối")}</h1>
           <p>{L(lang, "오늘도 나를 위한 좋은 하루", "Một ngày tốt lành dành cho bạn")}</p>
         </div>
-        <div className="hrpchip">
+        <button className="hrpchip" onClick={() => goSub("wallet")}>
           <i>M</i>
           <div>
             <b>{num(points, lang)}</b>
             <span>HRP</span>
           </div>
-        </div>
+        </button>
       </div>
 
       <button className="mrow" onClick={() => go("habit")}>
@@ -85,7 +85,8 @@ export default function Home({ lang, zone, steps, goal, points, go }) {
         <h3 className="section">{L(lang, "오늘의 혜택", "Ưu đãi hôm nay")}</h3>
       </div>
       <div className="twocol">
-        <Card c="bene" onClick={() => go("my")}>
+        {/* 혜택 적립은 지갑에서 확인한다 (H02 수용 기준) */}
+        <Card c="bene" onClick={() => goSub("wallet")}>
           <img src={IMG.dine} alt="" />
           <div className="bd">
             <em>REWARD</em>
