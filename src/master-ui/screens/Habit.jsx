@@ -19,7 +19,7 @@ export default function Habit({
   lang, steps, goal, streak,
   walkClaimed, syncSteps, healthLinked, linkHealth,
   water, waterGoal, selfChecks, toggleSelf,
-  selfEarned, selfCap, doneCount,
+  selfEarned, selfCap, doneCount, mediBooked,
   onBookClass,
 }) {
   const pct = Math.min(100, Math.round((steps / goal) * 100));
@@ -81,14 +81,18 @@ export default function Habit({
 
       {/* 셀프 체크 — CP 없음, 하루 1회·해제 불가, 합산 상한 적용 */}
       {SELF_HABITS.map((h) => {
-        const done = h.id === "water" ? water >= h.goal : !!selfChecks[h.id];
+        const done = h.id === "water" ? water >= h.goal : h.id === "meditate" ? !!selfChecks[h.id] || mediBooked : !!selfChecks[h.id];
         return (
           <div className={"hrow" + (done ? " done" : "")} key={h.id}>
             <i className="ic">{h.emoji}</i>
             <div className="bd">
               <div className="tl">
                 <b>{pick(h.name, lang)}</b>
-                <Tag kind="self">{L(lang, "자기 신고 · CP 없음", "Tự khai · không CP")}</Tag>
+                {h.id === "meditate" && mediBooked && !selfChecks.meditate ? (
+                  <Tag kind="ok"><ShieldCheck size={10} /> {L(lang, "클래스 예약", "Đã đặt lớp")}</Tag>
+                ) : (
+                  <Tag kind="self">{L(lang, "자기 신고 · CP 없음", "Tự khai · không CP")}</Tag>
+                )}
               </div>
               {h.id === "water" ? (
                 <>
@@ -100,7 +104,13 @@ export default function Habit({
               ) : (
                 <p>{pick(h.desc, lang)}</p>
               )}
-              <p>{done ? L(lang, "오늘 완료 · 해제할 수 없어요", "Hoàn thành hôm nay · không thể bỏ") : `+${h.hrp} HRP`}</p>
+              <p>
+                {h.id === "meditate" && mediBooked && !selfChecks.meditate
+                  ? L(lang, "클래스 예약으로 완료됐어요", "Đã hoàn thành qua đặt lớp")
+                  : done
+                  ? L(lang, "오늘 완료 · 해제할 수 없어요", "Hoàn thành hôm nay · không thể bỏ")
+                  : `+${h.hrp} HRP`}
+              </p>
             </div>
             {h.id === "water" ? (
               <button className="btn-sm" onClick={() => toggleSelf("water")} disabled={done}>
@@ -145,15 +155,15 @@ export default function Habit({
           <div className="bd">
             <b>{pick(m.name, lang)}</b>
             <p>★ {num(m.rate, lang)} · {walk(m.walkMin, lang)} · {pick(m.desc, lang)}</p>
-            <span className="pr">{L(lang, `클래스 완료 시 +${m.hrp} HRP`, `Hoàn thành lớp: +${m.hrp} HRP`)}</span>
+            <span className="pr">{L(lang, `예약 시 +${m.hrp} HRP · +3 CP`, `Đặt lớp: +${m.hrp} HRP · +3 CP`)}</span>
           </div>
-          <button className="btn-sm" onClick={() => onBookClass(pick(m.name, lang))}>
-            {L(lang, "예약", "Đặt")}
+          <button className="btn-sm" onClick={() => onBookClass(m.venueId)}>
+            {L(lang, "클래스 예약", "Đặt lớp")}
           </button>
         </div>
       ))}
       <Note>
-        {L(lang, "온라인 명상에서 끝나지 않습니다 — 예약하면 지역 소비와 Verified Review로 이어집니다.", "Không dừng ở thiền online — đặt lớp sẽ dẫn tới tiêu dùng địa phương và Verified Review.")}
+        {L(lang, "클래스를 예약하면 명상 습관도 함께 완료됩니다 — 이용 후 Verified Review까지 이어집니다.", "Đặt lớp sẽ hoàn thành luôn thói quen thiền — và dẫn tới Verified Review sau khi dùng.")}
       </Note>
     </>
   );

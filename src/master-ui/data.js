@@ -194,6 +194,65 @@ export const VENUES = [
     ],
   },
   {
+    id: "m1", cat: "life", img: IMG.medi1, logo: "MG", boost: false,
+    name: { ko: "Mindful Garden", vi: "Mindful Garden" },
+    rating: 4.9, reviews: 38, rebook: 68, fulfill: 97, cancel: 2, walkMin: 8, reward: 8,
+    open: { ko: "영업중 · 06:00 - 21:00", vi: "Đang mở · 06:00 - 21:00" },
+    address: { ko: "S4.01 빈홈 그랜드 파크", vi: "S4.01 Vinhomes Grand Park" },
+    policy: { ko: "클래스 3시간 전까지 무료 취소", vi: "Miễn phí hủy trước 3 tiếng" },
+    resp: { ko: "평균 응답 9분", vi: "Phản hồi trung bình 9 phút" },
+    feats: [
+      { emoji: "🌿", ko: "가든 명상", vi: "Thiền trong vườn" },
+      { emoji: "🧘", ko: "그룹 클래스", vi: "Lớp nhóm" },
+      { emoji: "🕕", ko: "새벽 · 저녁반", vi: "Sáng sớm · buổi tối" },
+      { emoji: "🧺", ko: "매트 대여", vi: "Cho thuê thảm" },
+    ],
+    services: [
+      { id: "c1", img: IMG.medi1, price: 180000, point: 18, name: { ko: "저녁 명상 클래스", vi: "Lớp thiền buổi tối" }, desc: { ko: "19:30 · 그룹 60분", vi: "19:30 · nhóm 60 phút" }, time: { ko: "60분", vi: "60 phút" } },
+    ],
+    reviews_: [
+      { id: "r1", rate: 5, who: { ko: "은*님", vi: "Chị E." }, text: { ko: "퇴근 후 들르기 좋아요. 정원에서 하니 확실히 다릅니다.", vi: "Rất hợp ghé sau giờ làm. Thiền trong vườn khác hẳn." } },
+    ],
+  },
+  {
+    id: "m2", cat: "life", img: IMG.medi2, logo: "LOTUS", boost: false,
+    name: { ko: "Lotus Yoga Studio", vi: "Lotus Yoga Studio" },
+    rating: 4.8, reviews: 44, rebook: 65, fulfill: 96, cancel: 3, walkMin: 10, reward: 7,
+    open: { ko: "영업중 · 07:00 - 21:30", vi: "Đang mở · 07:00 - 21:30" },
+    address: { ko: "S6.02 빈홈 그랜드 파크", vi: "S6.02 Vinhomes Grand Park" },
+    policy: { ko: "클래스 3시간 전까지 무료 취소", vi: "Miễn phí hủy trước 3 tiếng" },
+    resp: { ko: "평균 응답 11분", vi: "Phản hồi trung bình 11 phút" },
+    feats: [
+      { emoji: "🌅", ko: "선셋 요가", vi: "Yoga hoàng hôn" },
+      { emoji: "👥", ko: "주 5회 운영", vi: "5 buổi mỗi tuần" },
+      { emoji: "🚿", ko: "샤워실", vi: "Phòng tắm" },
+      { emoji: "🅿️", ko: "주차 가능", vi: "Có chỗ đậu xe" },
+    ],
+    services: [
+      { id: "c1", img: IMG.medi2, price: 220000, point: 22, name: { ko: "선셋 요가", vi: "Yoga hoàng hôn" }, desc: { ko: "17:30 · 그룹 75분", vi: "17:30 · nhóm 75 phút" }, time: { ko: "75분", vi: "75 phút" } },
+    ],
+    reviews_: [],
+  },
+  {
+    id: "m3", cat: "life", img: IMG.medi3, logo: "SR", boost: false,
+    name: { ko: "Silence Retreat", vi: "Silence Retreat" },
+    rating: 4.7, reviews: 21, rebook: 62, fulfill: 95, cancel: 3, walkMin: 15, reward: 9,
+    open: { ko: "예약제 · 09:00 - 20:00", vi: "Theo lịch hẹn · 09:00 - 20:00" },
+    address: { ko: "S7.03 빈홈 그랜드 파크", vi: "S7.03 Vinhomes Grand Park" },
+    policy: { ko: "1:1 세션은 24시간 전 취소", vi: "Hủy buổi 1:1 trước 24 tiếng" },
+    resp: { ko: "평균 응답 20분", vi: "Phản hồi trung bình 20 phút" },
+    feats: [
+      { emoji: "🤫", ko: "1:1 코칭", vi: "Huấn luyện 1:1" },
+      { emoji: "🕯", ko: "사운드 힐링", vi: "Chữa lành âm thanh" },
+      { emoji: "📵", ko: "디지털 디톡스", vi: "Cai nghiện thiết bị" },
+      { emoji: "☕", ko: "허브티 제공", vi: "Trà thảo mộc" },
+    ],
+    services: [
+      { id: "c1", img: IMG.medi3, price: 350000, point: 35, name: { ko: "1:1 명상 코칭", vi: "Huấn luyện thiền 1:1" }, desc: { ko: "개인 세션 50분", vi: "Buổi cá nhân 50 phút" }, time: { ko: "50분", vi: "50 phút" } },
+    ],
+    reviews_: [],
+  },
+  {
     id: "v5", cat: "eat", img: IMG.noodle, logo: "NEW", boost: true,
     name: { ko: "반꾸온 하노이", vi: "Bánh Cuốn Hà Nội" },
     rating: null, reviews: 3, rebook: null, fulfill: null, cancel: null, walkMin: 6, reward: 12,
@@ -231,10 +290,11 @@ export const SELF_HABITS = [
 export const HEALTH_APPS = { ko: "건강 앱 (Apple 건강 · Google Fit)", vi: "Ứng dụng sức khỏe (Apple Health · Google Fit)" };
 
 /** 주변 명상 장소 — 습관을 지역 소비·Verified Review로 연결한다 (POLICY §5) */
+/** Habit 화면의 주변 명상 장소 — venueId로 실제 매장(VENUES)에 연결된다 (POLICY §5 퍼널) */
 export const MEDI_PLACES = [
-  { id: "m1", img: IMG.medi1, rate: 4.9, walkMin: 8, hrp: 20, name: { ko: "Mindful Garden", vi: "Mindful Garden" }, desc: { ko: "오늘 19:30 클래스", vi: "Lớp học 19:30 hôm nay" } },
-  { id: "m2", img: IMG.medi2, rate: 4.8, walkMin: 10, hrp: 20, name: { ko: "Lotus Yoga Studio", vi: "Lotus Yoga Studio" }, desc: { ko: "선셋 요가 · 주 5회", vi: "Yoga hoàng hôn · 5 buổi/tuần" } },
-  { id: "m3", img: IMG.medi3, rate: 4.7, walkMin: 15, hrp: 20, name: { ko: "Silence Retreat", vi: "Silence Retreat" }, desc: { ko: "1:1 명상 코칭", vi: "Huấn luyện thiền 1:1" } },
+  { id: "m1", venueId: "m1", img: IMG.medi1, rate: 4.9, walkMin: 8, hrp: 18, name: { ko: "Mindful Garden", vi: "Mindful Garden" }, desc: { ko: "오늘 19:30 클래스", vi: "Lớp học 19:30 hôm nay" } },
+  { id: "m2", venueId: "m2", img: IMG.medi2, rate: 4.8, walkMin: 10, hrp: 22, name: { ko: "Lotus Yoga Studio", vi: "Lotus Yoga Studio" }, desc: { ko: "선셋 요가 · 주 5회", vi: "Yoga hoàng hôn · 5 buổi/tuần" } },
+  { id: "m3", venueId: "m3", img: IMG.medi3, rate: 4.7, walkMin: 15, hrp: 35, name: { ko: "Silence Retreat", vi: "Silence Retreat" }, desc: { ko: "1:1 명상 코칭", vi: "Huấn luyện thiền 1:1" } },
 ];
 
 /** 주간 리포트 — 데모 자리표시자 (오늘은 실제 완료 수로 대체) */

@@ -110,6 +110,8 @@ export default function App() {
   const [partnerActive, setPartnerActive] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
   const [reviews, setReviews] = useState([]); // 내가 쓴 Verified Review
+  // 명상 클래스를 예약하면 명상 습관이 완료된다 — 자기 신고보다 강한 근거 (POLICY §5 퍼널)
+  const MEDI_IDS = ["m1", "m2", "m3"];
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
   const [stays, setStays] = useState([]);
@@ -222,8 +224,11 @@ export default function App() {
     setSelfChecks((c) => ({ ...c, [id]: true }));
     earnSelf(h.hrp, h.name.ko, h.name.vi);
   };
-  const doneCount =
-    (walkClaimed ? 1 : 0) + (water >= WATER_GOAL ? 1 : 0) + Object.values(selfChecks).filter(Boolean).length;
+  // 명상은 셀프 체크 또는 클래스 예약 둘 중 하나로 완료된다 (중복 집계하지 않는다)
+  const mediBooked = bookings.some((b) => MEDI_IDS.includes(b.venueId));
+  const selfDone = Object.entries(selfChecks).filter(([k, v]) => v && k !== "meditate").length;
+  const mediDone = selfChecks.meditate || mediBooked ? 1 : 0;
+  const doneCount = (walkClaimed ? 1 : 0) + (water >= WATER_GOAL ? 1 : 0) + selfDone + mediDone;
   const now = () => L(lang, "오늘", "Hôm nay");
   const addHrp = (amount, label) => {
     setPoints((p) => p + amount);
@@ -349,7 +354,8 @@ export default function App() {
         walkClaimed={walkClaimed} syncSteps={syncSteps} healthLinked={healthLinked} linkHealth={linkHealth}
         water={water} waterGoal={WATER_GOAL} selfChecks={selfChecks} toggleSelf={toggleSelf}
         selfEarned={selfEarned} selfCap={SELF_DAILY_CAP} doneCount={doneCount}
-        onBookClass={(name) => toast(L(lang, `${name} 클래스 예약 완료 (데모)`, `Đã đặt lớp tại ${name} (demo)`))}
+        mediBooked={mediBooked}
+        onBookClass={(venueId) => goSub("venue", { venueId })}
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
