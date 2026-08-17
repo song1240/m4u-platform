@@ -5,7 +5,7 @@
  * 독자적 재디자인 금지 (docs/DESIGN_SYSTEM.md).
  */
 import React, { useState, useEffect } from "react";
-import { Home as HomeIcon, Building2, Activity, Sparkles, User, Check } from "lucide-react";
+import { Home as HomeIcon, Building2, Activity, Sparkles, User, Check, Users } from "lucide-react";
 import Onboarding, { LangScreen, ZoneScreen } from "./screens/Onboarding.jsx";
 import Home from "./screens/Home.jsx";
 import Living from "./screens/Living.jsx";
@@ -29,6 +29,8 @@ import Cart from "./screens/Cart.jsx";
 import Stay from "./screens/Stay.jsx";
 import StayBook from "./screens/StayBook.jsx";
 import Concierge from "./screens/Concierge.jsx";
+import Feed from "./screens/Feed.jsx";
+import Recorder from "./screens/Recorder.jsx";
 import My from "./screens/My.jsx";
 import { L, pick, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP, REVIEW_CP } from "./data.js";
@@ -39,6 +41,7 @@ const TABS = [
   { id: "living", icon: Building2, ko: "Living", vi: "Living" },
   { id: "habit", icon: Activity, ko: "Habit", vi: "Habit" },
   { id: "salon", icon: Sparkles, ko: "Salon", vi: "Salon" },
+  { id: "feed", icon: Users, ko: "FEED", vi: "FEED" },
   { id: "my", icon: User, ko: "MY", vi: "MY" },
 ];
 
@@ -113,6 +116,8 @@ export default function App() {
   // 명상 클래스를 예약하면 명상 습관이 완료된다 — 자기 신고보다 강한 근거 (POLICY §5 퍼널)
   const MEDI_IDS = ["m1", "m2", "m3"];
   const [cart, setCart] = useState([]);
+  const [posts, setPosts] = useState([]); // FEED 기록 — 리뷰가 아니다 (평점·랭킹 미반영)
+  const [recording, setRecording] = useState(null); // 기록 작성 중인 습관 id
   const [orders, setOrders] = useState([]);
   const [stays, setStays] = useState([]);
   const [ai, setAi] = useState(false); // AI 컨시어지 시트
@@ -210,6 +215,7 @@ export default function App() {
       toast(L(lang, `${labelKo} 완료 · 오늘 셀프 적립 상한(${SELF_DAILY_CAP} HRP) 도달`, `Hoàn thành ${labelVi} · đã đạt giới hạn ${SELF_DAILY_CAP} HRP hôm nay`));
     }
   };
+  /** 셀프 3종은 기록(Recorder)으로만 완료된다 — 물마시기만 탭을 유지한다 */
   const toggleSelf = (id) => {
     const h = SELF_HABITS.find((x) => x.id === id);
     if (!h) return;
@@ -221,8 +227,7 @@ export default function App() {
       return;
     }
     if (selfChecks[id]) return; // 하루 1회 · 해제 불가 (어뷰징 방지)
-    setSelfChecks((c) => ({ ...c, [id]: true }));
-    earnSelf(h.hrp, h.name.ko, h.name.vi);
+    setRecording(id); // 탭만으로는 완료되지 않는다 — 기록을 남겨야 인정 (§4.11)
   };
   // 명상은 셀프 체크 또는 클래스 예약 둘 중 하나로 완료된다 (중복 집계하지 않는다)
   const mediBooked = bookings.some((b) => MEDI_IDS.includes(b.venueId));
@@ -261,6 +266,28 @@ export default function App() {
     toast(L(lang, `파트너 승인 · +${PARTNER_CP} CP · MY BUSINESS 생성`, `Duyệt đối tác · +${PARTNER_CP} CP · đã tạo MY BUSINESS`));
     goSub("biz");
   };
+  /**
+   * FEED 기록 게시 — 습관을 완료 처리하고 HRP만 지급한다.
+   * CP는 주지 않는다(사진은 검증 가능한 활동이 아니다, POLICY §4).
+   * HRP는 셀프 체크와 같은 일일 상한을 공유한다.
+   */
+  const addPost = ({ habit, text, img }) => {
+    const h = SELF_HABITS.find((x) => x.id === habit);
+    if (!h) return;
+    setPosts((x) => [
+      { id: "p" + x.length, mine: true, av: "M", habit, img, when: { ko: "방금", vi: "vừa xong" }, text: { ko: text, vi: text } },
+      ...x,
+    ]);
+    if (!selfChecks[habit]) {
+      setSelfChecks((c) => ({ ...c, [habit]: true }));
+      earnSelf(h.hrp, h.name.ko, h.name.vi); // 기록이 셀프 체크를 대체 — 보상 수치는 그대로
+    } else {
+      toast(L(lang, "기록을 남겼어요 (오늘 적립은 완료)", "Đã ghi chép (hôm nay đã tích đủ)"));
+    }
+    setRecording(null);
+    setTab("feed");
+  };
+
   // SHOP — 결제 금액에 비례해 HRP 적립 (POLICY §3)
   const addToCart = (p) => {
     setCart((c) => (c.some((x) => x.id === p.id) ? c.map((x) => (x.id === p.id ? { ...x, qty: x.qty + 1 } : x)) : [...c, { ...p, qty: 1 }]));
@@ -359,6 +386,7 @@ export default function App() {
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
+    feed: <Feed lang={lang} posts={posts} onRecord={setRecording} />,
     my: (
       <My
         lang={lang} zone={zone} points={points} cp={cp} bookings={bookings} coupons={coupons}
@@ -385,6 +413,9 @@ export default function App() {
         </button>
       )}
       {ai && <Concierge lang={lang} onClose={() => setAi(false)} onGo={aiGo} />}
+      {recording && (
+        <Recorder lang={lang} habitId={recording} capped={selfEarned >= SELF_DAILY_CAP} onClose={() => setRecording(null)} onPost={addPost} />
+      )}
       <nav>
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>

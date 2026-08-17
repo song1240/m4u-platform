@@ -630,3 +630,32 @@ export const AI_SUGGEST = [
   { id: "s3", ko: "적립 얼마나 됐어?", vi: "Tôi tích được bao nhiêu?" },
   { id: "s4", ko: "객실 보여줘", vi: "Cho tôi xem phòng" },
 ];
+
+/**
+ * FEED — 습관 기록 커뮤니티 1단계 (DESIGN_SYSTEM §4.11)
+ *  - 피드는 리뷰가 아니다: 별점 없음, 평점·랭킹·검색에 반영 금지 (POLICY §1·§2·§10)
+ *  - 게시물 보상은 HRP만. CP는 주지 않는다 (POLICY §4 — 사진은 검증 가능한 활동이 아니다)
+ *  - HRP는 셀프 체크와 같은 일일 상한을 공유한다
+ */
+export const FEED_HRP = 3;
+/** 기록 최소 길이 — 탭 한 번보다 강한 근거를 남기게 한다 */
+export const FEED_MIN = 10;
+
+/** 이웃 기록 데모 — 실서비스는 서버에서 온다 */
+export const FEED_SEED = [
+  {
+    id: "f1", who: "지*님", whoVi: "Chị T.", av: "지", habit: "meditate", img: IMG.medi1,
+    when: { ko: "20분 전", vi: "20 phút trước" },
+    text: { ko: "퇴근하고 Mindful Garden 저녁 클래스 다녀왔어요. 정원에서 하니 확실히 다르네요.", vi: "Sau giờ làm ghé lớp thiền tối ở Mindful Garden. Thiền trong vườn khác hẳn." },
+  },
+  {
+    id: "f2", who: "현*님", whoVi: "Anh H.", av: "현", habit: "run", img: null,
+    when: { ko: "1시간 전", vi: "1 giờ trước" },
+    text: { ko: "단지 한 바퀴 5km 완주. 아침에 뛰면 하루가 길어지는 느낌이에요.", vi: "Chạy hết một vòng khu 5km. Chạy buổi sáng làm ngày dài hơn." },
+  },
+  {
+    id: "f3", who: "수*님", whoVi: "Chị S.", av: "수", habit: "water", img: IMG.cafe,
+    when: { ko: "3시간 전", vi: "3 giờ trước" },
+    text: { ko: "The Coffee House에서 물 두 잔 추가. 오늘 8잔 채웠습니다!", vi: "Uống thêm 2 ly nước ở The Coffee House. Hôm nay đủ 8 ly!" },
+  },
+];

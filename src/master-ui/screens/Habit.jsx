@@ -9,7 +9,7 @@
  * 모든 수치는 데모 자리표시자 (CLAUDE.md §6).
  */
 import React from "react";
-import { Footprints, Check, Flame, ShieldCheck, HeartPulse, Link2 } from "lucide-react";
+import { Footprints, Check, Flame, ShieldCheck, HeartPulse, Link2, PenLine } from "lucide-react";
 import { Card, Note, Tag } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
 import { SELF_HABITS, MEDI_PLACES, WEEK_DEMO, WEEKDAYS, HEALTH_APPS } from "../data.js";
@@ -116,9 +116,11 @@ export default function Habit({
               <button className="btn-sm" onClick={() => toggleSelf("water")} disabled={done}>
                 {done ? L(lang, "완료", "Xong") : L(lang, "+1잔", "+1 ly")}
               </button>
+            ) : done ? (
+              <button className="chk on" disabled><Check size={16} /></button>
             ) : (
-              <button className={"chk" + (done ? " on" : "")} onClick={() => toggleSelf(h.id)} disabled={done}>
-                <Check size={16} />
+              <button className="btn-sm" onClick={() => toggleSelf(h.id)}>
+                <PenLine size={13} /> {L(lang, "기록", "Ghi lại")}
               </button>
             )}
           </div>
@@ -126,7 +128,7 @@ export default function Habit({
       })}
 
       <Note>
-        {L(lang, `셀프 체크는 하루 1회 · 해제 불가이며, 하루 최대 ${selfCap} HRP까지 적립됩니다 (오늘 ${selfEarned}/${selfCap}).`, `Tự đánh dấu chỉ 1 lần/ngày · không thể bỏ, tối đa ${selfCap} HRP mỗi ngày (hôm nay ${selfEarned}/${selfCap}).`)}
+        {L(lang, `셀프 습관은 한 줄 기록을 남겨야 완료됩니다 · 하루 1회 · 해제 불가 · 하루 최대 ${selfCap} HRP (오늘 ${selfEarned}/${selfCap}).`, `Thói quen tự khai cần một dòng ghi chép để hoàn thành · 1 lần/ngày · không thể bỏ · tối đa ${selfCap} HRP (hôm nay ${selfEarned}/${selfCap}).`)}
         {capped && L(lang, " 상한에 도달해 추가 적립은 없습니다.", " Đã đạt giới hạn, không tích lũy thêm.")}
         {L(lang, " CP는 검증 가능한 활동에만 지급됩니다.", " CP chỉ dành cho hoạt động có thể xác minh.")}
       </Note>
