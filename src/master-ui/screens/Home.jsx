@@ -7,7 +7,7 @@
 import React from "react";
 import { MapPin, Building2, Footprints, Scissors, Car, Sparkles, ChevronRight } from "lucide-react";
 import { Card } from "../components.jsx";
-import { L, num } from "../i18n.js";
+import { L, num, greeting } from "../i18n.js";
 import "../style.css";
 
 const IMG = {
@@ -40,7 +40,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi 
 
       <div className="greet">
         <div>
-          <h1>{L(lang, "좋은 저녁이에요", "Chào buổi tối")}</h1>
+          <h1>{greeting(lang)}</h1>
           <p>{L(lang, "오늘도 나를 위한 좋은 하루", "Một ngày tốt lành dành cho bạn")}</p>
         </div>
         <button className="hrpchip" onClick={() => goSub("wallet")}>

@@ -36,6 +36,21 @@ export const ZONES = [
   { ko: "푸미흥", vi: "Phú Mỹ Hưng", city: "Ho Chi Minh, Vietnam" },
 ];
 
+/**
+ * 생활권 표준시 — ZONES 3곳 모두 호치민(ICT, UTC+7).
+ * 인사말은 사용자가 사는 생활권 시간을 따른다 (기기 시간이 아니라).
+ * 한국에서 시연해도 현지 시간 기준으로 보이는 것이 이 제품에 맞다.
+ */
+export const ZONE_TZ = "Asia/Ho_Chi_Minh";
+
+/** 시간대별 인사말 — 경계는 현지 생활 리듬 기준 (데모 자리표시자) */
+export const GREETINGS = [
+  { id: "morning", from: 5, ko: "좋은 아침이에요", vi: "Chào buổi sáng" },
+  { id: "afternoon", from: 11, ko: "좋은 오후예요", vi: "Chào buổi chiều" },
+  { id: "evening", from: 18, ko: "좋은 저녁이에요", vi: "Chào buổi tối" },
+  { id: "night", from: 23, ko: "편안한 밤 되세요", vi: "Chúc ngủ ngon" },
+];
+
 /** 화면 언어 — 선택 전 화면이므로 각 언어를 자기 언어로 표기한다 */
 export const LANGS = [
   {
