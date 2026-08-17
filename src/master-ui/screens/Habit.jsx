@@ -2,21 +2,22 @@
  * Habit — 오늘 습관 (DESIGN_SYSTEM §4.4)
  *
  * POLICY §5:
- *  - 검증형(헬스 데이터 연동: 걷기)만 CP 지급
+ *  - 검증형(헬스 데이터 연동: 걷기)만 CP 지급 — **연동돼 있을 때만** 검증 뱃지와 CP를 붙인다.
+ *    연동 없이 버튼만으로 CP를 주면 "검증 가능한 활동" 원칙이 깨진다 (POLICY §4).
  *  - 셀프 체크는 소액 HRP · 하루 1회 · 해제 불가 · 일일 상한 15 HRP
  *  - 습관은 지역 시설과 연결한다 (명상 → 주변 장소 예약 → 지역 소비 → Verified Review)
  * 모든 수치는 데모 자리표시자 (CLAUDE.md §6).
  */
 import React from "react";
-import { Footprints, Check, Flame, ShieldCheck, ChevronRight } from "lucide-react";
+import { Footprints, Check, Flame, ShieldCheck, HeartPulse, Link2 } from "lucide-react";
 import { Card, Note, Tag } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
-import { SELF_HABITS, MEDI_PLACES, WEEK_DEMO, WEEKDAYS } from "../data.js";
+import { SELF_HABITS, MEDI_PLACES, WEEK_DEMO, WEEKDAYS, HEALTH_APPS } from "../data.js";
 import "../style.css";
 
 export default function Habit({
   lang, steps, goal, streak,
-  walkClaimed, syncSteps,
+  walkClaimed, syncSteps, healthLinked, linkHealth,
   water, waterGoal, selfChecks, toggleSelf,
   selfEarned, selfCap, doneCount,
   onBookClass,
@@ -41,19 +42,39 @@ export default function Habit({
         </div>
       </div>
 
-      {/* 검증형 — 헬스 데이터 연동이라 CP를 받는다 (POLICY §5) */}
+      {/* 검증형 — 건강 앱이 연동된 경우에만 검증 뱃지와 CP가 붙는다 (POLICY §4) */}
+      {!healthLinked && (
+        <div className="linkcard">
+          <i><HeartPulse size={19} /></i>
+          <div className="bd">
+            <b>{L(lang, "건강 앱을 연결하면 CP도 적립돼요", "Kết nối ứng dụng sức khỏe để nhận thêm CP")}</b>
+            <p>{L(lang, `${HEALTH_APPS.ko}의 걸음 수를 그대로 가져옵니다. 연결 전에는 HRP만 적립됩니다.`, `Lấy số bước từ ${HEALTH_APPS.vi}. Trước khi kết nối chỉ tích HRP.`)}</p>
+          </div>
+          <button className="btn-sm" onClick={linkHealth}>
+            <Link2 size={13} /> {L(lang, "연결", "Kết nối")}
+          </button>
+        </div>
+      )}
       <div className="hrow">
         <i className="ic"><Footprints size={19} /></i>
         <div className="bd">
           <div className="tl">
             <b>{L(lang, "걷기", "Đi bộ")}</b>
-            <Tag kind="ok"><ShieldCheck size={10} /> {L(lang, "헬스 데이터 검증", "Xác minh dữ liệu")}</Tag>
+            {healthLinked ? (
+              <Tag kind="ok"><ShieldCheck size={10} /> {L(lang, "헬스 데이터 검증", "Xác minh dữ liệu")}</Tag>
+            ) : (
+              <Tag kind="off">{L(lang, "미연동 · CP 없음", "Chưa kết nối · không CP")}</Tag>
+            )}
           </div>
           <div className="v">{num(steps, lang)} <small>/ {num(goal, lang)}</small></div>
           <div className="bar"><i style={{ width: `${pct}%` }} /></div>
-          <p>{L(lang, "목표 달성 시 +10 HRP · +2 CP (검증형)", "Đạt mục tiêu: +10 HRP · +2 CP (đã xác minh)")}</p>
+          <p>
+            {healthLinked
+              ? L(lang, "목표 달성 시 +10 HRP · +2 CP (검증형)", "Đạt mục tiêu: +10 HRP · +2 CP (đã xác minh)")
+              : L(lang, "건강 앱을 연결하면 걸음이 기록되고 보상을 받아요", "Kết nối ứng dụng sức khỏe để ghi nhận bước chân và nhận thưởng")}
+          </p>
         </div>
-        <button className="btn-sm" onClick={syncSteps} disabled={walkClaimed}>
+        <button className="btn-sm" onClick={syncSteps} disabled={walkClaimed || !healthLinked}>
           {walkClaimed ? L(lang, "달성", "Đạt") : L(lang, "동기화", "Đồng bộ")}
         </button>
       </div>
@@ -65,7 +86,10 @@ export default function Habit({
           <div className={"hrow" + (done ? " done" : "")} key={h.id}>
             <i className="ic">{h.emoji}</i>
             <div className="bd">
-              <b>{pick(h.name, lang)}</b>
+              <div className="tl">
+                <b>{pick(h.name, lang)}</b>
+                <Tag kind="self">{L(lang, "자기 신고 · CP 없음", "Tự khai · không CP")}</Tag>
+              </div>
               {h.id === "water" ? (
                 <>
                   <div className="v">{water} <small>/ {L(lang, `${h.goal}잔`, `${h.goal} ly`)}</small></div>

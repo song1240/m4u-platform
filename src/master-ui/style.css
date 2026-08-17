@@ -93,3 +93,7 @@ main:has(.ctabar){padding-bottom:96px}
 .aibub{max-width:84%;padding:10px 13px;border-radius:15px;font-size:12.5px;line-height:1.6;margin-bottom:8px;background:#eee8db;color:var(--ink)}.aibub.me{margin-left:auto;background:var(--g);color:white}
 .aiact{display:inline-flex;align-items:center;gap:4px;margin:2px 0 10px;border:1px solid var(--g);background:var(--p);color:var(--g);border-radius:11px;min-height:40px;padding:0 13px;font-size:12px;font-weight:800}
 .aiscope{display:flex;gap:7px;align-items:flex-start;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;line-height:1.5;color:var(--mut)}.aiscope svg{flex:none;color:var(--g2);margin-top:1px}
+.tag.off,.tag.self{background:#77817c1f;color:var(--mut)}
+.linkcard{display:flex;gap:11px;align-items:center;border:1px dashed var(--line);background:var(--p);border-radius:16px;padding:12px;margin-bottom:8px}.linkcard>i{width:38px;height:38px;flex:none;border-radius:13px;background:#eee8db;color:var(--mut);display:grid;place-items:center}.linkcard .bd{flex:1;min-width:0}.linkcard b{display:block;font-size:13px}.linkcard p{margin:3px 0 0;font-size:11px;color:var(--mut);line-height:1.45}
+.btn-sm:disabled,.primary:disabled,.stepper button:disabled{opacity:.42}
+.btn-sm:disabled,.primary:disabled{cursor:default}

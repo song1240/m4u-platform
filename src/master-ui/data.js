@@ -223,6 +223,13 @@ export const SELF_HABITS = [
   { id: "meditate", emoji: "🧘", hrp: 5, name: { ko: "명상하기", vi: "Thiền định" }, desc: { ko: "10분 마음 챙김", vi: "10 phút thiền chánh niệm" } },
 ];
 
+/**
+ * 건강 앱 연동 (POLICY §4) — CP는 검증 가능한 활동에만 규칙 기반 자동 적립된다.
+ * 연동 전에는 걷기 목표를 채워도 CP를 주지 않고 HRP만 지급한다.
+ * 실서비스는 HealthKit / Google Fit 연동으로 대체된다.
+ */
+export const HEALTH_APPS = { ko: "건강 앱 (Apple 건강 · Google Fit)", vi: "Ứng dụng sức khỏe (Apple Health · Google Fit)" };
+
 /** 주변 명상 장소 — 습관을 지역 소비·Verified Review로 연결한다 (POLICY §5) */
 export const MEDI_PLACES = [
   { id: "m1", img: IMG.medi1, rate: 4.9, walkMin: 8, hrp: 20, name: { ko: "Mindful Garden", vi: "Mindful Garden" }, desc: { ko: "오늘 19:30 클래스", vi: "Lớp học 19:30 hôm nay" } },

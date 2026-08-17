@@ -93,6 +93,7 @@ export default function App() {
   // 습관 상태 — 걷기는 검증형, 나머지는 셀프 체크(해제 불가)
   const [stepsExtra, setStepsExtra] = useState(0);
   const [walkClaimed, setWalkClaimed] = useState(false);
+  const [healthLinked, setHealthLinked] = useState(false); // 건강 앱 연동 — CP 지급 전제 (POLICY §4)
   const [water, setWater] = useState(5);
   const [selfChecks, setSelfChecks] = useState({});
   const [selfEarned, setSelfEarned] = useState(0); // 오늘 셀프 체크로 적립한 HRP 합계
@@ -179,11 +180,21 @@ export default function App() {
     if (next >= STEP_GOAL && !walkClaimed) {
       setWalkClaimed(true);
       addHrp(WALK_HRP, L(lang, "습관 · 걷기 목표 달성", "Thói quen · đạt mục tiêu đi bộ"));
-      addCp(WALK_CP, L(lang, "걷기 목표 달성 (헬스 데이터 검증)", "Đạt mục tiêu đi bộ (xác minh dữ liệu)"));
-      toast(L(lang, `걷기 목표 달성! +${WALK_HRP} HRP · +${WALK_CP} CP`, `Đạt mục tiêu đi bộ! +${WALK_HRP} HRP · +${WALK_CP} CP`));
+      // CP는 검증 가능한 활동에만 — 건강 앱이 연동돼 있을 때만 지급한다 (POLICY §4)
+      if (healthLinked) {
+        addCp(WALK_CP, L(lang, "걷기 목표 달성 (헬스 데이터 검증)", "Đạt mục tiêu đi bộ (xác minh dữ liệu)"));
+        toast(L(lang, `걷기 목표 달성! +${WALK_HRP} HRP · +${WALK_CP} CP`, `Đạt mục tiêu đi bộ! +${WALK_HRP} HRP · +${WALK_CP} CP`));
+      } else {
+        toast(L(lang, `걷기 목표 달성! +${WALK_HRP} HRP (CP는 건강 앱 연결 후)`, `Đạt mục tiêu! +${WALK_HRP} HRP (CP sau khi kết nối)`));
+      }
     } else {
       toast(L(lang, `걸음 동기화 · +${gained}보`, `Đồng bộ · +${gained} bước`));
     }
+  };
+  /** 건강 앱 연동 — 연동 이후의 걷기 달성부터 CP가 지급된다 (POLICY §4) */
+  const linkHealth = () => {
+    setHealthLinked(true);
+    toast(L(lang, "건강 앱이 연결됐어요 · 이제 걷기 달성 시 CP도 적립됩니다", "Đã kết nối · từ giờ đạt mục tiêu đi bộ sẽ tích cả CP"));
   };
   /** 셀프 체크 적립 — 상한 초과분은 지급하지 않고 사유를 알린다 */
   const earnSelf = (hrp, labelKo, labelVi) => {
@@ -335,7 +346,7 @@ export default function App() {
     habit: (
       <Habit
         lang={lang} steps={totalSteps} goal={STEP_GOAL} streak={STREAK}
-        walkClaimed={walkClaimed} syncSteps={syncSteps}
+        walkClaimed={walkClaimed} syncSteps={syncSteps} healthLinked={healthLinked} linkHealth={linkHealth}
         water={water} waterGoal={WATER_GOAL} selfChecks={selfChecks} toggleSelf={toggleSelf}
         selfEarned={selfEarned} selfCap={SELF_DAILY_CAP} doneCount={doneCount}
         onBookClass={(name) => toast(L(lang, `${name} 클래스 예약 완료 (데모)`, `Đã đặt lớp tại ${name} (demo)`))}
