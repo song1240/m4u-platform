@@ -28,6 +28,7 @@ import Product from "./screens/Product.jsx";
 import Cart from "./screens/Cart.jsx";
 import Stay from "./screens/Stay.jsx";
 import StayBook from "./screens/StayBook.jsx";
+import Concierge from "./screens/Concierge.jsx";
 import My from "./screens/My.jsx";
 import { L, pick, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP, REVIEW_CP } from "./data.js";
@@ -111,6 +112,7 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
   const [stays, setStays] = useState([]);
+  const [ai, setAi] = useState(false); // AI 컨시어지 시트
 
   // 스크린리더·번역기가 올바른 언어로 읽도록 문서 언어를 동기화
   useEffect(() => {
@@ -305,6 +307,9 @@ export default function App() {
     if (id === "zone") setZoneDraft(zoneIdx);
     go("app", id);
   };
+  // 하단 고정 CTA가 있는 화면에서는 FAB를 숨긴다 — 주 CTA를 가리지 않기 위해 (DESIGN_SYSTEM §4.10)
+  const CTA_SUBS = ["book", "review", "product", "cart", "staybook", "partner", "venue"];
+  const showFab = !sub || !CTA_SUBS.includes(sub.name);
   const subScreens = {
     cat: <Category lang={lang} catId={sub?.catId} onBack={closeSub} goSub={goSub} toast={toast} />,
     venue: <Venue lang={lang} venueId={sub?.venueId} myReviews={reviews} onBack={closeSub} goSub={goSub} liked={likes.includes(sub?.venueId)} toggleLike={toggleLike} />,
@@ -325,7 +330,7 @@ export default function App() {
     residence: <Residence lang={lang} checkedIn={checkedIn} setCheckedIn={setCheckedIn} toast={toast} onBack={closeSub} />,
   };
   const screens = {
-    home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} goSub={goSub} />,
+    home: <Home lang={lang} zone={zone} steps={totalSteps} goal={STEP_GOAL} points={points} go={setTab} goSub={goSub} onAi={() => setAi(true)} />,
     living: <Living lang={lang} zone={zone} go={setTab} goSub={goSub} />,
     habit: (
       <Habit
@@ -346,10 +351,23 @@ export default function App() {
       />
     ),
   };
+  // AI는 화면으로 데려다주기만 한다 — 확정은 사용자가 누른다 (§4.10)
+  const aiGo = (act) => {
+    setAi(false);
+    if (act.tab) return setTab(act.tab);
+    if (act.sub) return goSub(act.sub, act.params || {});
+  };
+
   return (
     <div className="shell">
       <main>{sub ? subScreens[sub.name] : screens[tab]}</main>
       {toastMsg && <div className="toast"><Check size={15} /> {toastMsg}</div>}
+      {showFab && !ai && (
+        <button className="fab" onClick={() => setAi(true)} aria-label="AI">
+          <Sparkles size={22} />
+        </button>
+      )}
+      {ai && <Concierge lang={lang} onClose={() => setAi(false)} onGo={aiGo} />}
       <nav>
         {TABS.map((t) => (
           <button key={t.id} className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>

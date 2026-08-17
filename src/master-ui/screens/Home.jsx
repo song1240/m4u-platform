@@ -28,7 +28,7 @@ const PLACES = [
   { img: IMG.stay, name: "Grand Park Residence", rate: 4.7, walk: 9, reward: 5 },
 ];
 
-export default function Home({ lang, zone, steps, goal, points, go, goSub }) {
+export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi }) {
   const left = Math.max(0, goal - steps);
   const pct = Math.min(100, Math.round((steps / goal) * 100));
   return (
@@ -123,7 +123,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub }) {
         ))}
       </div>
 
-      <Card c="ai slim">
+      <Card c="ai slim" onClick={onAi}>
         <Sparkles size={20} />
         <div>
           <small>M4U AI CONCIERGE</small>

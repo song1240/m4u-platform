@@ -490,3 +490,61 @@ export const STAYS = [
     ],
   },
 ];
+
+/**
+ * AI 컨시어지 (안내 + 초안 범위 — 대표 승인 2026-08-13)
+ *  - AI가 하는 것: 의도 파악 · 후보 제시(랭킹 그대로) · 화면 딥링크 · 폼 미리 채우기
+ *  - AI가 하지 않는 것: 결제 · 예약 확정 · 쿠폰 사용 · 리뷰 작성 · 투표
+ * 후보는 ranking.js 결과를 그대로 쓴다 — AI가 따로 정렬하지 않는다 (POLICY §1).
+ * 실서비스는 n8n + LLM으로 대체 예정이며, 아래 규칙은 데모용 의도 매칭이다.
+ */
+export const AI_INTENTS = [
+  {
+    id: "eat", re: /맛집|식당|밥|한식|먹|배고|음식|nhà hàng|quán|món|đói|ăn/i,
+    say: { ko: "MY ZONE 랭킹 상위 맛집을 모아왔어요. 예약 화면까지 열어드릴게요.", vi: "Đây là các quán ăn xếp hạng cao trong MY ZONE. Tôi sẽ mở màn hình đặt chỗ." },
+    act: { sub: "cat", params: { catId: "eat" }, label: { ko: "맛집 목록 열기", vi: "Mở danh sách quán ăn" } },
+  },
+  {
+    id: "salon", re: /살롱|미용|헤어|네일|피부|스파|마사지|salon|tóc|nail|da|massage/i,
+    say: { ko: "뷰티 프로필을 만들면 더 잘 맞는 케어를 찾을 수 있어요. 살롱 화면으로 안내할게요.", vi: "Tạo hồ sơ làm đẹp sẽ giúp tìm dịch vụ phù hợp hơn. Tôi sẽ mở màn hình salon." },
+    act: { tab: "salon", label: { ko: "Salon 열기", vi: "Mở Salon" } },
+  },
+  {
+    id: "move", re: /카트|이동|택시|차량|렌트|타고|xe|di chuyển|taxi/i,
+    say: { ko: "단지 전역에서 전기카트를 부를 수 있어요. 호출 화면을 열어드릴게요.", vi: "Bạn có thể gọi xe điện trong toàn khu. Tôi sẽ mở màn hình gọi xe." },
+    act: { sub: "cat", params: { catId: "move" }, label: { ko: "E-카트 호출 화면", vi: "Màn hình gọi xe điện" } },
+  },
+  {
+    id: "stay", re: /숙소|객실|스테이|레지던스|숙박|묵|phòng|lưu trú|ở/i,
+    say: { ko: "레지던스 객실을 보여드릴게요. 기간을 고르면 적립 예정 금액까지 계산됩니다.", vi: "Tôi sẽ hiển thị các phòng. Chọn thời gian sẽ tính luôn điểm tích lũy dự kiến." },
+    act: { sub: "stay", label: { ko: "객실 보기", vi: "Xem phòng" } },
+  },
+  {
+    id: "shop", re: /상품|사고|구매|쇼핑|스킨|세럼|마스크|mua|sản phẩm|serum/i,
+    say: { ko: "M4U Select 상품을 모아뒀어요. 결제 금액에 비례해 HRP가 적립됩니다.", vi: "Đây là sản phẩm M4U Select. HRP tích theo số tiền thanh toán." },
+    act: { sub: "shop", label: { ko: "SHOP 열기", vi: "Mở SHOP" } },
+  },
+  {
+    id: "wallet", re: /적립|포인트|지갑|HRP|CP|쿠폰|공동구매|투표|ví|điểm|phiếu/i,
+    say: { ko: "지갑에서 HRP · CP 내역과 공동구매 · 투표를 볼 수 있어요.", vi: "Trong ví bạn xem được lịch sử HRP · CP, mua chung và bỏ phiếu." },
+    act: { sub: "wallet", label: { ko: "지갑 열기", vi: "Mở ví" } },
+  },
+  {
+    id: "habit", re: /습관|걷기|운동|물|명상|thói quen|đi bộ|thiền/i,
+    say: { ko: "오늘 습관 현황을 볼 수 있어요. 걷기는 헬스 데이터 검증으로 CP도 함께 적립됩니다.", vi: "Xem tình hình thói quen hôm nay. Đi bộ được xác minh dữ liệu nên tích cả CP." },
+    act: { tab: "habit", label: { ko: "Habit 열기", vi: "Mở Habit" } },
+  },
+  {
+    id: "translate", re: /통역|번역|베트남어|한국어|말|dịch|tiếng việt|tiếng hàn/i,
+    say: { ko: "화면 언어는 MY · 언어에서 언제든 바꿀 수 있어요. 매장에서 쓸 표현도 도와드릴게요.", vi: "Bạn có thể đổi ngôn ngữ trong MY · Ngôn ngữ bất cứ lúc nào. Tôi cũng giúp câu nói khi ở cửa hàng." },
+    act: { tab: "my", label: { ko: "MY 열기", vi: "Mở MY" } },
+  },
+];
+
+/** 시트를 열었을 때 먼저 보여주는 예시 질문 */
+export const AI_SUGGEST = [
+  { id: "s1", ko: "근처 한식당 추천해줘", vi: "Gợi ý quán ăn Hàn gần đây" },
+  { id: "s2", ko: "카트 부르고 싶어", vi: "Tôi muốn gọi xe điện" },
+  { id: "s3", ko: "적립 얼마나 됐어?", vi: "Tôi tích được bao nhiêu?" },
+  { id: "s4", ko: "객실 보여줘", vi: "Cho tôi xem phòng" },
+];
