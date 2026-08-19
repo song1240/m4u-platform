@@ -10,17 +10,18 @@
  * 어느 쪽이든 별점은 없고, 매장을 언급해도 평점 · 순위에 반영되지 않는다 (POLICY §11.3).
  */
 import React, { useState } from "react";
-import { ImagePlus, X, ShieldCheck } from "lucide-react";
+import { ImagePlus, X, ShieldCheck, MapPin } from "lucide-react";
 import { Btn, Sheet, Tag, Photo } from "../components.jsx";
 import { L, pick } from "../i18n.js";
-import { SELF_HABITS, FEED_CATS, FEED_MIN } from "../data.js";
+import { SELF_HABITS, FEED_CATS, FEED_MIN, VENUES } from "../data.js";
 import "../style.css";
 
-export default function Composer({ lang, draft, capped, onClose, onPost }) {
+export default function Composer({ lang, draft, capped, usedVenues = [], onClose, onPost }) {
   const [cat, setCat] = useState(draft?.cat || "habit");
   const [habit, setHabit] = useState(draft?.habit || null);
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
+  const [venue, setVenue] = useState(null); // 관련 매장 (선택) — 태그해도 평점·순위에 반영되지 않는다 (§11.3)
 
   const locked = !!draft?.habit; // 습관 화면에서 들어온 경우 종류를 바꾸지 않는다
   const h = SELF_HABITS.find((x) => x.id === habit);
@@ -69,6 +70,48 @@ export default function Composer({ lang, draft, capped, onClose, onPost }) {
           </div>
         )}
 
+        {!isHabit && (
+          <>
+            <div className="chips">
+              <button
+                className={"chip" + (!venue ? " on" : "")}
+                aria-pressed={!venue}
+                onClick={() => setVenue(null)}
+              >
+                {L(lang, "매장 없음", "Không có cửa hàng")}
+              </button>
+              {VENUES.map((v) => (
+                <button
+                  key={v.id}
+                  className={"chip" + (venue === v.id ? " on" : "")}
+                  aria-pressed={venue === v.id}
+                  onClick={() => setVenue(v.id)}
+                >
+                  <MapPin size={11} /> {pick(v.name, lang)}
+                </button>
+              ))}
+            </div>
+            {venue && (
+              <div className="lbl">
+                {usedVenues.includes(venue) ? (
+                  <Tag kind="ok">
+                    <ShieldCheck size={10} /> {L(lang, "M4U 이용 확인", "Đã xác nhận sử dụng M4U")}
+                  </Tag>
+                ) : (
+                  <Tag kind="off">{L(lang, "이용 기록 없음", "Chưa có lịch sử sử dụng")}</Tag>
+                )}
+                <span className="hintxt">
+                  {L(
+                    lang,
+                    "이용 사실 표시일 뿐이며 별점 · 평점 · 순위에 반영되지 않아요",
+                    "Chỉ là dấu hiệu đã sử dụng — không tính vào sao · điểm · xếp hạng"
+                  )}
+                </span>
+              </div>
+            )}
+          </>
+        )}
+
         <div className="lbl">
           {locked && h && <Tag kind="self">{h.emoji} {pick(h.name, lang)}</Tag>}
           <span className="hintxt">{reward}</span>
@@ -102,7 +145,7 @@ export default function Composer({ lang, draft, capped, onClose, onPost }) {
           {enough && <span className="ok"><ShieldCheck size={11} /> {L(lang, "게시할 수 있어요", "Có thể đăng")}</span>}
         </div>
 
-        <Btn onClick={() => enough && onPost({ cat, habit: isHabit ? habit : null, text: text.trim(), img })}>
+        <Btn onClick={() => enough && onPost({ cat, habit: isHabit ? habit : null, venue: isHabit ? null : venue, text: text.trim(), img })}>
           {!enough
             ? L(lang, `${FEED_MIN}자 이상 적어주세요`, `Hãy viết từ ${FEED_MIN} ký tự`)
             : isHabit

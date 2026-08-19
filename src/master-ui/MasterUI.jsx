@@ -281,12 +281,20 @@ export default function App() {
    *  - 맛집 · 생활정보 등 자유 게시는 **아무 보상도 지급하지 않는다**
    * 어느 쪽이든 CP는 없다 (§4) — 글과 사진은 검증 가능한 활동이 아니다.
    */
-  const addPost = ({ cat, habit, text, img }) => {
+  /** 예약·결제 기록이 있는 매장 — `M4U 이용 확인` 표시의 유일한 근거다 (POLICY §11.4) */
+  const usedVenues = bookings.map((b) => b.venueId).filter(Boolean);
+
+  const addPost = ({ cat, habit, venue, text, img }) => {
     const h = habit ? SELF_HABITS.find((x) => x.id === habit) : null;
     if (cat === "habit" && !h) return;
     setPosts((x) => [
       {
         id: "p" + x.length, mine: true, av: "M", cat: cat || "habit", habit: h ? habit : null, img,
+        venue: venue || null,
+        // 이용 확인은 예약 기록에서만 나온다. 사용자가 스스로 붙일 수 없다 (§11.4)
+        used: venue ? usedVenues.includes(venue) : false,
+        // 파트너 계정의 글은 반드시 PARTNER 로 표시된다 — 일반 게시물처럼 위장 금지 (§11.7)
+        partner: partnerActive,
         when: { ko: "방금", vi: "vừa xong" }, text: { ko: text, vi: text },
       },
       ...x,
@@ -402,7 +410,7 @@ export default function App() {
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
-    feed: <Feed lang={lang} posts={posts} onWrite={setComposing} />,
+    feed: <Feed lang={lang} posts={posts} onWrite={setComposing} goSub={goSub} />,
     my: (
       <My
         lang={lang} zone={zone} points={points} cp={cp} bookings={bookings} coupons={coupons}
@@ -439,6 +447,7 @@ export default function App() {
           lang={lang}
           draft={composing}
           capped={selfEarned >= SELF_DAILY_CAP}
+          usedVenues={usedVenues}
           onClose={() => setComposing(null)}
           onPost={addPost}
         />

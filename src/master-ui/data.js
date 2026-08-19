@@ -674,6 +674,7 @@ export const FEED_SEED = [
   },
   {
     id: "f4", cat: "food", who: "민*님", whoVi: "Chị M.", av: "민", habit: null, img: IMG.grill,
+    venue: "v2", used: true,
     when: { ko: "2시간 전", vi: "2 giờ trước" },
     text: { ko: "S2 상가 1층 숯불집, 점심에 가면 줄이 짧아요. 반찬 리필도 잘 해주세요.", vi: "Quán nướng than tầng 1 khu S2, đi buổi trưa ít phải xếp hàng. Đồ ăn kèm cũng được thêm thoải mái." },
   },
@@ -684,7 +685,14 @@ export const FEED_SEED = [
   },
   {
     id: "f6", cat: "salon", who: "린*님", whoVi: "Chị L.", av: "린", habit: null, img: IMG.salon,
+    venue: "v1", used: true,
     when: { ko: "어제", vi: "Hôm qua" },
     text: { ko: "두피 케어 받고 왔어요. 예약은 평일 오전이 여유 있습니다.", vi: "Vừa đi chăm sóc da đầu về. Đặt lịch buổi sáng ngày thường thì thoáng hơn." },
+  },
+  {
+    id: "f7", cat: "food", who: "빈홈 그릴 하우스", whoVi: "Vinhomes Grill House", av: "G",
+    habit: null, img: null, venue: "v2", partner: true,
+    when: { ko: "오늘", vi: "Hôm nay" },
+    text: { ko: "이번 주 평일 점심에 오시면 음료를 드립니다. 예약 없이 오셔도 됩니다.", vi: "Tuần này dùng bữa trưa ngày thường sẽ được tặng nước. Không cần đặt trước." },
   },
 ];
