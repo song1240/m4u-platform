@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { MapPin, Building2, Footprints, Scissors, Car, Sparkles, ChevronRight } from "lucide-react";
-import { Card } from "../components.jsx";
+import { Card, Photo } from "../components.jsx";
 import { L, num, greeting } from "../i18n.js";
 import "../style.css";
 
@@ -72,7 +72,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi 
       </div>
 
       <button className="promo" onClick={() => go("living")}>
-        <img src={IMG.cart} alt="" />
+        <Photo src={IMG.cart} eager />
         <div className="ptext">
           <em>M4U MOVE · E-CART</em>
           <h2>{L(lang, <>단지 안 어디든,<br />3분이면 도착해요</>, <>Đi khắp khu đô thị,<br />chỉ trong 3 phút</>)}</h2>
@@ -87,7 +87,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi 
       <div className="twocol">
         {/* 혜택 적립은 지갑에서 확인한다 (H02 수용 기준) */}
         <Card c="bene" onClick={() => goSub("wallet")}>
-          <img src={IMG.dine} alt="" />
+          <Photo src={IMG.dine} />
           <div className="bd">
             <em>REWARD</em>
             <h2>+420 HRP</h2>
@@ -95,7 +95,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi 
           </div>
         </Card>
         <Card c="bene" onClick={() => go("salon")}>
-          <img src={IMG.spa} alt="" />
+          <Photo src={IMG.spa} />
           <div className="bd">
             <em>MY ZONE</em>
             <h2>Salon 10%</h2>
@@ -114,7 +114,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi 
         {PLACES.map((p) => (
           <button className="shopcard" key={p.name} onClick={() => go("living")}>
             <span className="ph">
-              <img src={p.img} alt="" />
+              <Photo src={p.img} />
               <span className="badge">{p.reward}% Reward</span>
             </span>
             <b>{p.name}</b>

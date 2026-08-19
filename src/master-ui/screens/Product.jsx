@@ -4,7 +4,7 @@
  */
 import React, { useState } from "react";
 import { ArrowLeft, ChevronDown, Truck, RotateCcw, ShoppingBag } from "lucide-react";
-import { Card, Btn, Note, Tag, CtaBar } from "../components.jsx";
+import { Card, Btn, Note, Tag, CtaBar, Photo } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { PRODUCTS } from "../data.js";
 import "../style.css";
@@ -18,7 +18,7 @@ export default function Product({ lang, productId, onBack, addToCart, buyNow }) 
   return (
     <>
       <div className="dhero">
-        <img src={p.img} alt="" />
+        <Photo src={p.img} eager />
         <button className="fabr l" onClick={onBack}><ArrowLeft size={18} /></button>
       </div>
 

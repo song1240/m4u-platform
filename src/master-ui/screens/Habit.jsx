@@ -10,7 +10,7 @@
  */
 import React from "react";
 import { Footprints, Check, Flame, ShieldCheck, HeartPulse, Link2, PenLine } from "lucide-react";
-import { Card, Note, Tag } from "../components.jsx";
+import { Card, Note, Tag, Photo } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
 import { SELF_HABITS, MEDI_PLACES, WEEK_DEMO, WEEKDAYS, HEALTH_APPS } from "../data.js";
 import "../style.css";
@@ -153,7 +153,7 @@ export default function Habit({
       </div>
       {MEDI_PLACES.map((m) => (
         <div className="srow" key={m.id}>
-          <span className="ph"><img src={m.img} alt="" /></span>
+          <span className="ph"><Photo src={m.img} /></span>
           <div className="bd">
             <b>{pick(m.name, lang)}</b>
             <p>★ {num(m.rate, lang)} · {walk(m.walkMin, lang)} · {pick(m.desc, lang)}</p>

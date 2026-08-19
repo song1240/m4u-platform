@@ -9,7 +9,7 @@
  */
 import React, { useState } from "react";
 import { Sparkles, ShieldCheck, X, ChevronRight, Send } from "lucide-react";
-import { Note } from "../components.jsx";
+import { Note, Photo } from "../components.jsx";
 import { L, pick, num, walk } from "../i18n.js";
 import { AI_INTENTS, AI_SUGGEST, VENUES } from "../data.js";
 import { rankVenues } from "../ranking.js";
@@ -69,7 +69,7 @@ export default function Concierge({ lang, onClose, onGo }) {
               <div className={"aibub" + (m.me ? " me" : "")}>{m.text}</div>
               {m.venues && m.venues.map((v) => (
                 <button className="prow" key={v.id} onClick={() => onGo({ sub: "venue", params: { venueId: v.id } })}>
-                  <span className="ph"><img src={v.img} alt="" /></span>
+                  <span className="ph"><Photo src={v.img} /></span>
                   <span className="bd">
                     <b>{pick(v.name, lang)}</b>
                     <p>{walk(v.walkMin, lang)} · {v.reward}% Reward</p>

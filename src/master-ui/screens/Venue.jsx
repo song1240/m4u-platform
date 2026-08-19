@@ -4,7 +4,7 @@
  */
 import React, { useState } from "react";
 import { ArrowLeft, Heart, Star, Clock, MapPin, ShieldCheck, ChevronRight } from "lucide-react";
-import { Tag, Note, Empty, CtaBar, Btn } from "../components.jsx";
+import { Tag, Note, Empty, CtaBar, Btn, Photo } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
 import { VENUES, VENUE_TABS } from "../data.js";
 import "../style.css";
@@ -21,7 +21,7 @@ export default function Venue({ lang, venueId, myReviews = [], onBack, goSub, li
   return (
     <>
       <div className="dhero">
-        <img src={v.img} alt="" />
+        <Photo src={v.img} eager />
         <button className="fabr l" onClick={onBack}><ArrowLeft size={18} /></button>
         <button className="fabr r" onClick={() => toggleLike(v.id)}>
           <Heart size={17} className={liked ? "on" : ""} />
@@ -65,7 +65,7 @@ export default function Venue({ lang, venueId, myReviews = [], onBack, goSub, li
         (hasSvc ? (
           v.services.map((s) => (
             <div className="srow" key={s.id}>
-              <span className="ph"><img src={s.img} alt="" /></span>
+              <span className="ph"><Photo src={s.img} /></span>
               <div className="bd">
                 <b>{pick(s.name, lang)}</b>
                 <p>{pick(s.desc, lang)} · {pick(s.time, lang)}</p>

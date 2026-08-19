@@ -4,7 +4,7 @@
  */
 import React from "react";
 import { ChevronRight } from "lucide-react";
-import { SubHead, Card, Note, Tag } from "../components.jsx";
+import { SubHead, Card, Note, Tag, Photo } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { STAYS } from "../data.js";
 import "../style.css";
@@ -36,7 +36,7 @@ export default function Stay({ lang, stays, onBack, goSub }) {
       </div>
       {STAYS.map((r) => (
         <Card c="bene" key={r.id} onClick={() => goSub("staybook", { stayId: r.id })}>
-          <img src={r.img} alt="" />
+          <Photo src={r.img} />
           <div className="bd">
             <div className="tl">
               <Tag kind="st">★ {r.rating} ({r.reviews})</Tag>

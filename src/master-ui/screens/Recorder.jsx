@@ -7,7 +7,7 @@
  */
 import React, { useState } from "react";
 import { ImagePlus, X, ShieldCheck } from "lucide-react";
-import { Btn, Sheet, Tag } from "../components.jsx";
+import { Btn, Sheet, Tag, Photo } from "../components.jsx";
 import { L, pick } from "../i18n.js";
 import { SELF_HABITS, FEED_MIN } from "../data.js";
 import "../style.css";
@@ -38,7 +38,7 @@ export default function Recorder({ lang, habitId, capped, onClose, onPost }) {
         />
         {img ? (
           <div className="prev">
-            <img src={img} alt="" />
+            <Photo src={img} />
             <button onClick={() => setImg(null)}><X size={15} /></button>
           </div>
         ) : (

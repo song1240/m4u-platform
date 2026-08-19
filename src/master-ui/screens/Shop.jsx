@@ -5,7 +5,7 @@
  */
 import React from "react";
 import { ShoppingBag } from "lucide-react";
-import { SubHead, Card, Tag, Note } from "../components.jsx";
+import { SubHead, Card, Tag, Note, Photo } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { PRODUCTS, VENUES } from "../data.js";
 import { rankVenues } from "../ranking.js";
@@ -54,7 +54,7 @@ export default function Shop({ lang, orders, cartCount, onBack, goSub }) {
           const dc = p.origin ? Math.round((1 - p.price / p.origin) * 100) : null;
           return (
             <Card c="pcard" key={p.id} onClick={() => goSub("product", { productId: p.id })}>
-              <img src={p.img} alt="" />
+              <Photo src={p.img} />
               <div className="bd">
                 <span className="br">{p.brand}</span>
                 <b>{pick(p.name, lang)}</b>

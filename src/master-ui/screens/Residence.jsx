@@ -5,7 +5,7 @@
  */
 import React, { useState } from "react";
 import { QrCode, Check } from "lucide-react";
-import { SubHead, Card, Note, Sheet, Btn } from "../components.jsx";
+import { SubHead, Card, Note, Sheet, Btn, Photo } from "../components.jsx";
 import { L, pick } from "../i18n.js";
 import { CONCIERGE_ITEMS, MY_STAY } from "../data.js";
 import "../style.css";
@@ -26,7 +26,7 @@ export default function Residence({ lang, checkedIn, setCheckedIn, toast, onBack
       <SubHead title={L(lang, "내 레지던스 · 컨시어지", "Căn hộ của tôi · lễ tân")} onBack={onBack} />
 
       <div className="stayhero">
-        <img src={MY_STAY.img} alt="" />
+        <Photo src={MY_STAY.img} eager />
         <b>{pick(MY_STAY.name, lang)}</b>
       </div>
 

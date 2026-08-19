@@ -7,7 +7,7 @@
  * 결과 수치는 데모 자리표시자 (CLAUDE.md §6).
  */
 import React, { useState } from "react";
-import { SubHead, Card, Note } from "../components.jsx";
+import { SubHead, Card, Note, Photo } from "../components.jsx";
 import { L, pick } from "../i18n.js";
 import { SKIN_QS, SKIN_TYPES, VENUES, IMG } from "../data.js";
 import "../style.css";
@@ -65,7 +65,7 @@ export default function SkinProfile({ lang, onBack, goSub }) {
 
           <h3 className="section">{L(lang, "프로필 기반 추천", "Gợi ý theo hồ sơ")}</h3>
           <div className="srow">
-            <span className="ph"><img src={IMG.massage} alt="" /></span>
+            <span className="ph"><Photo src={IMG.massage} /></span>
             <div className="bd">
               <b>{L(lang, "수분 진정 케어", "Chăm sóc cấp ẩm dịu da")}</b>
               <p>{pick(salon.name, lang)} · {L(lang, "첫 방문 -15%", "Lần đầu -15%")}</p>
@@ -75,7 +75,7 @@ export default function SkinProfile({ lang, onBack, goSub }) {
             </button>
           </div>
           <div className="srow">
-            <span className="ph"><img src={IMG.salon} alt="" /></span>
+            <span className="ph"><Photo src={IMG.salon} /></span>
             <div className="bd">
               <b>{pick(salon.name, lang)}</b>
               <p>{L(lang, "프로필에 맞는 전체 서비스 보기", "Xem toàn bộ dịch vụ phù hợp hồ sơ")}</p>

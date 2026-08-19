@@ -138,3 +138,9 @@ nav button.on svg{transform:translateY(-1px) scale(1.06)}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   button:not(:disabled):active{transform:none}
 }
+
+/* ── 사진 상태 — 스켈레톤 · 실패 폴백 (DESIGN_SYSTEM §7) ──────────
+   원격 이미지가 늦거나 실패해도 레이아웃이 흔들리지 않게 한다. */
+@keyframes m-shim{from{background-position:180% 0}to{background-position:-80% 0}}
+img.im-l{background:linear-gradient(100deg,#ece5d7 34%,#f7f3ea 50%,#ece5d7 66%) 0 0/220% 100%;animation:m-shim 1.15s linear infinite;color:transparent}
+img.im-e{background:var(--iv);object-fit:contain!important;padding:6%}

@@ -5,7 +5,7 @@
  */
 import React, { useState, useMemo } from "react";
 import { ArrowLeft, Minus, Plus, Check, QrCode } from "lucide-react";
-import { Card, Btn, Note, Sheet, Spec, CtaBar, Tag } from "../components.jsx";
+import { Card, Btn, Note, Sheet, Spec, CtaBar, Tag, Photo } from "../components.jsx";
 import { L, pick, num, fmtDate } from "../i18n.js";
 import { STAYS, STAY_CP, STAY_HRP_DIV } from "../data.js";
 import "../style.css";
@@ -37,7 +37,7 @@ export default function StayBook({ lang, stayId, onBack, onDone, confirmStay }) 
     return (
       <>
         <div className="dhero">
-          <img src={r.img} alt="" />
+          <Photo src={r.img} eager />
           <button className="fabr l" onClick={onDone}><ArrowLeft size={18} /></button>
         </div>
         <Card>
@@ -75,7 +75,7 @@ export default function StayBook({ lang, stayId, onBack, onDone, confirmStay }) 
   return (
     <>
       <div className="dhero">
-        <img src={r.img} alt="" />
+        <Photo src={r.img} eager />
         <button className="fabr l" onClick={onBack}><ArrowLeft size={18} /></button>
       </div>
 

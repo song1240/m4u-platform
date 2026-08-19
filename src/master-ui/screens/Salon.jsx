@@ -5,7 +5,7 @@
  */
 import React from "react";
 import { Sparkles, ShieldCheck, ChevronRight } from "lucide-react";
-import { Card, Note, Tag } from "../components.jsx";
+import { Card, Note, Tag, Photo } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
 import { VENUES, SALON_QUICK } from "../data.js";
 import "../style.css";
@@ -49,7 +49,7 @@ export default function Salon({ lang, goSub }) {
         <h3 className="section">{L(lang, "프로필 기반 추천", "Gợi ý theo hồ sơ")}</h3>
       </div>
       <Card c="bene" onClick={() => goSub("venue", { venueId: "v1" })}>
-        <img src={v.img} alt="" />
+        <Photo src={v.img} />
         <div className="bd">
           <div className="tl">
             <Tag kind="ok"><ShieldCheck size={10} /> Verified {v.reviews}</Tag>

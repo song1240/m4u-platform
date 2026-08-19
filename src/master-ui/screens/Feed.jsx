@@ -9,7 +9,7 @@
  */
 import React from "react";
 import { PenLine } from "lucide-react";
-import { Card, Note, Tag, Empty } from "../components.jsx";
+import { Card, Note, Tag, Empty, Photo } from "../components.jsx";
 import { L, pick } from "../i18n.js";
 import { SELF_HABITS, FEED_SEED } from "../data.js";
 import "../style.css";
@@ -61,7 +61,7 @@ export default function Feed({ lang, posts, onRecord }) {
               {p.habit && <Tag kind="self">{habitEmoji(p.habit)} {habitLabel(p.habit, lang)}</Tag>}
             </div>
             <p className="tx">{pick(p.text, lang)}</p>
-            {p.img && <span className="ph"><img src={p.img} alt="" /></span>}
+            {p.img && <span className="ph"><Photo src={p.img} /></span>}
           </Card>
         ))
       )}

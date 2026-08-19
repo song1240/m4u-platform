@@ -73,6 +73,42 @@ export const Empty = ({ icon, children }) => (
   </div>
 );
 
+/**
+ * 사진 (DESIGN_SYSTEM §7)
+ *
+ * 원격 이미지는 반드시 이 컴포넌트로 넣는다. 직접 <img>를 쓰지 않는다:
+ *  - 로드 전에는 스켈레톤이 자리를 지킨다 (레이아웃이 튀지 않는다)
+ *  - 실패하면 깨진 이미지 아이콘 대신 M4U 마크 폴백으로 바꾼다 (네트워크가 불안정한 현장 전제)
+ *  - 목록 이미지는 lazy, 화면 첫 히어로는 eager
+ *
+ * alt 기본값은 "" 이다. 이 앱의 사진은 대부분 옆의 텍스트가 같은 정보를 이미 말하므로
+ * 장식 이미지로 두는 것이 맞다. 사진만이 정보를 가질 때만 alt를 넘긴다.
+ */
+const PHOTO_FALLBACK =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">' +
+      '<rect width="160" height="160" fill="#f7f3ea"/>' +
+      '<text x="80" y="88" font-family="Georgia,serif" font-size="26" fill="#c6a15b" text-anchor="middle">M4U</text>' +
+    "</svg>"
+  );
+
+export const Photo = ({ src, alt = "", c = "", eager = false }) => {
+  const [st, setSt] = React.useState(src ? "l" : "e"); // l 로드중 · o 완료 · e 실패
+  const failed = st === "e";
+  return (
+    <img
+      className={["im-" + st, c].filter(Boolean).join(" ")}
+      src={failed ? PHOTO_FALLBACK : src}
+      alt={alt}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      onLoad={() => setSt((v) => (v === "l" ? "o" : v))}
+      onError={() => setSt("e")}
+    />
+  );
+};
+
 /** 하단 고정 CTA 바 */
 export const CtaBar = ({ children }) => <div className="ctabar">{children}</div>;
 

@@ -8,7 +8,7 @@
  */
 import React, { useState } from "react";
 import { Vote, Ticket, Users, Timer, ChevronRight } from "lucide-react";
-import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown } from "../components.jsx";
+import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown, Photo } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { FIVE_TIERS, FIVE_CP, FIVE_ROOMS, COUPONS } from "../data.js";
 import "../style.css";
@@ -63,7 +63,7 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
         return (
           <Card c="five" key={r.id}>
             <div className="top">
-              <span className="ph"><img src={r.img} alt="" /></span>
+              <span className="ph"><Photo src={r.img} /></span>
               <div className="bd">
                 <b>{pick(r.product, lang)}</b>
                 <div className="price">

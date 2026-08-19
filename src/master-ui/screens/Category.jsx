@@ -4,7 +4,7 @@
  */
 import React, { useMemo } from "react";
 import { Store } from "lucide-react";
-import { SubHead, Btn, Card, Empty, Note } from "../components.jsx";
+import { SubHead, Btn, Card, Empty, Note, Photo } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { VENUES, LIVING_TILES, IMG } from "../data.js";
 import { rankVenues } from "../ranking.js";
@@ -21,7 +21,7 @@ export default function Category({ lang, catId, onBack, goSub, toast }) {
       <>
         <SubHead title={title} onBack={onBack} />
         <div className="dhero">
-          <img src={IMG.cart} alt="" />
+          <Photo src={IMG.cart} eager />
         </div>
         <Card c="space">
           <em>M4U MOVE</em>

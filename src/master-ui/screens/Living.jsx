@@ -4,7 +4,7 @@
  */
 import React, { useMemo } from "react";
 import { MapPin, ChevronRight } from "lucide-react";
-import { Note, Tag } from "../components.jsx";
+import { Note, Tag, Photo } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
 import { VENUES, LIVING_TILES, IMG } from "../data.js";
 import { rankVenues } from "../ranking.js";
@@ -14,7 +14,7 @@ import "../style.css";
 export function VenueRow({ v, lang, onClick }) {
   return (
     <button className="prow" onClick={onClick}>
-      <span className="ph"><img src={v.img} alt="" /></span>
+      <span className="ph"><Photo src={v.img} /></span>
       <span className="bd">
         <span className="tl">
           {v.rank && <Tag kind="rank">{v.rank}</Tag>}
@@ -60,7 +60,7 @@ export default function Living({ lang, zone, go, goSub }) {
       </div>
 
       <button className="promo" onClick={() => goSub("cat", { catId: "move" })}>
-        <img src={IMG.cart} alt="" />
+        <Photo src={IMG.cart} />
         <div className="ptext">
           <em>M4U MOVE · E-CART</em>
           <h2>{L(lang, <>단지 안 어디든,<br />3분이면 도착해요</>, <>Đi khắp khu đô thị,<br />chỉ trong 3 phút</>)}</h2>

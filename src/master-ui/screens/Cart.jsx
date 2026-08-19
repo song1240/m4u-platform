@@ -4,7 +4,7 @@
  */
 import React from "react";
 import { Minus, Plus, ShoppingBag } from "lucide-react";
-import { SubHead, Card, Btn, Empty, Note, Spec, CtaBar } from "../components.jsx";
+import { SubHead, Card, Btn, Empty, Note, Spec, CtaBar, Photo } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import "../style.css";
 
@@ -23,7 +23,7 @@ export default function Cart({ lang, cart, setQty, placeOrder, onBack }) {
         <>
           {cart.map((x) => (
             <Card c="cartrow" key={x.id}>
-              <span className="ph"><img src={x.img} alt="" /></span>
+              <span className="ph"><Photo src={x.img} /></span>
               <div className="bd">
                 <b>{pick(x.name, lang)}</b>
                 <div className="stepper">
