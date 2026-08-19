@@ -163,3 +163,7 @@ img.im-e{background:var(--iv);object-fit:contain!important;padding:6%}
 .cmts .cin{display:flex;gap:6px}
 .cmts .cin input{flex:1;min-height:40px;border:1px solid var(--line);border-radius:11px;background:var(--iv);padding:0 12px;font-size:12.5px;font-family:inherit;color:var(--ink)}
 .cmts .cin button{flex:none;border:0;border-radius:11px;background:var(--g);color:var(--p);min-height:40px;padding:0 13px;font-size:12px;font-weight:800}
+/* 모더레이션 (POLICY §11.8) */
+.post .acts .more{margin-left:auto}
+.modlist{display:grid;gap:8px;margin-bottom:11px}
+.modlist button{display:flex;align-items:center;gap:9px;width:100%;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:var(--p);color:var(--ink);font-size:13.5px;font-weight:700;text-align:left}

@@ -125,6 +125,31 @@ export default function App() {
   const [postComments, setPostComments] = useState({});
   const togglePostLike = (id) =>
     setPostLikes((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
+  /**
+   * 모더레이션 (POLICY §11.8)
+   *
+   * 신고된 글은 **즉시** 보이지 않게 한다 — 검토가 끝날 때까지 노출되면 신고가 의미가 없다.
+   * 실서비스에서는 신고 사유와 함께 Admin 큐로 들어가고, 여기서는 로컬 숨김까지만 한다.
+   * 어떤 식별정보를 수집·보관할지는 docs/PRIVACY_ABUSE_SPEC.md 가 정한다 (§11.9).
+   */
+  const [mod, setMod] = useState({ reported: [], blocked: [], deleted: [] });
+  const reportPost = (id) => {
+    setMod((m) => ({ ...m, reported: [...m.reported, id] }));
+    toast(L(lang, "신고가 접수됐어요 · 운영팀이 검토합니다", "Đã nhận báo cáo · đội vận hành sẽ xem xét"));
+  };
+  const blockAuthor = (who) => {
+    setMod((m) => ({ ...m, blocked: [...m.blocked, who] }));
+    toast(L(lang, "이 사용자의 글을 숨겼어요", "Đã ẩn bài viết của người này"));
+  };
+  const deletePost = (id) => {
+    setMod((m) => ({ ...m, deleted: [...m.deleted, id] }));
+    toast(L(lang, "글을 삭제했어요", "Đã xóa bài viết"));
+  };
+  const unblockAll = () => {
+    setMod({ reported: [], blocked: [], deleted: mod.deleted }); // 삭제한 내 글은 되돌리지 않는다
+    toast(L(lang, "숨김을 해제했어요", "Đã bỏ ẩn"));
+  };
+
   const addComment = (id, text) =>
     setPostComments((c) => ({
       ...c,
@@ -425,6 +450,7 @@ export default function App() {
         lang={lang} posts={posts} onWrite={setComposing} goSub={goSub}
         likes={postLikes} toggleLike={togglePostLike}
         comments={postComments} addComment={addComment}
+        mod={mod} onReport={reportPost} onBlock={blockAuthor} onDelete={deletePost} onUnblock={unblockAll}
       />
     ),
     my: (

@@ -10,8 +10,8 @@
  * 다만 그 결과가 사업자 공식 순위로 이어지지 않는다.
  */
 import React, { useState } from "react";
-import { PenLine, MapPin, ShieldCheck, Heart, MessageCircle, Send } from "lucide-react";
-import { Card, Note, Tag, Empty, Photo } from "../components.jsx";
+import { PenLine, MapPin, ShieldCheck, Heart, MessageCircle, Send, MoreHorizontal, Flag, UserX, Trash2 } from "lucide-react";
+import { Card, Note, Tag, Empty, Photo, Sheet } from "../components.jsx";
 import { L, pick } from "../i18n.js";
 import { SELF_HABITS, FEED_CATS, FEED_SEED, FEED_COMMENTS, VENUES } from "../data.js";
 import "../style.css";
@@ -20,11 +20,17 @@ const habitOf = (id) => SELF_HABITS.find((x) => x.id === id);
 const catOf = (id) => FEED_CATS.find((x) => x.id === id);
 const venueOf = (id) => VENUES.find((x) => x.id === id);
 
-export default function Feed({ lang, posts, onWrite, goSub, likes, toggleLike, comments, addComment }) {
+export default function Feed({ lang, posts, onWrite, goSub, likes, toggleLike, comments, addComment, mod, onReport, onBlock, onDelete, onUnblock }) {
   const [filter, setFilter] = useState("all");
   const [open, setOpen] = useState(null); // 댓글을 펼친 게시물 id
   const [draft, setDraft] = useState("");
-  const all = [...posts, ...FEED_SEED];
+  const [menu, setMenu] = useState(null); // 게시물 메뉴(신고·차단·삭제)를 연 게시물
+  // 신고·차단·삭제된 글은 보이지 않는다 (POLICY §11.8)
+  const authorOf = (p) => (p.mine ? "me" : p.who);
+  const all = [...posts, ...FEED_SEED].filter(
+    (p) => !mod.reported.includes(p.id) && !mod.deleted.includes(p.id) && !mod.blocked.includes(authorOf(p))
+  );
+  const hidden = [...posts, ...FEED_SEED].length - all.length;
   const shown = filter === "all" ? all : all.filter((p) => (p.cat || "habit") === filter);
 
   return (
@@ -119,6 +125,13 @@ export default function Feed({ lang, posts, onWrite, goSub, likes, toggleLike, c
                 <button onClick={() => { setOpen(open === p.id ? null : p.id); setDraft(""); }}>
                   <MessageCircle size={14} /> {cmts.length}
                 </button>
+                <button
+                  className="more"
+                  aria-label={L(lang, "게시물 메뉴", "Menu bài viết")}
+                  onClick={() => setMenu(p)}
+                >
+                  <MoreHorizontal size={15} />
+                </button>
               </div>
 
               {open === p.id && (
@@ -148,6 +161,41 @@ export default function Feed({ lang, posts, onWrite, goSub, likes, toggleLike, c
             </Card>
           );
         })
+      )}
+
+      {hidden > 0 && (
+        <button className="writebar" onClick={onUnblock}>
+          <i><UserX size={14} /></i>
+          {L(lang, `숨긴 글 ${hidden}개 · 차단 해제하기`, `${hidden} bài đã ẩn · Bỏ chặn`)}
+        </button>
+      )}
+
+      {menu && (
+        <Sheet lang={lang} title={L(lang, "게시물", "Bài viết")} onClose={() => setMenu(null)}>
+          <div className="modlist">
+            {menu.mine ? (
+              <button onClick={() => { onDelete(menu.id); setMenu(null); }}>
+                <Trash2 size={15} /> {L(lang, "내 글 삭제", "Xóa bài của tôi")}
+              </button>
+            ) : (
+              <>
+                <button onClick={() => { onReport(menu.id); setMenu(null); }}>
+                  <Flag size={15} /> {L(lang, "신고하기", "Báo cáo")}
+                </button>
+                <button onClick={() => { onBlock(menu.who); setMenu(null); }}>
+                  <UserX size={15} /> {L(lang, "이 사용자 차단", "Chặn người này")}
+                </button>
+              </>
+            )}
+          </div>
+          <Note>
+            {L(
+              lang,
+              "신고된 글은 즉시 보이지 않게 되고, 운영팀이 사유와 함께 검토합니다. 차단은 언제든 해제할 수 있습니다.",
+              "Bài bị báo cáo sẽ được ẩn ngay và đội vận hành sẽ xem xét kèm lý do. Bạn có thể bỏ chặn bất cứ lúc nào."
+            )}
+          </Note>
+        </Sheet>
       )}
 
       <Note>
