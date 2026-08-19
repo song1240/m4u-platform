@@ -10,18 +10,20 @@
  * 다만 그 결과가 사업자 공식 순위로 이어지지 않는다.
  */
 import React, { useState } from "react";
-import { PenLine, MapPin, ShieldCheck } from "lucide-react";
+import { PenLine, MapPin, ShieldCheck, Heart, MessageCircle, Send } from "lucide-react";
 import { Card, Note, Tag, Empty, Photo } from "../components.jsx";
 import { L, pick } from "../i18n.js";
-import { SELF_HABITS, FEED_CATS, FEED_SEED, VENUES } from "../data.js";
+import { SELF_HABITS, FEED_CATS, FEED_SEED, FEED_COMMENTS, VENUES } from "../data.js";
 import "../style.css";
 
 const habitOf = (id) => SELF_HABITS.find((x) => x.id === id);
 const catOf = (id) => FEED_CATS.find((x) => x.id === id);
 const venueOf = (id) => VENUES.find((x) => x.id === id);
 
-export default function Feed({ lang, posts, onWrite, goSub }) {
+export default function Feed({ lang, posts, onWrite, goSub, likes, toggleLike, comments, addComment }) {
   const [filter, setFilter] = useState("all");
+  const [open, setOpen] = useState(null); // 댓글을 펼친 게시물 id
+  const [draft, setDraft] = useState("");
   const all = [...posts, ...FEED_SEED];
   const shown = filter === "all" ? all : all.filter((p) => (p.cat || "habit") === filter);
 
@@ -72,6 +74,8 @@ export default function Feed({ lang, posts, onWrite, goSub }) {
           const h = habitOf(p.habit);
           const c = catOf(p.cat || "habit");
           const v = venueOf(p.venue);
+          const liked = likes.includes(p.id);
+          const cmts = [...(FEED_COMMENTS[p.id] || []), ...(comments[p.id] || [])];
           return (
             <Card c="post" key={p.id}>
               <div className="top">
@@ -102,6 +106,45 @@ export default function Feed({ lang, posts, onWrite, goSub }) {
                   )}
                 </div>
               )}
+
+              {/* 좋아요 · 댓글 — 보상이 없고, 이 수치는 사업자 공식 순위에 반영되지 않는다 (§11.5·§11.6) */}
+              <div className="acts">
+                <button
+                  className={liked ? "on" : ""}
+                  aria-pressed={liked}
+                  onClick={() => toggleLike(p.id)}
+                >
+                  <Heart size={14} /> {(p.likes || 0) + (liked ? 1 : 0)}
+                </button>
+                <button onClick={() => { setOpen(open === p.id ? null : p.id); setDraft(""); }}>
+                  <MessageCircle size={14} /> {cmts.length}
+                </button>
+              </div>
+
+              {open === p.id && (
+                <div className="cmts">
+                  {cmts.map((c) => (
+                    <div className="c" key={c.id}>
+                      <b>{c.mine ? L(lang, "회원님", "Bạn") : L(lang, c.who, c.whoVi)}</b>
+                      <span>{pick(c.text, lang)}</span>
+                    </div>
+                  ))}
+                  <div className="cin">
+                    <input
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter" && draft.trim()) { addComment(p.id, draft.trim()); setDraft(""); } }}
+                      placeholder={L(lang, "댓글 남기기", "Viết bình luận")}
+                    />
+                    <button
+                      aria-label={L(lang, "댓글 등록", "Gửi bình luận")}
+                      onClick={() => { if (draft.trim()) { addComment(p.id, draft.trim()); setDraft(""); } }}
+                    >
+                      <Send size={14} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </Card>
           );
         })
@@ -111,8 +154,8 @@ export default function Feed({ lang, posts, onWrite, goSub }) {
         <b>{L(lang, "기록과 리뷰는 다릅니다", "Ghi chép khác với đánh giá")}</b>
         {L(
           lang,
-          " — 여기에는 별점이 없고, 매장을 언급해도 평점 · 순위 · 검색에 반영되지 않습니다. 매장 평가는 실제 이용자만 쓰는 Verified Review로만 반영됩니다. `M4U 이용 확인`은 예약·결제 기록이 있다는 표시일 뿐 리뷰가 아닙니다. 글쓰기 자체에는 적립이 없으며, HRP는 습관 완료와 실제 이용에서 나옵니다.",
-          " — ở đây không có điểm sao; nhắc tên cửa hàng cũng không ảnh hưởng điểm · xếp hạng · tìm kiếm. Chỉ Verified Review của người đã sử dụng mới được tính. `Đã xác nhận sử dụng M4U` chỉ là dấu hiệu có lịch sử đặt/thanh toán, không phải đánh giá. Viết bài không tích điểm; HRP đến từ việc hoàn thành thói quen và sử dụng thực tế."
+          " — 여기에는 별점이 없고, 매장을 언급해도 평점 · 순위 · 검색에 반영되지 않습니다. 매장 평가는 실제 이용자만 쓰는 Verified Review로만 반영됩니다. `M4U 이용 확인`은 예약·결제 기록이 있다는 표시일 뿐 리뷰가 아닙니다. 글쓰기 · 좋아요 · 댓글에는 적립이 없으며, 이 수치는 매장 순위에도 반영되지 않습니다. HRP는 습관 완료와 실제 이용에서 나옵니다.",
+          " — ở đây không có điểm sao; nhắc tên cửa hàng cũng không ảnh hưởng điểm · xếp hạng · tìm kiếm. Chỉ Verified Review của người đã sử dụng mới được tính. `Đã xác nhận sử dụng M4U` chỉ là dấu hiệu có lịch sử đặt/thanh toán, không phải đánh giá. Viết bài · thích · bình luận đều không tích điểm và không ảnh hưởng xếp hạng cửa hàng. HRP đến từ việc hoàn thành thói quen và sử dụng thực tế."
         )}
       </Note>
     </>

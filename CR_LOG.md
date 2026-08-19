@@ -36,4 +36,5 @@
 | 2026-08-20 | UI-접근성 | 접근성 패스(DESIGN_SYSTEM §7.1) — 아이콘 전용 버튼 14곳에 `L()` 경유 이중언어 `aria-label`, 찜하기·별점에 `aria-pressed`, 진행바 5곳을 `<Bar role=progressbar>` 컴포넌트로 통일, 시트 `role=dialog`+`aria-modal`, 토스트 `role=status`, 탭 `aria-current`. Onboarding `Frame`에 lang 미전달 버그 수정(실행 시 터짐 · 빌드는 통과했었음) | PASS |
 | 2026-08-20 | FEED-2A | 자유 게시 신설(POLICY §11.2·§11.6) — 카테고리 5종(습관·맛집·생활정보·Salon·체험)과 필터, `Recorder`→`Composer`로 일반화(습관 기록 + 자유 게시 통합), `.writebar` 글쓰기 진입. **자유 게시는 보상 없음** — 쓰기 전 고지·게시 후 토스트 모두 사실대로. verify에 `when:` 데이터 필드 인정 추가 | PASS |
 | 2026-08-20 | FEED-2B | `M4U 이용 확인`·PARTNER 표시(POLICY §11.4·§11.7) — 자유 게시에 매장 태그(피드에서 매장 상세로 이동), 이용 확인은 **예약 기록에서만** 산출(자가 부착 불가·없으면 '이용 기록 없음'), `Verified` 단어 미사용, 파트너 게시물에 PARTNER 뱃지 강제 | PASS |
+| 2026-08-20 | FEED-2C | 좋아요·댓글 신설(POLICY §11.5·§11.6) — 게시물별 좋아요 토글·댓글 목록/입력, 시드 댓글. **보상 없음·순위 미반영**. `ranking.js`에 `RANKING_FIELDS` 화이트리스트를 명시해 방화벽을 코드로 고정 | PASS |
 

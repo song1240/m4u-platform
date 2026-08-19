@@ -153,3 +153,13 @@ img.im-e{background:var(--iv);object-fit:contain!important;padding:6%}
 .tag.partner{background:var(--gold);color:var(--g)}
 .post .vrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:9px}
 .post .vchip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--iv);color:var(--ink);border-radius:99px;padding:5px 10px;font-size:11.5px;font-weight:700}
+/* 좋아요 · 댓글 (POLICY §11.5) — 지표는 사업자 순위에 반영되지 않는다 */
+.post .acts{display:flex;gap:6px;margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
+.post .acts button{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:var(--mut);font-size:12px;font-weight:700;padding:6px 8px;border-radius:9px}
+.post .acts button.on{color:var(--g)}
+.cmts{margin-top:9px;border-top:1px solid var(--line);padding-top:9px;display:grid;gap:8px}
+.cmts .c{display:flex;gap:7px;font-size:12.5px;line-height:1.5}
+.cmts .c b{flex:none;color:var(--g);font-weight:800}
+.cmts .cin{display:flex;gap:6px}
+.cmts .cin input{flex:1;min-height:40px;border:1px solid var(--line);border-radius:11px;background:var(--iv);padding:0 12px;font-size:12.5px;font-family:inherit;color:var(--ink)}
+.cmts .cin button{flex:none;border:0;border-radius:11px;background:var(--g);color:var(--p);min-height:40px;padding:0 13px;font-size:12px;font-weight:800}

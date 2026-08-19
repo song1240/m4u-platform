@@ -120,6 +120,16 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [posts, setPosts] = useState([]); // FEED 기록 — 리뷰가 아니다 (평점·랭킹 미반영)
   const [composing, setComposing] = useState(null); // 글쓰기 중 초안: {cat, habit?} · null 이면 닫힘
+  // 피드 좋아요 · 댓글 (POLICY §11.5) — 보상이 없고 사업자 순위에도 반영되지 않는다
+  const [postLikes, setPostLikes] = useState([]);
+  const [postComments, setPostComments] = useState({});
+  const togglePostLike = (id) =>
+    setPostLikes((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
+  const addComment = (id, text) =>
+    setPostComments((c) => ({
+      ...c,
+      [id]: [...(c[id] || []), { id: "mc" + ((c[id] || []).length + 1), mine: true, text: { ko: text, vi: text } }],
+    }));
   const [orders, setOrders] = useState([]);
   const [stays, setStays] = useState([]);
   const [ai, setAi] = useState(false); // AI 컨시어지 시트
@@ -410,7 +420,13 @@ export default function App() {
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
-    feed: <Feed lang={lang} posts={posts} onWrite={setComposing} goSub={goSub} />,
+    feed: (
+      <Feed
+        lang={lang} posts={posts} onWrite={setComposing} goSub={goSub}
+        likes={postLikes} toggleLike={togglePostLike}
+        comments={postComments} addComment={addComment}
+      />
+    ),
     my: (
       <My
         lang={lang} zone={zone} points={points} cp={cp} bookings={bookings} coupons={coupons}
