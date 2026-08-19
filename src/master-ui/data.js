@@ -641,21 +641,50 @@ export const AI_SUGGEST = [
 /** 기록 최소 길이 — 탭 한 번보다 강한 근거를 남기게 한다 */
 export const FEED_MIN = 10;
 
+/**
+ * FEED 카테고리 (POLICY §11.2)
+ *
+ * 습관 기록뿐 아니라 맛집 · 생활정보 · Salon · 체험을 자유롭게 공유한다.
+ * **습관 외 게시에는 보상이 없다** (§11.6) — 글을 써서 HRP를 받는 구조를 만들지 않는다.
+ */
+export const FEED_CATS = [
+  { id: "habit", emoji: "\u2705", name: { ko: "습관", vi: "Thói quen" } },
+  { id: "food", emoji: "\ud83c\udf5c", name: { ko: "맛집", vi: "Quán ngon" } },
+  { id: "life", emoji: "\ud83c\udfe1", name: { ko: "생활정보", vi: "Đời sống" } },
+  { id: "salon", emoji: "\ud83d\udc87", name: { ko: "Salon", vi: "Salon" } },
+  { id: "exp", emoji: "\ud83c\udf9f", name: { ko: "체험", vi: "Trải nghiệm" } },
+];
+
 /** 이웃 기록 데모 — 실서비스는 서버에서 온다 */
 export const FEED_SEED = [
   {
-    id: "f1", who: "지*님", whoVi: "Chị T.", av: "지", habit: "meditate", img: IMG.medi1,
+    id: "f1", cat: "habit", who: "지*님", whoVi: "Chị T.", av: "지", habit: "meditate", img: IMG.medi1,
     when: { ko: "20분 전", vi: "20 phút trước" },
     text: { ko: "퇴근하고 Mindful Garden 저녁 클래스 다녀왔어요. 정원에서 하니 확실히 다르네요.", vi: "Sau giờ làm ghé lớp thiền tối ở Mindful Garden. Thiền trong vườn khác hẳn." },
   },
   {
-    id: "f2", who: "현*님", whoVi: "Anh H.", av: "현", habit: "run", img: null,
+    id: "f2", cat: "habit", who: "현*님", whoVi: "Anh H.", av: "현", habit: "run", img: null,
     when: { ko: "1시간 전", vi: "1 giờ trước" },
     text: { ko: "단지 한 바퀴 5km 완주. 아침에 뛰면 하루가 길어지는 느낌이에요.", vi: "Chạy hết một vòng khu 5km. Chạy buổi sáng làm ngày dài hơn." },
   },
   {
-    id: "f3", who: "수*님", whoVi: "Chị S.", av: "수", habit: "water", img: IMG.cafe,
+    id: "f3", cat: "habit", who: "수*님", whoVi: "Chị S.", av: "수", habit: "water", img: IMG.cafe,
     when: { ko: "3시간 전", vi: "3 giờ trước" },
     text: { ko: "The Coffee House에서 물 두 잔 추가. 오늘 8잔 채웠습니다!", vi: "Uống thêm 2 ly nước ở The Coffee House. Hôm nay đủ 8 ly!" },
+  },
+  {
+    id: "f4", cat: "food", who: "민*님", whoVi: "Chị M.", av: "민", habit: null, img: IMG.grill,
+    when: { ko: "2시간 전", vi: "2 giờ trước" },
+    text: { ko: "S2 상가 1층 숯불집, 점심에 가면 줄이 짧아요. 반찬 리필도 잘 해주세요.", vi: "Quán nướng than tầng 1 khu S2, đi buổi trưa ít phải xếp hàng. Đồ ăn kèm cũng được thêm thoải mái." },
+  },
+  {
+    id: "f5", cat: "life", who: "안*님", whoVi: "Anh A.", av: "안", habit: null, img: null,
+    when: { ko: "4시간 전", vi: "4 giờ trước" },
+    text: { ko: "S3 쪽 정전은 오후 4시에 복구됐대요. 엘리베이터도 다시 움직입니다.", vi: "Khu S3 đã có điện lại lúc 4 giờ chiều. Thang máy cũng hoạt động bình thường." },
+  },
+  {
+    id: "f6", cat: "salon", who: "린*님", whoVi: "Chị L.", av: "린", habit: null, img: IMG.salon,
+    when: { ko: "어제", vi: "Hôm qua" },
+    text: { ko: "두피 케어 받고 왔어요. 예약은 평일 오전이 여유 있습니다.", vi: "Vừa đi chăm sóc da đầu về. Đặt lịch buổi sáng ngày thường thì thoáng hơn." },
   },
 ];

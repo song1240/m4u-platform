@@ -30,7 +30,7 @@ import Stay from "./screens/Stay.jsx";
 import StayBook from "./screens/StayBook.jsx";
 import Concierge from "./screens/Concierge.jsx";
 import Feed from "./screens/Feed.jsx";
-import Recorder from "./screens/Recorder.jsx";
+import Composer from "./screens/Composer.jsx";
 import My from "./screens/My.jsx";
 import { L, pick, zoneName } from "./i18n.js";
 import { ZONES, SELF_HABITS, FIVE_TIERS, FIVE_CP, COUPONS, PROPOSALS, PARTNER_CP, REVIEW_CP } from "./data.js";
@@ -119,7 +119,7 @@ export default function App() {
   const MEDI_IDS = ["m1", "m2", "m3"];
   const [cart, setCart] = useState([]);
   const [posts, setPosts] = useState([]); // FEED 기록 — 리뷰가 아니다 (평점·랭킹 미반영)
-  const [recording, setRecording] = useState(null); // 기록 작성 중인 습관 id
+  const [composing, setComposing] = useState(null); // 글쓰기 중 초안: {cat, habit?} · null 이면 닫힘
   const [orders, setOrders] = useState([]);
   const [stays, setStays] = useState([]);
   const [ai, setAi] = useState(false); // AI 컨시어지 시트
@@ -217,7 +217,7 @@ export default function App() {
       toast(L(lang, `${labelKo} 완료 · 오늘 셀프 적립 상한(${SELF_DAILY_CAP} HRP) 도달`, `Hoàn thành ${labelVi} · đã đạt giới hạn ${SELF_DAILY_CAP} HRP hôm nay`));
     }
   };
-  /** 셀프 3종은 기록(Recorder)으로만 완료된다 — 물마시기만 탭을 유지한다 */
+  /** 셀프 3종은 기록(Composer)으로만 완료된다 — 물마시기만 탭을 유지한다 */
   const toggleSelf = (id) => {
     const h = SELF_HABITS.find((x) => x.id === id);
     if (!h) return;
@@ -229,7 +229,7 @@ export default function App() {
       return;
     }
     if (selfChecks[id]) return; // 하루 1회 · 해제 불가 (어뷰징 방지)
-    setRecording(id); // 탭만으로는 완료되지 않는다 — 기록을 남겨야 인정 (§4.11)
+    setComposing({ cat: "habit", habit: id }); // 탭만으로는 완료되지 않는다 — 기록을 남겨야 인정 (§11.6)
   };
   // 명상은 셀프 체크 또는 클래스 예약 둘 중 하나로 완료된다 (중복 집계하지 않는다)
   const mediBooked = bookings.some((b) => MEDI_IDS.includes(b.venueId));
@@ -273,20 +273,34 @@ export default function App() {
    * CP는 주지 않는다(사진은 검증 가능한 활동이 아니다, POLICY §4).
    * HRP는 셀프 체크와 같은 일일 상한을 공유한다.
    */
-  const addPost = ({ habit, text, img }) => {
-    const h = SELF_HABITS.find((x) => x.id === habit);
-    if (!h) return;
+  /**
+   * FEED 게시 (POLICY §11.6)
+   *
+   * 보상은 글이 아니라 **행동**에 붙는다:
+   *  - 습관 기록이면 그 습관을 완료 처리하고 습관의 HRP를 지급한다 (§5)
+   *  - 맛집 · 생활정보 등 자유 게시는 **아무 보상도 지급하지 않는다**
+   * 어느 쪽이든 CP는 없다 (§4) — 글과 사진은 검증 가능한 활동이 아니다.
+   */
+  const addPost = ({ cat, habit, text, img }) => {
+    const h = habit ? SELF_HABITS.find((x) => x.id === habit) : null;
+    if (cat === "habit" && !h) return;
     setPosts((x) => [
-      { id: "p" + x.length, mine: true, av: "M", habit, img, when: { ko: "방금", vi: "vừa xong" }, text: { ko: text, vi: text } },
+      {
+        id: "p" + x.length, mine: true, av: "M", cat: cat || "habit", habit: h ? habit : null, img,
+        when: { ko: "방금", vi: "vừa xong" }, text: { ko: text, vi: text },
+      },
       ...x,
     ]);
-    if (!selfChecks[habit]) {
+    if (h && !selfChecks[habit]) {
       setSelfChecks((c) => ({ ...c, [habit]: true }));
       earnSelf(h.hrp, h.name.ko, h.name.vi); // 기록이 셀프 체크를 대체 — 보상 수치는 그대로
-    } else {
+    } else if (h) {
       toast(L(lang, "기록을 남겼어요 (오늘 적립은 완료)", "Đã ghi chép (hôm nay đã tích đủ)"));
+    } else {
+      // 자유 게시 — 적립 없음. 없는 보상을 있는 것처럼 알리지 않는다 (§11.6)
+      toast(L(lang, "이웃에게 공유했어요 (적립 없음)", "Đã chia sẻ với hàng xóm (không tích điểm)"));
     }
-    setRecording(null);
+    setComposing(null);
     setTab("feed");
   };
 
@@ -388,7 +402,7 @@ export default function App() {
       />
     ),
     salon: <Salon lang={lang} goSub={goSub} />,
-    feed: <Feed lang={lang} posts={posts} onRecord={setRecording} />,
+    feed: <Feed lang={lang} posts={posts} onWrite={setComposing} />,
     my: (
       <My
         lang={lang} zone={zone} points={points} cp={cp} bookings={bookings} coupons={coupons}
@@ -420,8 +434,14 @@ export default function App() {
         </button>
       )}
       {ai && <Concierge lang={lang} onClose={() => setAi(false)} onGo={aiGo} />}
-      {recording && (
-        <Recorder lang={lang} habitId={recording} capped={selfEarned >= SELF_DAILY_CAP} onClose={() => setRecording(null)} onPost={addPost} />
+      {composing && (
+        <Composer
+          lang={lang}
+          draft={composing}
+          capped={selfEarned >= SELF_DAILY_CAP}
+          onClose={() => setComposing(null)}
+          onPost={addPost}
+        />
       )}
       <nav aria-label={L(lang, "주요 메뉴", "Menu chính")}>
         {TABS.map((t) => (

@@ -34,4 +34,5 @@
 | 2026-08-20 | UI-모션 | 모션 시스템 신설(DESIGN_SYSTEM §9) — 이징·듀레이션 토큰(`--e`/`--d1`/`--d2`), 탭 전환 fade·서브 진입 push·시트 slide up·토스트·FAB·버튼 누름 피드백. 셸이 `<main>` key로 진입 모션 재생, 화면 전환 시 scrollTo(0,0). **prefers-reduced-motion 전면 대응**. 기존 transition은 3개(아코디언·토글)뿐이었다 | PASS |
 | 2026-08-20 | UI-이미지 | `<Photo>` 컴포넌트 신설 — 원격 이미지 24곳 전부 교체. 로드 전 스켈레톤(레이아웃 고정), 실패 시 M4U 마크 인라인 SVG 폴백(추가 요청 없음), 목록 lazy·히어로 eager·전부 decoding=async. DESIGN_SYSTEM §7 개정. **`alt=""`는 유지** — 모든 사진에 같은 정보의 텍스트가 붙어 있어 장식 이미지가 맞다 | PASS |
 | 2026-08-20 | UI-접근성 | 접근성 패스(DESIGN_SYSTEM §7.1) — 아이콘 전용 버튼 14곳에 `L()` 경유 이중언어 `aria-label`, 찜하기·별점에 `aria-pressed`, 진행바 5곳을 `<Bar role=progressbar>` 컴포넌트로 통일, 시트 `role=dialog`+`aria-modal`, 토스트 `role=status`, 탭 `aria-current`. Onboarding `Frame`에 lang 미전달 버그 수정(실행 시 터짐 · 빌드는 통과했었음) | PASS |
+| 2026-08-20 | FEED-2A | 자유 게시 신설(POLICY §11.2·§11.6) — 카테고리 5종(습관·맛집·생활정보·Salon·체험)과 필터, `Recorder`→`Composer`로 일반화(습관 기록 + 자유 게시 통합), `.writebar` 글쓰기 진입. **자유 게시는 보상 없음** — 쓰기 전 고지·게시 후 토스트 모두 사실대로. verify에 `when:` 데이터 필드 인정 추가 | PASS |
 

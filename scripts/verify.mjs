@@ -51,7 +51,7 @@ const files = [];
 const I18N_EXEMPT = [/^src\/admin\//, /design-tokens/, /main\.jsx$/];
 const WRAPPERS = /\bL\(|catLabel\(|venueName\(|prodName\(|zoneName\(|pickLabel\(|\bpick\(|\bwalk\(/;
 const VIET = /[ăâđêơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵĐ]/;
-const DATA_LINE = /^\s*(id:|[a-zA-Z]+Vi:|name:|desc:|title:|label:|product:|policy:|address:|who:|text:|size:|consist:|brand:|cat:|walk:|open:|resp:|greet|search:|popular:|ai[A-Z]|ko:|vi:|q:|opts:|home:|living:|stay:|booking:|order:|habit:|salon:|wallet:|my:)|^\s*\[?"|^\s*\{ (ko|id|q):/;
+const DATA_LINE = /^\s*(id:|[a-zA-Z]+Vi:|name:|desc:|title:|label:|product:|policy:|address:|who:|text:|when:|size:|consist:|brand:|cat:|walk:|open:|resp:|greet|search:|popular:|ai[A-Z]|ko:|vi:|q:|opts:|home:|living:|stay:|booking:|order:|habit:|salon:|wallet:|my:)|^\s*\[?"|^\s*\{ (ko|id|q):/;
 const KNOWN_OK = /일월화수목금토|WEEKDAYS_KO|const CATS|CAT_VI|SELF_HABITS|MEDI_PLACES|SALON_BOOKINGS|HOST_TOP5|SKIN_QS/;
 let warnCount = 0;
 for (const f of files) {
