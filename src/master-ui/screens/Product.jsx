@@ -19,7 +19,7 @@ export default function Product({ lang, productId, onBack, addToCart, buyNow }) 
     <>
       <div className="dhero">
         <Photo src={p.img} eager />
-        <button className="fabr l" onClick={onBack}><ArrowLeft size={18} /></button>
+        <button className="fabr l" onClick={onBack} aria-label={L(lang, "뒤로", "Quay lại")}><ArrowLeft size={18} /></button>
       </div>
 
       <div className="vhead">

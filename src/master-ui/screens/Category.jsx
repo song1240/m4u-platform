@@ -19,7 +19,7 @@ export default function Category({ lang, catId, onBack, goSub, toast }) {
   if (catId === "move")
     return (
       <>
-        <SubHead title={title} onBack={onBack} />
+        <SubHead lang={lang} title={title} onBack={onBack} />
         <div className="dhero">
           <Photo src={IMG.cart} eager />
         </div>
@@ -37,7 +37,7 @@ export default function Category({ lang, catId, onBack, goSub, toast }) {
 
   return (
     <>
-      <SubHead title={title} onBack={onBack} />
+      <SubHead lang={lang} title={title} onBack={onBack} />
       {list.length === 0 ? (
         <Empty icon={<Store size={26} />}>
           {L(lang, "이 카테고리의 입점 매장을 준비 중입니다.", "Đang chuẩn bị cửa hàng cho danh mục này.")}

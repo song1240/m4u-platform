@@ -6,7 +6,7 @@
  */
 import React from "react";
 import { MapPin, Building2, Footprints, Scissors, Car, Sparkles, ChevronRight } from "lucide-react";
-import { Card, Photo } from "../components.jsx";
+import { Card, Photo, Bar } from "../components.jsx";
 import { L, num, greeting } from "../i18n.js";
 import "../style.css";
 
@@ -56,7 +56,7 @@ export default function Home({ lang, zone, steps, goal, points, go, goSub, onAi 
         <i className="ic"><Footprints size={18} /></i>
         <div className="mid">
           <b>{L(lang, `오늘 ${num(steps, lang)}걸음`, `Hôm nay ${num(steps, lang)} bước`)}</b>
-          <div className="bar"><i style={{ width: `${pct}%` }} /></div>
+          <Bar now={pct} label={L(lang, "오늘 걸음 목표 달성률", "Tỷ lệ đạt mục tiêu bước chân hôm nay")} />
           <p>{L(lang, `목표까지 ${num(left, lang)}걸음 · +70 HRP`, `Còn ${num(left, lang)} bước · +70 HRP`)}</p>
         </div>
         <strong>{pct}%</strong>

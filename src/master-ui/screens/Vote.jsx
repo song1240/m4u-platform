@@ -5,7 +5,7 @@
  */
 import React from "react";
 import { Check, Timer } from "lucide-react";
-import { SubHead, Card, Note, Tag, Countdown } from "../components.jsx";
+import { SubHead, Card, Note, Tag, Countdown, Bar } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { PROPOSALS } from "../data.js";
 import "../style.css";
@@ -13,7 +13,7 @@ import "../style.css";
 export default function Vote({ lang, cp, myVotes, castVote, onBack }) {
   return (
     <>
-      <SubHead title={L(lang, "커뮤니티 투표", "Bỏ phiếu cộng đồng")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "커뮤니티 투표", "Bỏ phiếu cộng đồng")} onBack={onBack} />
       <Note>
         {L(lang, `내 투표권은 ${num(cp, lang)} CP입니다. `, `Quyền biểu quyết của bạn là ${num(cp, lang)} CP. `)}
         {L(lang, "CP 가중 투표로 단지 운영 안건이 결정되며, 정족수를 채워야 반영됩니다. CP는 구매할 수 없습니다.", "Đề xuất vận hành khu được quyết định theo trọng số CP và chỉ có hiệu lực khi đủ định mức. CP không thể mua được.")}
@@ -40,7 +40,7 @@ export default function Vote({ lang, cp, myVotes, castVote, onBack }) {
               <span className="yes">{L(lang, `찬성 ${num(p.yes, lang)} CP (${yesPct}%)`, `Đồng ý ${num(p.yes, lang)} CP (${yesPct}%)`)}</span>
               <span className="no">{L(lang, `반대 ${num(p.no, lang)} CP`, `Không đồng ý ${num(p.no, lang)} CP`)}</span>
             </div>
-            <div className="bar"><i style={{ width: `${yesPct}%` }} /></div>
+            <Bar now={yesPct} label={L(lang, "찬성 비율", "Tỷ lệ đồng ý")} />
             <div className="quorum">{L(lang, `정족수 ${num(p.quorum, lang)} CP 중 ${quorumPct}% 달성`, `Đạt ${quorumPct}% trên định mức ${num(p.quorum, lang)} CP`)}</div>
             {!closed &&
               (voted ? (

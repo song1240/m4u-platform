@@ -4,6 +4,7 @@
  */
 import React from "react";
 import { MapPin, ChevronRight, ChevronLeft, ShieldCheck, X } from "lucide-react";
+import { L } from "./i18n.js";
 import "./style.css";
 
 /** onClick을 주면 클릭 가능한 카드(button)로 렌더 — 시각은 동일 (DESIGN_SYSTEM §4) */
@@ -46,10 +47,12 @@ export const Tile = ({ icon, title, sub, onClick }) => (
 
 /* ── Living 패턴 공용 (DESIGN_SYSTEM §4.3) ── */
 
-/** 서브 화면 상단 바 — 뒤로 + 제목 */
-export const SubHead = ({ title, onBack }) => (
+/** 서브 화면 상단 바 — 뒤로 + 제목. 아이콘만 있는 버튼은 이름을 반드시 준다 (DESIGN_SYSTEM §7) */
+export const SubHead = ({ title, onBack, lang }) => (
   <div className="subhead">
-    <button className="bk" onClick={onBack}><ChevronLeft size={20} /></button>
+    <button className="bk" onClick={onBack} aria-label={L(lang, "뒤로", "Quay lại")}>
+      <ChevronLeft size={20} />
+    </button>
     <b>{title}</b>
   </div>
 );
@@ -112,16 +115,33 @@ export const Photo = ({ src, alt = "", c = "", eager = false }) => {
 /** 하단 고정 CTA 바 */
 export const CtaBar = ({ children }) => <div className="ctabar">{children}</div>;
 
-/** 확인 바텀시트 */
-export const Sheet = ({ title, onClose, children }) => (
+/** 확인 바텀시트 — 보조기술에 대화상자로 알린다 (DESIGN_SYSTEM §7) */
+export const Sheet = ({ title, onClose, children, lang }) => (
   <div className="sheetbd" onClick={onClose}>
-    <div className="sheet" onClick={(e) => e.stopPropagation()}>
+    <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
       <div className="sheet-hd">
         <b>{title}</b>
-        <button onClick={onClose}><X size={18} /></button>
+        <button onClick={onClose} aria-label={L(lang, "닫기", "Đóng")}><X size={18} /></button>
       </div>
       {children}
     </div>
+  </div>
+);
+
+/**
+ * 진행바 — 시각적 막대만 있으면 스크린리더에는 아무것도 없는 것과 같다.
+ * now/max 와 이름을 반드시 넘긴다 (DESIGN_SYSTEM §7).
+ */
+export const Bar = ({ now, max = 100, label }) => (
+  <div
+    className="bar"
+    role="progressbar"
+    aria-valuenow={Math.round(now)}
+    aria-valuemin={0}
+    aria-valuemax={Math.round(max)}
+    aria-label={label}
+  >
+    <i style={{ width: `${Math.max(0, Math.min(100, (now / max) * 100))}%` }} />
   </div>
 );
 

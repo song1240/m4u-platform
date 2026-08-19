@@ -23,7 +23,7 @@ export default function Residence({ lang, checkedIn, setCheckedIn, toast, onBack
 
   return (
     <>
-      <SubHead title={L(lang, "내 레지던스 · 컨시어지", "Căn hộ của tôi · lễ tân")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "내 레지던스 · 컨시어지", "Căn hộ của tôi · lễ tân")} onBack={onBack} />
 
       <div className="stayhero">
         <Photo src={MY_STAY.img} eager />
@@ -72,7 +72,7 @@ export default function Residence({ lang, checkedIn, setCheckedIn, toast, onBack
       </Note>
 
       {qr && (
-        <Sheet title={L(lang, "QR 체크인", "Check-in QR")} onClose={() => setQr(false)}>
+        <Sheet lang={lang} title={L(lang, "QR 체크인", "Check-in QR")} onClose={() => setQr(false)}>
           <QrBox />
           <Note>{L(lang, "프런트에서 이 QR을 보여주시면 체크인이 완료됩니다. 유효시간 10분.", "Xuất trình QR này tại quầy lễ tân để nhận phòng. Hiệu lực 10 phút.")}</Note>
           <Btn onClick={() => { setCheckedIn(true); setQr(false); toast(L(lang, "체크인 완료 · Guest QR이 활성화되었어요", "Đã nhận phòng · QR khách đã kích hoạt")); }}>

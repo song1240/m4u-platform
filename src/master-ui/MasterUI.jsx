@@ -412,9 +412,10 @@ export default function App() {
       <main key={sub ? `s:${sub.name}:${subDepth}` : `t:${tab}`} className={sub ? "push" : "fade"}>
         {sub ? subScreens[sub.name] : screens[tab]}
       </main>
-      {toastMsg && <div className="toast"><Check size={15} /> {toastMsg}</div>}
+      {/* 토스트는 적립·완료를 알리는 유일한 통로다. 보조기술에도 읽히도록 status 로 알린다 (§7) */}
+      {toastMsg && <div className="toast" role="status"><Check size={15} /> {toastMsg}</div>}
       {showFab && !ai && (
-        <button className="fab" onClick={() => setAi(true)} aria-label="AI">
+        <button className="fab" onClick={() => setAi(true)} aria-label={L(lang, "AI 컨시어지 열기", "Mở AI Concierge")}>
           <Sparkles size={22} />
         </button>
       )}
@@ -422,9 +423,14 @@ export default function App() {
       {recording && (
         <Recorder lang={lang} habitId={recording} capped={selfEarned >= SELF_DAILY_CAP} onClose={() => setRecording(null)} onPost={addPost} />
       )}
-      <nav>
+      <nav aria-label={L(lang, "주요 메뉴", "Menu chính")}>
         {TABS.map((t) => (
-          <button key={t.id} className={tab === t.id ? "on" : ""} onClick={() => setTab(t.id)}>
+          <button
+            key={t.id}
+            className={tab === t.id ? "on" : ""}
+            aria-current={tab === t.id ? "page" : undefined}
+            onClick={() => setTab(t.id)}
+          >
             <t.icon size={20} />
             <span>{L(lang, t.ko, t.vi)}</span>
           </button>

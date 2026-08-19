@@ -16,7 +16,7 @@ export default function Shop({ lang, orders, cartCount, onBack, goSub }) {
   const stores = rankVenues(VENUES).filter((v) => v.cat === "shop");
   return (
     <>
-      <SubHead title="SHOP" onBack={onBack} />
+      <SubHead lang={lang} title="SHOP" onBack={onBack} />
 
       <Card onClick={() => goSub("cart")}>
         <div className="prof">

@@ -20,7 +20,7 @@ export default function Recorder({ lang, habitId, capped, onClose, onPost }) {
   const enough = text.trim().length >= FEED_MIN;
 
   return (
-    <Sheet title={L(lang, "기록 남기기", "Viết ghi chép")} onClose={onClose}>
+    <Sheet lang={lang} title={L(lang, "기록 남기기", "Viết ghi chép")} onClose={onClose}>
       <div className="composer">
         <div className="lbl">
           <Tag kind="self">{h.emoji} {pick(h.name, lang)}</Tag>
@@ -39,7 +39,7 @@ export default function Recorder({ lang, habitId, capped, onClose, onPost }) {
         {img ? (
           <div className="prev">
             <Photo src={img} />
-            <button onClick={() => setImg(null)}><X size={15} /></button>
+            <button onClick={() => setImg(null)} aria-label={L(lang, "사진 삭제", "Xóa ảnh")}><X size={15} /></button>
           </div>
         ) : (
           <label className="pickimg">

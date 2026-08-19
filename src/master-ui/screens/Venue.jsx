@@ -22,8 +22,13 @@ export default function Venue({ lang, venueId, myReviews = [], onBack, goSub, li
     <>
       <div className="dhero">
         <Photo src={v.img} eager />
-        <button className="fabr l" onClick={onBack}><ArrowLeft size={18} /></button>
-        <button className="fabr r" onClick={() => toggleLike(v.id)}>
+        <button className="fabr l" onClick={onBack} aria-label={L(lang, "뒤로", "Quay lại")}><ArrowLeft size={18} /></button>
+        <button
+          className="fabr r"
+          onClick={() => toggleLike(v.id)}
+          aria-pressed={liked}
+          aria-label={L(lang, "찜하기", "Lưu yêu thích")}
+        >
           <Heart size={17} className={liked ? "on" : ""} />
         </button>
         <span className="logomark">{v.logo}</span>

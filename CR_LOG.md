@@ -33,4 +33,5 @@
 | 2026-08-13 | POLICY | **§11 커뮤니티/FEED 신설 · §6 개정** (대표 승인, 3차 검토) — FEED=발견/공유, Verified Review=공식 평가, HRP=실제 행동 보상, Ranking=사업자 품질로 역할 분리. 게시 자체 무보상 확정(보상 채굴 차단), `M4U 이용 확인` 표시 신설(Verified 단어 미사용), 방화벽 범위를 사업자 공식 순위로 한정, FIVE 개설 주체를 승인 브랜드까지 확대(§6.1~6.4). §1·§2·§4·§5 연결 문장 추가. 방문판매법 단정 표현 → 내부 원칙+법률검토 필요로 수정(2곳). 미사용 FEED_HRP 제거 | PASS |
 | 2026-08-20 | UI-모션 | 모션 시스템 신설(DESIGN_SYSTEM §9) — 이징·듀레이션 토큰(`--e`/`--d1`/`--d2`), 탭 전환 fade·서브 진입 push·시트 slide up·토스트·FAB·버튼 누름 피드백. 셸이 `<main>` key로 진입 모션 재생, 화면 전환 시 scrollTo(0,0). **prefers-reduced-motion 전면 대응**. 기존 transition은 3개(아코디언·토글)뿐이었다 | PASS |
 | 2026-08-20 | UI-이미지 | `<Photo>` 컴포넌트 신설 — 원격 이미지 24곳 전부 교체. 로드 전 스켈레톤(레이아웃 고정), 실패 시 M4U 마크 인라인 SVG 폴백(추가 요청 없음), 목록 lazy·히어로 eager·전부 decoding=async. DESIGN_SYSTEM §7 개정. **`alt=""`는 유지** — 모든 사진에 같은 정보의 텍스트가 붙어 있어 장식 이미지가 맞다 | PASS |
+| 2026-08-20 | UI-접근성 | 접근성 패스(DESIGN_SYSTEM §7.1) — 아이콘 전용 버튼 14곳에 `L()` 경유 이중언어 `aria-label`, 찜하기·별점에 `aria-pressed`, 진행바 5곳을 `<Bar role=progressbar>` 컴포넌트로 통일, 시트 `role=dialog`+`aria-modal`, 토스트 `role=status`, 탭 `aria-current`. Onboarding `Frame`에 lang 미전달 버그 수정(실행 시 터짐 · 빌드는 통과했었음) | PASS |
 

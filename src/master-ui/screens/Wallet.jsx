@@ -8,7 +8,7 @@
  */
 import React, { useState } from "react";
 import { Vote, Ticket, Users, Timer, ChevronRight } from "lucide-react";
-import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown, Photo } from "../components.jsx";
+import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown, Photo, Bar } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { FIVE_TIERS, FIVE_CP, FIVE_ROOMS, COUPONS } from "../data.js";
 import "../style.css";
@@ -21,7 +21,7 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
 
   return (
     <>
-      <SubHead title={L(lang, "지갑", "Ví của tôi")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "지갑", "Ví của tôi")} onBack={onBack} />
 
       <Card c="wcard">
         <div className="assets">
@@ -78,7 +78,7 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
               <span><Timer size={12} /> <Countdown hours={r.leftH} lang={lang} /></span>
               <span className="rw">+{t.hrp} HRP · +{FIVE_CP} CP</span>
             </div>
-            <div className="bar"><i style={{ width: `${pct}%` }} /></div>
+            <Bar now={pct} label={L(lang, "공동구매 모집 진행률", "Tiến độ tuyển người mua chung")} />
             <button className="primary" disabled={isJoined} onClick={() => setTarget(r)}>
               {isJoined ? L(lang, "참여 완료", "Đã tham gia") : L(lang, `참여하기 · ${num(p, lang)} VND`, `Tham gia · ${num(p, lang)} VND`)}
             </button>
@@ -106,7 +106,7 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
       ))}
 
       {target && (
-        <Sheet title={L(lang, "공동구매 참여", "Tham gia mua chung")} onClose={() => setTarget(null)}>
+        <Sheet lang={lang} title={L(lang, "공동구매 참여", "Tham gia mua chung")} onClose={() => setTarget(null)}>
           <Spec
             rows={[
               { k: L(lang, "상품", "Sản phẩm"), v: pick(target.product, lang) },

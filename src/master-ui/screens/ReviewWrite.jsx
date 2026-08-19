@@ -21,7 +21,7 @@ export default function ReviewWrite({ lang, booking, onBack, onSubmit }) {
 
   return (
     <>
-      <SubHead title={L(lang, "Verified Review 작성", "Viết Verified Review")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "Verified Review 작성", "Viết Verified Review")} onBack={onBack} />
 
       <Card>
         <em>VERIFIED</em>
@@ -33,7 +33,7 @@ export default function ReviewWrite({ lang, booking, onBack, onSubmit }) {
       <Card>
         <div className="stars">
           {[1, 2, 3, 4, 5].map((n) => (
-            <button key={n} className={n <= rate ? "on" : ""} onClick={() => setRate(n)} aria-label={`${n}`}>
+            <button key={n} className={n <= rate ? "on" : ""} onClick={() => setRate(n)} aria-pressed={n <= rate} aria-label={L(lang, `별 ${n}개`, `${n} sao`)}>
               ★
             </button>
           ))}

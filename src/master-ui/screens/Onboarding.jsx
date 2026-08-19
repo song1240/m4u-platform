@@ -21,12 +21,12 @@ const VALUES = [
 ];
 
 /* ── 공통 셸 (하단 네비 없음 · step이 있으면 3단계 진행 표시) ── */
-const Frame = ({ step, onBack, children }) => (
+const Frame = ({ step, onBack, children, lang }) => (
   <div className="shell solo">
     <div className="onboard">
       <div className="obtop">
         {onBack ? (
-          <button className="back" onClick={onBack}>
+          <button className="back" onClick={onBack} aria-label={L(lang, "뒤로", "Quay lại")}>
             <ChevronLeft size={18} />
           </button>
         ) : (
@@ -55,7 +55,8 @@ const Brandmark = () => (
 /* ── ① 언어 선택 — 선택 전이므로 두 언어를 함께 노출 ── */
 export function LangScreen({ onPick, onBack, current, step = 0 }) {
   return (
-    <Frame step={step} onBack={onBack}>
+    // 언어 선택 화면에는 lang 이 없다 — 현재 선택값(current)을 기준으로 읽어준다
+    <Frame lang={current} step={step} onBack={onBack}>
       <div className="mid">
         <Brandmark />
         <p className="center">언어를 선택해 주세요 · Vui lòng chọn ngôn ngữ</p>
@@ -79,7 +80,7 @@ export function LangScreen({ onPick, onBack, current, step = 0 }) {
 /* ── ② 소개 ── */
 function IntroScreen({ lang, onNext, onBack }) {
   return (
-    <Frame step={1} onBack={onBack}>
+    <Frame lang={lang} step={1} onBack={onBack}>
       <div className="mid">
         <Brandmark />
         <h1 className="center">{L(lang, <>내 생활이<br />혜택이 되는 곳</>, <>Nơi cuộc sống<br />trở thành lợi ích</>)}</h1>
@@ -108,7 +109,7 @@ function IntroScreen({ lang, onNext, onBack }) {
 /* ── ③ MY ZONE 선택 — 생활권이 이후 모든 화면의 기준이 된다 ── */
 export function ZoneScreen({ lang, zoneIdx, setZoneIdx, onDone, onBack, reset = false, step = 2 }) {
   return (
-    <Frame step={step} onBack={onBack}>
+    <Frame lang={lang} step={step} onBack={onBack}>
       <div className="mid">
         <em>MY ZONE</em>
         <h1>{L(lang, <>지금 생활하는<br />지역을 선택해 주세요</>, <>Chọn khu vực bạn<br />đang sinh sống</>)}</h1>

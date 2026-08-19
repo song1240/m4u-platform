@@ -12,7 +12,7 @@ import "../style.css";
 export default function Stay({ lang, stays, onBack, goSub }) {
   return (
     <>
-      <SubHead title="STAY" onBack={onBack} />
+      <SubHead lang={lang} title="STAY" onBack={onBack} />
 
       {stays.length > 0 && (
         <>

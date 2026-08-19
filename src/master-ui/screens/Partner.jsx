@@ -49,7 +49,7 @@ export default function Partner({ lang, onBack, onApproved }) {
 
   return (
     <>
-      <SubHead title={L(lang, "내 사업 시작하기", "Bắt đầu kinh doanh")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "내 사업 시작하기", "Bắt đầu kinh doanh")} onBack={onBack} />
       <div className="steps">
         {labels.map((x, i) => (
           <div key={x} className={step >= i ? "on" : ""}>

@@ -35,7 +35,7 @@ export default function Book({ lang, venueId, serviceId, onBack, onDone, confirm
   if (done)
     return (
       <>
-        <SubHead title={L(lang, "예약 완료", "Đặt lịch hoàn tất")} onBack={onDone} />
+        <SubHead lang={lang} title={L(lang, "예약 완료", "Đặt lịch hoàn tất")} onBack={onDone} />
         <Card>
           <div className="done">
             <div className="ck"><Check size={28} /></div>
@@ -65,7 +65,7 @@ export default function Book({ lang, venueId, serviceId, onBack, onDone, confirm
 
   return (
     <>
-      <SubHead title={L(lang, "예약하기", "Đặt lịch")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "예약하기", "Đặt lịch")} onBack={onBack} />
 
       <h3 className="section sm">{L(lang, "서비스", "Dịch vụ")}</h3>
       <div className="chips">
@@ -113,7 +113,7 @@ export default function Book({ lang, venueId, serviceId, onBack, onDone, confirm
       </CtaBar>
 
       {sheet && (
-        <Sheet title={L(lang, "예약 확인", "Xác nhận đặt lịch")} onClose={() => setSheet(false)}>
+        <Sheet lang={lang} title={L(lang, "예약 확인", "Xác nhận đặt lịch")} onClose={() => setSheet(false)}>
           <Spec
             rows={[
               { k: L(lang, "서비스", "Dịch vụ"), v: pick(s.name, lang) },

@@ -12,7 +12,7 @@ export default function Bookings({ lang, bookings, reviews, onWrite, onBack }) {
   const written = (id) => reviews.some((r) => r.bookingId === id);
   return (
     <>
-      <SubHead title={L(lang, "예약 내역", "Lịch sử đặt chỗ")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "예약 내역", "Lịch sử đặt chỗ")} onBack={onBack} />
       {bookings.length === 0 ? (
         <Empty icon={<CalendarDays size={26} />}>
           {L(lang, "아직 예약 내역이 없습니다. Living에서 가까운 매장을 예약해 보세요.", "Chưa có lịch sử đặt chỗ. Hãy đặt một cửa hàng gần bạn trong Living.")}

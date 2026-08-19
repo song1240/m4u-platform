@@ -7,7 +7,7 @@
  * 결과 수치는 데모 자리표시자 (CLAUDE.md §6).
  */
 import React, { useState } from "react";
-import { SubHead, Card, Note, Photo } from "../components.jsx";
+import { SubHead, Card, Note, Photo, Bar } from "../components.jsx";
 import { L, pick } from "../i18n.js";
 import { SKIN_QS, SKIN_TYPES, VENUES, IMG } from "../data.js";
 import "../style.css";
@@ -28,7 +28,7 @@ export default function SkinProfile({ lang, onBack, goSub }) {
 
   return (
     <>
-      <SubHead title={L(lang, "피부 분석 · 뷰티 프로필", "Phân tích da · hồ sơ làm đẹp")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "피부 분석 · 뷰티 프로필", "Phân tích da · hồ sơ làm đẹp")} onBack={onBack} />
       <Note>{L(lang, "의료 진단이 아니라, 서비스 추천을 위한 뷰티 프로필입니다.", "Đây là hồ sơ làm đẹp để gợi ý dịch vụ, không phải chẩn đoán y tế.")}</Note>
 
       {SKIN_QS.map((item, qi) => (
@@ -57,7 +57,7 @@ export default function SkinProfile({ lang, onBack, goSub }) {
               ].map((x) => (
                 <div key={x.k}>
                   <div className="lb"><span>{x.k}</span><b>{x.v}%</b></div>
-                  <div className="bar"><i style={{ width: `${x.v}%` }} /></div>
+                  <Bar now={x.v} label={x.k} />
                 </div>
               ))}
             </div>

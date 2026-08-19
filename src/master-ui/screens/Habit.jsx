@@ -10,7 +10,7 @@
  */
 import React from "react";
 import { Footprints, Check, Flame, ShieldCheck, HeartPulse, Link2, PenLine } from "lucide-react";
-import { Card, Note, Tag, Photo } from "../components.jsx";
+import { Card, Note, Tag, Photo, Bar } from "../components.jsx";
 import { L, pick, walk, num } from "../i18n.js";
 import { SELF_HABITS, MEDI_PLACES, WEEK_DEMO, WEEKDAYS, HEALTH_APPS } from "../data.js";
 import "../style.css";
@@ -67,7 +67,7 @@ export default function Habit({
             )}
           </div>
           <div className="v">{num(steps, lang)} <small>/ {num(goal, lang)}</small></div>
-          <div className="bar"><i style={{ width: `${pct}%` }} /></div>
+          <Bar now={pct} label={L(lang, "오늘 걸음 목표 달성률", "Tỷ lệ đạt mục tiêu bước chân hôm nay")} />
           <p>
             {healthLinked
               ? L(lang, "목표 달성 시 +10 HRP · +2 CP (검증형)", "Đạt mục tiêu: +10 HRP · +2 CP (đã xác minh)")
@@ -117,7 +117,7 @@ export default function Habit({
                 {done ? L(lang, "완료", "Xong") : L(lang, "+1잔", "+1 ly")}
               </button>
             ) : done ? (
-              <button className="chk on" disabled><Check size={16} /></button>
+              <button className="chk on" disabled aria-label={L(lang, "완료됨", "Đã hoàn thành")}><Check size={16} /></button>
             ) : (
               <button className="btn-sm" onClick={() => toggleSelf(h.id)}>
                 <PenLine size={13} /> {L(lang, "기록", "Ghi lại")}

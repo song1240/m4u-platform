@@ -15,7 +15,7 @@ export default function PointLog({ lang, kind = "hrp", points, cp, txs, cpLog, o
 
   return (
     <>
-      <SubHead title={L(lang, "적립 내역", "Lịch sử tích lũy")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "적립 내역", "Lịch sử tích lũy")} onBack={onBack} />
       <div className="segs">
         <button className={!isCp ? "on" : ""} onClick={() => setTab("hrp")}>HRP</button>
         <button className={isCp ? "on" : ""} onClick={() => setTab("cp")}>CP</button>

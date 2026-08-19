@@ -71,7 +71,7 @@ export default function MyBusiness({ lang, role = "local", setRole, onBack, toas
 
   return (
     <>
-      <SubHead title="MY BUSINESS" onBack={onBack} />
+      <SubHead lang={lang} title="MY BUSINESS" onBack={onBack} />
       {isHost && (
         <div className="sechead">
           <Tag kind="ok"><ShieldCheck size={10} /> M4U Recommended Stay</Tag>
@@ -248,7 +248,7 @@ export default function MyBusiness({ lang, role = "local", setRole, onBack, toas
       </Note>
 
       {qr && (
-        <Sheet title={`M4U Contributor QR · ${qr}`} onClose={() => setQr(null)}>
+        <Sheet lang={lang} title={`M4U Contributor QR · ${qr}`} onClose={() => setQr(null)}>
           <QrBox />
           <Note>
             {L(lang, "매장 · 객실 · 차량에 비치하면 스캔한 사용자가 M4U로 유입되고, 그 기여가 내 Contributor ID에 기록됩니다.", "Đặt tại cửa hàng · phòng · xe — người quét sẽ vào M4U và lượt giới thiệu được ghi cho Contributor ID của bạn.")}

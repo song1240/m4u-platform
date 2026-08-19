@@ -38,7 +38,7 @@ export default function StayBook({ lang, stayId, onBack, onDone, confirmStay }) 
       <>
         <div className="dhero">
           <Photo src={r.img} eager />
-          <button className="fabr l" onClick={onDone}><ArrowLeft size={18} /></button>
+          <button className="fabr l" onClick={onDone} aria-label={L(lang, "뒤로", "Quay lại")}><ArrowLeft size={18} /></button>
         </div>
         <Card>
           <div className="done">
@@ -76,7 +76,7 @@ export default function StayBook({ lang, stayId, onBack, onDone, confirmStay }) 
     <>
       <div className="dhero">
         <Photo src={r.img} eager />
-        <button className="fabr l" onClick={onBack}><ArrowLeft size={18} /></button>
+        <button className="fabr l" onClick={onBack} aria-label={L(lang, "뒤로", "Quay lại")}><ArrowLeft size={18} /></button>
       </div>
 
       <div className="vhead">
@@ -132,7 +132,7 @@ export default function StayBook({ lang, stayId, onBack, onDone, confirmStay }) 
       </CtaBar>
 
       {sheet && (
-        <Sheet title={L(lang, "객실 예약 확인", "Xác nhận đặt phòng")} onClose={() => setSheet(false)}>
+        <Sheet lang={lang} title={L(lang, "객실 예약 확인", "Xác nhận đặt phòng")} onClose={() => setSheet(false)}>
           <Spec
             rows={[
               { k: L(lang, "객실", "Phòng"), v: pick(r.name, lang) },

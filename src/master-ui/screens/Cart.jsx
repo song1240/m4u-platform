@@ -14,7 +14,7 @@ export default function Cart({ lang, cart, setQty, placeOrder, onBack }) {
 
   return (
     <>
-      <SubHead title={L(lang, "장바구니", "Giỏ hàng")} onBack={onBack} />
+      <SubHead lang={lang} title={L(lang, "장바구니", "Giỏ hàng")} onBack={onBack} />
       {cart.length === 0 ? (
         <Empty icon={<ShoppingBag size={26} />}>
           {L(lang, "장바구니가 비어 있습니다. M4U Select에서 상품을 담아보세요.", "Giỏ hàng trống. Hãy chọn sản phẩm trong M4U Select.")}
@@ -27,9 +27,9 @@ export default function Cart({ lang, cart, setQty, placeOrder, onBack }) {
               <div className="bd">
                 <b>{pick(x.name, lang)}</b>
                 <div className="stepper">
-                  <button onClick={() => setQty(x.id, -1)}><Minus size={13} /></button>
+                  <button onClick={() => setQty(x.id, -1)} aria-label={L(lang, "수량 줄이기", "Giảm số lượng")}><Minus size={13} /></button>
                   <b>{x.qty}</b>
-                  <button onClick={() => setQty(x.id, 1)}><Plus size={13} /></button>
+                  <button onClick={() => setQty(x.id, 1)} aria-label={L(lang, "수량 늘리기", "Tăng số lượng")}><Plus size={13} /></button>
                 </div>
               </div>
               <span className="amt">{num(x.price * x.qty, lang)}</span>

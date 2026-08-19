@@ -45,7 +45,7 @@ export default function Concierge({ lang, onClose, onGo }) {
       <div className="sheet aisheet" onClick={(e) => e.stopPropagation()}>
         <div className="sheet-hd">
           <b><Sparkles size={15} /> M4U AI CONCIERGE</b>
-          <button onClick={onClose}><X size={18} /></button>
+          <button onClick={onClose} aria-label={L(lang, "닫기", "Đóng")}><X size={18} /></button>
         </div>
 
         <div className="body">
@@ -94,7 +94,7 @@ export default function Concierge({ lang, onClose, onGo }) {
             onKeyDown={(e) => e.key === "Enter" && send()}
             placeholder={L(lang, "무엇이든 물어보세요", "Hỏi tôi bất cứ điều gì")}
           />
-          <button onClick={() => send()}><Send size={15} /></button>
+          <button onClick={() => send()} aria-label={L(lang, "보내기", "Gửi")}><Send size={15} /></button>
         </div>
 
         <div className="aiscope">
