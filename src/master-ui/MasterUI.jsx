@@ -89,6 +89,8 @@ export default function App() {
   const [tab, setTabState] = useState("home");
   const [sub, setSub] = useState(null); // 서브 화면: {name, ...params}
   const [subDepth, setSubDepth] = useState(0); // 쌓인 서브 화면 수 (탭 전환 시 한 번에 닫기 위함)
+  // 화면이 바뀌면 맨 위에서 시작한다. 스크롤된 상태로 새 화면이 열리면 진입 모션이 깨져 보인다 (§9)
+  useEffect(() => { window.scrollTo(0, 0); }, [tab, sub?.name, subDepth]);
   const [steps] = useState(3200);
   const [points, setPoints] = useState(HRP_START); // 예약·습관 적립이 쌓이는 지갑 잔액
   const [likes, setLikes] = useState([]);
@@ -403,9 +405,13 @@ export default function App() {
     if (act.sub) return goSub(act.sub, act.params || {});
   };
 
+  // <main> 의 key 가 바뀌면 화면이 다시 마운트되며 진입 모션이 재생된다 (DESIGN_SYSTEM §9).
+  // 깊이 들어가면 push(오른쪽에서 밀려 들어옴), 탭을 바꾸면 fade(제자리에서 위로).
   return (
     <div className="shell">
-      <main>{sub ? subScreens[sub.name] : screens[tab]}</main>
+      <main key={sub ? `s:${sub.name}:${subDepth}` : `t:${tab}`} className={sub ? "push" : "fade"}>
+        {sub ? subScreens[sub.name] : screens[tab]}
+      </main>
       {toastMsg && <div className="toast"><Check size={15} /> {toastMsg}</div>}
       {showFab && !ai && (
         <button className="fab" onClick={() => setAi(true)} aria-label="AI">
