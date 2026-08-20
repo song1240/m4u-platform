@@ -23,6 +23,9 @@ M4U — "내 생활이 혜택이 되는 곳". 베트남 빈홈 그랜드 파크(
 | `docs/HARNESS/` | 모듈별 하네스 — 작업은 반드시 하네스 단위로 진행 |
 
 실서비스 목표 스택: Expo React Native + Supabase + Drizzle + n8n.
+**Supabase는 베트남 국내 클라우드에 자체 호스팅한다** (2026-08-20 대표 결정) — 개인정보 원본을
+국내에 두기 위함이며, Supabase 호스팅에는 베트남 리전이 없다(전 리전 AWS 기반 · 최근접 싱가포르).
+남은 쟁점은 `docs/LEGAL_REVIEW_REQUEST.md` Q2 참조.
 현 저장소는 React(Vite) 프로토타입이며, RN 이관 전까지 제품 사양의 단일 기준(source of truth)이다.
 
 ## 3. 절대 규칙 (위반 금지)
