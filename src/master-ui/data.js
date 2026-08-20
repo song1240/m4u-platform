@@ -367,10 +367,29 @@ export const FIVE_TIERS = {
 /** FIVE 참여 시 CP — 검증 가능한 활동 (POLICY §4, 데모 자리표시자) */
 export const FIVE_CP = 10;
 
+/**
+ * 개설 주체 (POLICY §6.1)
+ *
+ * FIVE는 M4U 본사 또는 **승인된 브랜드·파트너**가 개설한다.
+ * `by`는 개설 주체이고 `fund`는 보상 재원 부담 주체다(§6.2 — 정산에 분리 기록).
+ * 브랜드 개설 방은 Admin의 상품·가격·재고 검수를 통과한 것만 여기에 들어온다.
+ */
 export const FIVE_ROOMS = [
-  { id: "f1", tier: 5, img: IMG.skinset, origin: 820000, joined: 3, leftH: 26, product: { ko: "어성초 수딩 스킨케어 세트", vi: "Bộ chăm sóc da dịu nhẹ diếp cá" } },
-  { id: "f2", tier: 10, img: IMG.maskpack, origin: 220000, joined: 7, leftH: 61, product: { ko: "시카 리페어 마스크팩 10매", vi: "Mặt nạ phục hồi Cica 10 miếng" } },
-  { id: "f3", tier: 15, img: IMG.serum, origin: 900000, joined: 9, leftH: 98, product: { ko: "그린 티트리 세럼 더블 세트", vi: "Bộ đôi serum trà tràm" } },
+  {
+    id: "f1", tier: 5, img: IMG.skinset, origin: 820000, joined: 3, leftH: 26,
+    by: { ko: "M4U 공식", vi: "M4U chính thức" }, official: true, fund: { ko: "M4U", vi: "M4U" },
+    product: { ko: "어성초 수딩 스킨케어 세트", vi: "Bộ chăm sóc da dịu nhẹ diếp cá" },
+  },
+  {
+    id: "f2", tier: 10, img: IMG.maskpack, origin: 220000, joined: 7, leftH: 61,
+    by: { ko: "M4U 공식", vi: "M4U chính thức" }, official: true, fund: { ko: "M4U", vi: "M4U" },
+    product: { ko: "시카 리페어 마스크팩 10매", vi: "Mặt nạ phục hồi Cica 10 miếng" },
+  },
+  {
+    id: "f3", tier: 15, img: IMG.serum, origin: 900000, joined: 9, leftH: 98,
+    by: { ko: "티트리 랩", vi: "Tea Tree Lab" }, official: false, fund: { ko: "브랜드 부담", vi: "Thương hiệu chi trả" },
+    product: { ko: "그린 티트리 세럼 더블 세트", vi: "Bộ đôi serum trà tràm" },
+  },
 ];
 
 export const COUPONS = [

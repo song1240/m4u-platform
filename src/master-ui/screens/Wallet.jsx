@@ -7,8 +7,8 @@
  * 모든 수치는 데모 자리표시자 (CLAUDE.md §6).
  */
 import React, { useState } from "react";
-import { Vote, Ticket, Users, Timer, ChevronRight } from "lucide-react";
-import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown, Photo, Bar } from "../components.jsx";
+import { Vote, Ticket, Users, Timer, ChevronRight, ShieldCheck, Store } from "lucide-react";
+import { SubHead, Card, Note, Sheet, Spec, Btn, Countdown, Photo, Bar, Tag } from "../components.jsx";
 import { L, pick, num } from "../i18n.js";
 import { FIVE_TIERS, FIVE_CP, FIVE_ROOMS, COUPONS } from "../data.js";
 import "../style.css";
@@ -65,6 +65,10 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
             <div className="top">
               <span className="ph"><Photo src={r.img} /></span>
               <div className="bd">
+                {/* 개설 주체를 참여 화면에 항상 표시한다 (POLICY §6.1) */}
+                <Tag kind={r.official ? "ok" : "partner"}>
+                  {r.official ? <ShieldCheck size={10} /> : <Store size={10} />} {pick(r.by, lang)}
+                </Tag>
                 <b>{pick(r.product, lang)}</b>
                 <div className="price">
                   <span className="was">{num(r.origin, lang)} VND</span>
@@ -86,7 +90,11 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
         );
       })}
       <Note>
-        {L(lang, "보상은 구매 건수에 비례해 지급되며, 모집 인원 미달 시 자동 취소되고 전액 환불됩니다.", "Thưởng trả theo số lượt mua; nếu không đủ người, đơn tự động hủy và hoàn tiền toàn bộ.")}
+        {L(
+          lang,
+          "보상은 구매 건수에 비례해 지급되며, 모집 인원 미달 시 자동 취소되고 전액 환불됩니다. 사람을 모집한 숫자에 따라 지급하지 않습니다. 브랜드가 연 방은 M4U가 상품 · 가격 · 재고를 검수한 뒤에만 열리며, 개설·판매량은 매장 순위에 반영되지 않습니다.",
+          "Thưởng trả theo số lượt mua; nếu không đủ người, đơn tự động hủy và hoàn tiền toàn bộ. Không trả thưởng theo số người tuyển được. Phòng do thương hiệu mở chỉ được mở sau khi M4U kiểm duyệt sản phẩm · giá · tồn kho, và không ảnh hưởng xếp hạng cửa hàng."
+        )}
       </Note>
 
       <div className="sechead">
@@ -110,13 +118,18 @@ export default function Wallet({ lang, points, cp, joined, joinRoom, coupons, us
           <Spec
             rows={[
               { k: L(lang, "상품", "Sản phẩm"), v: pick(target.product, lang) },
+              { k: L(lang, "개설 주체", "Bên mở phòng"), v: pick(target.by, lang) },
               { k: L(lang, "방 구조", "Cấu trúc phòng"), v: L(lang, `${target.tier}인 방 (${target.joined + 1}/${target.tier})`, `Phòng ${target.tier} người (${target.joined + 1}/${target.tier})`) },
               { k: L(lang, "보상", "Thưởng"), v: `+${tier.hrp} HRP · +${FIVE_CP} CP`, earn: true },
               { k: L(lang, "할인가", "Giá ưu đãi"), v: `${num(price, lang)} VND`, total: true },
             ]}
           />
           <Note>
-            {L(lang, "결제는 모집 완료 시 진행되며, 미달 시 자동 취소되고 전액 환불됩니다.", "Thanh toán khi đủ người; nếu không đủ sẽ tự động hủy và hoàn tiền toàn bộ.")}
+            {L(
+              lang,
+              `결제는 모집 완료 시 진행되며, 미달 시 자동 취소되고 전액 환불됩니다. 이 방은 ${pick(target.by, lang)}이(가) 열었고 보상 재원은 ${pick(target.fund, lang)}입니다.`,
+              `Thanh toán khi đủ người; nếu không đủ sẽ tự động hủy và hoàn tiền toàn bộ. Phòng do ${pick(target.by, lang)} mở, nguồn thưởng: ${pick(target.fund, lang)}.`
+            )}
           </Note>
           <Btn onClick={() => { joinRoom(target); setTarget(null); }}>{L(lang, "참여 확정", "Xác nhận tham gia")}</Btn>
         </Sheet>

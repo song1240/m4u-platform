@@ -167,3 +167,5 @@ img.im-e{background:var(--iv);object-fit:contain!important;padding:6%}
 .post .acts .more{margin-left:auto}
 .modlist{display:grid;gap:8px;margin-bottom:11px}
 .modlist button{display:flex;align-items:center;gap:9px;width:100%;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:var(--p);color:var(--ink);font-size:13.5px;font-weight:700;text-align:left}
+/* FIVE 개설 주체 표시 (POLICY §6.1) — 참여 화면에 항상 보인다 */
+.five .bd .tag{margin-bottom:5px}
