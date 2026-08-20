@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import {
   LayoutDashboard, Store, MapPin, Star, CreditCard, Coins, Flag, Lock,
   Check, X, ShieldCheck, BadgeCheck, Search, Bell, ChevronRight, Users,
-  TrendingUp, AlertTriangle, FileText, Building2, Rocket, Power, Vote,
+  TrendingUp, AlertTriangle, FileText, Building2, Rocket, Power, Vote, Package, Timer,
 } from "lucide-react";
 
 /*
@@ -105,11 +105,53 @@ const initialDisputes = [
   { id: "d3", from: "파트너 · 네일 아틀리에 미아", target: "회원 #5518", type: "악성 리뷰 신고", desc: "서비스 이용 없이 반복 항의성 문의", status: "대기" },
 ];
 
+/* ─────────── M4U FIVE 개설 검수 (POLICY §6.1~6.4) ─────────── */
+
+/**
+ * 방 구조와 모집 시간은 M4U가 정한 tier를 따른다 (§6.4).
+ * 할인율 40/45/50%는 **현재 파일럿 운영 기준값**이며, 상품별 단위경제 검증과
+ * 대표 승인에 따라 조정할 수 있다. 여기서는 기준 미달을 경고로만 표시한다.
+ */
+const FIVE_TIER = {
+  5: { dc: 40, hrp: 20, hours: 72 },
+  10: { dc: 45, hrp: 40, hours: 96 },
+  15: { dc: 50, hrp: 60, hours: 120 },
+};
+
+/** 브랜드·파트너가 제출한 FIVE 개설 신청 — 승인 전에는 앱에 노출되지 않는다 (§6.1) */
+const initialFiveQueue = [
+  {
+    id: "fq1", brand: "하나 코스메틱", owner: "브랜드", product: "어성초 수딩 스킨케어 세트",
+    tier: 10, origin: 820000, price: 451000, stock: 40, fund: "브랜드", submitted: "2시간 전",
+    note: "본사 직영 물류 · 단지 내 배송 가능",
+  },
+  {
+    id: "fq2", brand: "빈홈 그릴 하우스", owner: "파트너", product: "숯불 세트 식사권 2인",
+    tier: 5, origin: 600000, price: 420000, stock: 12, fund: "파트너", submitted: "어제",
+    note: "매장 수령 전용 · 유효기간 60일",
+  },
+  {
+    id: "fq3", brand: "티트리 랩", owner: "브랜드", product: "그린 티트리 세럼 더블 세트",
+    tier: 15, origin: 900000, price: 450000, stock: 8, fund: "브랜드", submitted: "3일 전",
+    note: "재고 소진 임박 — 추가 입고 미정",
+  },
+];
+
+/** 검수 항목 (§6.1 "Admin이 상품·가격·재고를 사전 검수한다") */
+const FIVE_CHECKS = [
+  { id: "real", label: "상품 실재 · 표기 일치", desc: "실물 사진 · 구성 · 용량이 신청 내용과 같은가" },
+  { id: "price", label: "원가 · 판매가 근거", desc: "정가가 부풀려지지 않았는가 (허위 할인율 방지)" },
+  { id: "stock", label: "재고 확보", desc: "최대 모집 인원 이상 확보되어 있는가" },
+  { id: "fund", label: "보상 재원 부담 주체 명시", desc: "§6.2 — 정산에 분리 기록된다" },
+  { id: "recruit", label: "인원 모집 비례 보상 없음", desc: "§6.2 절대 규칙 — 모집 숫자에 따른 금전·HRP 지급 구조가 없는가" },
+];
+
 /* ─────────── APP ─────────── */
 
 const NAV = [
   { key: "dash", label: "대시보드", icon: <LayoutDashboard size={16} /> },
   { key: "approve", label: "파트너 승인", icon: <Store size={16} />, badge: true },
+  { key: "five", label: "FIVE 개설 검수", icon: <Package size={16} />, badge: true },
   { key: "zones", label: "Zone 관리", icon: <MapPin size={16} /> },
   { key: "review", label: "리뷰 · 랭킹 정책", icon: <Star size={16} /> },
   { key: "dispute", label: "신고 · 분쟁", icon: <Flag size={16} /> },
@@ -127,6 +169,8 @@ function App() {
   const [flags, setFlags] = useState(initialFlags);
   const [settle, setSettle] = useState(initialSettle);
   const [disputes, setDisputes] = useState(initialDisputes);
+  const [fiveQueue, setFiveQueue] = useState(initialFiveQueue);
+  const [fiveOpen, setFiveOpen] = useState([]); // 승인되어 앱에 열린 방
 
   const showToast = (x) => { setToast(x); setTimeout(() => setToast(null), 2400); };
   const isSuper = role === "super";
@@ -142,16 +186,28 @@ function App() {
     showToast(`반려 처리 · ${item.name} — 사유가 파트너에게 통보됩니다`);
   };
 
+  /** FIVE 개설 승인 — 이 시점부터 앱에 방이 열린다. 개설 주체는 앱에 항상 표시된다 (§6.1) */
+  const approveFive = (item) => {
+    setFiveQueue((q) => q.filter((x) => x.id !== item.id));
+    setFiveOpen((a) => [{ ...item, at: "방금" }, ...a]);
+    showToast(`개설 승인 · ${item.product} — 앱에 방 오픈 · 재원 부담 ${item.fund} (정산 분리 기록)`);
+  };
+  const rejectFive = (item) => {
+    setFiveQueue((q) => q.filter((x) => x.id !== item.id));
+    showToast(`개설 반려 · ${item.product} — 사유가 신청 주체에 통보됩니다`);
+  };
+
   const body = useMemo(() => {
     if (locked(view)) return <LockedView role={role} />;
     if (view === "dash") return <Dashboard queueCount={queue.length} flagCount={flags.filter((f) => f.status === "대기").length} goApprove={() => setView("approve")} />;
     if (view === "approve") return <ApproveView queue={queue} approved={approved} onApprove={approve} onReject={reject} />;
+    if (view === "five") return <FiveView queue={fiveQueue} opened={fiveOpen} onApprove={approveFive} onReject={rejectFive} />;
     if (view === "zones") return <ZonesView />;
     if (view === "review") return <ReviewView flags={flags} setFlags={setFlags} showToast={showToast} />;
     if (view === "settle") return <SettleView settle={settle} setSettle={setSettle} showToast={showToast} />;
     if (view === "hrp") return <HrpView showToast={showToast} />;
     if (view === "dispute") return <DisputeView disputes={disputes} setDisputes={setDisputes} showToast={showToast} />;
-  }, [view, role, queue, approved, flags, settle, disputes]);
+  }, [view, role, queue, approved, flags, settle, disputes, fiveQueue, fiveOpen]);
 
   return (
     <div style={A.page}>
@@ -302,6 +358,175 @@ const CHECK_LIST = [
   { id: "loc", label: "위치 확인", desc: "실제 영업 위치 · 지도 검증" },
   { id: "doc", label: "업종별 필수 서류", desc: "위생 · 자격 · 인허가 (해당 업종)" },
 ];
+
+/**
+ * FIVE 개설 검수 (POLICY §6.1~6.4)
+ *
+ * §6.1 은 개설 주체를 M4U 본사 + 승인된 브랜드·파트너로 넓히면서
+ * **Admin의 상품·가격·재고 사전 검수**를 조건으로 달았다. 이 화면이 그 조건이다.
+ * 승인 전에는 앱 어디에도 노출되지 않는다.
+ */
+function FiveView({ queue, opened, onApprove, onReject }) {
+  const [sel, setSel] = useState(queue[0]?.id ?? null);
+  const [checks, setChecks] = useState({});
+  const item = queue.find((q) => q.id === sel) ?? queue[0];
+  const ck = checks[item?.id] || {};
+  const allOk = item && FIVE_CHECKS.every((c) => ck[c.id]);
+  const setCk = (cid) => setChecks((p) => ({ ...p, [item.id]: { ...(p[item.id] || {}), [cid]: !(p[item.id]?.[cid]) } }));
+
+  const t = item ? FIVE_TIER[item.tier] : null;
+  const dc = item ? Math.round((1 - item.price / item.origin) * 100) : 0;
+  const dcOk = t && dc >= t.dc;
+  const stockOk = item && item.stock >= item.tier;
+
+  return (
+    <>
+      <PageTitle
+        title="M4U FIVE 개설 검수"
+        desc="브랜드·파트너가 신청한 공동구매 방 — 상품·가격·재고를 검수한 뒤에만 앱에 열립니다 (POLICY §6.1)"
+      />
+      <div style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: 14 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: C.muted }}>대기 {queue.length}건</div>
+          {queue.map((q) => (
+            <div
+              key={q.id}
+              style={{ ...A.card, cursor: "pointer", padding: 12, border: item?.id === q.id ? `1.5px solid ${C.green}` : `1px solid ${C.line}` }}
+              onClick={() => setSel(q.id)}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <b style={{ fontSize: 13 }}>{q.product}</b>
+                <ChevronRight size={14} color={C.muted} />
+              </div>
+              <div style={{ color: C.muted, fontSize: 11, marginTop: 3 }}>{q.owner} · {q.brand} · {q.tier}인 방</div>
+              <div style={{ color: C.muted, fontSize: 10.5, marginTop: 2 }}>제출 {q.submitted}</div>
+            </div>
+          ))}
+          {queue.length === 0 && (
+            <div style={{ ...A.card, color: C.muted, fontSize: 12.5, textAlign: "center" }}>대기 중인 신청이 없습니다.</div>
+          )}
+
+          {opened.length > 0 && (
+            <>
+              <div style={{ fontSize: 12, fontWeight: 800, color: C.muted, marginTop: 10 }}>최근 개설</div>
+              {opened.map((a) => (
+                <div key={a.id} style={{ ...A.card, padding: 12, background: "rgba(14,90,62,.05)" }}>
+                  <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                    <BadgeCheck size={13} color={C.green2} /><b style={{ fontSize: 12.5 }}>{a.product}</b>
+                  </div>
+                  <div style={{ color: C.muted, fontSize: 10.5, marginTop: 2 }}>
+                    {a.brand} · {a.at} · 앱에 방 오픈 · 재원 {a.fund} 부담
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+
+        {item ? (
+          <div style={A.card}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <b style={{ fontSize: 17 }}>{item.product}</b>
+                  <span style={A.badge}><Package size={10} /> {item.owner} 개설</span>
+                </div>
+                <div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>{item.brand} · {item.note}</div>
+              </div>
+              <span style={{ fontSize: 11, color: C.muted }}>제출 {item.submitted}</span>
+            </div>
+
+            <div style={{ fontSize: 12.5, fontWeight: 800, margin: "18px 0 8px" }}>tier 기준 (M4U가 정한다 · §6.4)</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+              {[
+                ["방 인원", `${item.tier}명`],
+                ["기준 할인율", `${t.dc}%`],
+                ["참여 보상", `${t.hrp} HRP`],
+                ["모집 시간", `${t.hours}시간`],
+              ].map(([k, v]) => (
+                <div key={k} style={{ background: C.cream, borderRadius: 10, padding: "9px 12px" }}>
+                  <div style={{ fontSize: 10, color: C.muted, fontWeight: 700 }}>{k}</div>
+                  <div style={{ fontSize: 12.5, fontWeight: 700, marginTop: 2 }}>{v}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontSize: 12.5, fontWeight: 800, margin: "18px 0 8px" }}>신청 내용 (브랜드가 제시 · Admin이 검수)</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+              {[
+                ["정가", vnd(item.origin)],
+                ["공동구매가", vnd(item.price)],
+                ["실제 할인율", `${dc}%`, dcOk],
+                ["재고", `${item.stock}개`, stockOk],
+              ].map(([k, v, ok]) => (
+                <div
+                  key={k}
+                  style={{
+                    background: ok === false ? "rgba(180,85,47,.08)" : C.cream,
+                    border: ok === false ? `1px solid ${C.red}` : "1px solid transparent",
+                    borderRadius: 10, padding: "9px 12px",
+                  }}
+                >
+                  <div style={{ fontSize: 10, color: C.muted, fontWeight: 700 }}>{k}</div>
+                  <div style={{ fontSize: 12.5, fontWeight: 700, marginTop: 2, color: ok === false ? C.red : C.text }}>{v}</div>
+                </div>
+              ))}
+            </div>
+
+            {(!dcOk || !stockOk) && (
+              <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 10, background: "rgba(180,85,47,.07)", borderRadius: 11, padding: "11px 13px" }}>
+                <AlertTriangle size={15} color={C.red} style={{ flex: "none", marginTop: 1 }} />
+                <div style={{ fontSize: 11.5, lineHeight: 1.6 }}>
+                  {!dcOk && <div>· 실제 할인율 {dc}%가 {item.tier}인 방 기준 {t.dc}%에 미달합니다. 40/45/50%는 <b>파일럿 운영 기준값</b>이며 조정하려면 단위경제 검증과 대표 승인이 필요합니다 (§6.4).</div>}
+                  {!stockOk && <div>· 재고 {item.stock}개가 최대 모집 인원 {item.tier}명보다 적습니다. 미달 시 자동 취소·전액 환불 원칙(§6)과 별개로, 성사 후 배송 불가가 발생합니다.</div>}
+                </div>
+              </div>
+            )}
+
+            <div style={{ fontSize: 12.5, fontWeight: 800, margin: "18px 0 8px" }}>필수 확인 {FIVE_CHECKS.length}종</div>
+            {FIVE_CHECKS.map((c) => (
+              <div key={c.id} style={A.checkRow} onClick={() => setCk(c.id)}>
+                <div style={{ ...A.checkBox, background: ck[c.id] ? C.green : "transparent", borderColor: ck[c.id] ? C.green : C.line }}>
+                  {ck[c.id] && <Check size={12} color="white" />}
+                </div>
+                <div>
+                  <div style={{ fontSize: 12.5, fontWeight: 700 }}>{c.label}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 1 }}>{c.desc}</div>
+                </div>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 14, background: "rgba(14,90,62,.05)", borderRadius: 11, padding: "11px 13px" }}>
+              <ShieldCheck size={15} color={C.green2} style={{ flex: "none", marginTop: 1 }} />
+              <div style={{ fontSize: 11.5, color: C.muted, lineHeight: 1.6 }}>
+                보상은 <b>실제 구매·실제 거래</b> 기준으로만 산정합니다. 사람을 모집한 숫자에 따라 금전·HRP를 지급하는
+                구조는 만들지 않으며, 추천 보상은 1단계로 한정합니다 (§6.2). 재원 부담 주체(<b>{item.fund}</b>)는 정산에 분리 기록됩니다.
+                FIVE 개설·판매량은 <b>사업자 Consumer First Ranking에 반영되지 않습니다</b> (§6.3).
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <button
+                style={{ ...A.btn, opacity: allOk ? 1 : 0.45, cursor: allOk ? "pointer" : "not-allowed" }}
+                disabled={!allOk}
+                onClick={() => onApprove(item)}
+              >
+                <BadgeCheck size={15} /> {allOk ? "개설 승인 · 앱에 방 오픈" : `필수 확인 ${FIVE_CHECKS.filter((c) => ck[c.id]).length}/${FIVE_CHECKS.length}`}
+              </button>
+              <button style={{ ...A.btnSm, borderColor: C.red, color: C.red }} onClick={() => onReject(item)}>
+                <X size={14} /> 반려
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ ...A.card, color: C.muted, fontSize: 13, textAlign: "center", padding: 40 }}>
+            검수할 신청이 없습니다.
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
 
 function ApproveView({ queue, approved, onApprove, onReject }) {
   const [sel, setSel] = useState(queue[0]?.id ?? null);
